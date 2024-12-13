@@ -1,0 +1,48 @@
+body {
+  font-family: 'Roboto'
+}
+#header {
+  border-bottom: 1px solid #ececec;
+  height: 80px;
+  list-style-type: none;
+  margin: 40px auto;
+  padding: 0;
+  top: 30px;
+  overflow: hidden;
+  background-color: white;
+  width: 80%;
+  font-size: 20px;
+}
+#home {
+  float: left;
+}
+.nav {
+  color: black;
+  display: block;
+  float: right;
+  border-radius: 15px;
+  text-align: center;
+  padding: 10px 16px;
+  text-decoration: none;
+}
+.nav:hover {
+  transition-duration: 0.4s;
+  background-color: #dbdbdb;
+}
+#search {
+  text-align: center;
+}
+input[type="text"] {
+  text-indent: 20px;
+  height: 40px;
+  width: 400px;
+  border-radius: 42px;
+  border-color: #505050;
+  background-color: white;
+  font-family: 'Roboto';
+  font-size: 20px;
+}
+input[type="text"]:hover {
+  transition-duration: 0.4s;
+  background-color: #dbdbdb;
+}
