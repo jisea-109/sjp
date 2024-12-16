@@ -2,33 +2,39 @@ package com.tinystop.sjp.entity;
 
 import org.springframework.data.annotation.Id;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
+// import jakarta.validation.constraints.Min; @Min(1)
+// import jakarta.validation.constraints.NotNull; @NotNull
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+
+@ToString
+@Builder
+@Setter
 @Getter
-@Entity
-public class AccountEntity {
+@Entity(name = "ACCOUNT")
+@Table(name="ACCOUNT_TABLE")
+public class AccountEntity extends BaseEntity {
 
-    @NotNull
-    @Id
+    @Id // primary key
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long userID;
-    @NotNull
-    @Min(1)
+
+    @Column(name = "NAME", nullable = false, length = 15) // not null, varchar(15)
     private String username;
-    @NotNull
-    @Min(8)
+
+    @Column(name = "PASSWORD", nullable = false, length = 20)
     private String password;
+
+    @Column(name = "EAMIL", length = 30)
     private String email;
 
-    
-    @Builder
-    public AccountEntity(String username, String password, String email)
-    {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
 }
