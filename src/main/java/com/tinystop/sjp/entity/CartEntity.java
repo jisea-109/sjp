@@ -14,20 +14,15 @@ import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
+@Builder
 @Entity
-@Table(name="ORDER_TABLE")
-public class OrderEntity {
-
+@Table(name = "CART_TABLE")
+public class CartEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
-
-    @Column(name = "ORDER_ID")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long order_id;
+    @Column(name = "CART_ID")
+    private long id;
 
     @ManyToOne
     @JoinColumn(name="ACCOUNT_ID", nullable = false)
@@ -36,5 +31,4 @@ public class OrderEntity {
     @ManyToOne
     @JoinColumn(name="ID", nullable = false)
     private ProductEntity productID;
-
 }

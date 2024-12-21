@@ -13,11 +13,11 @@ import lombok.Builder;
 @Builder
 @Entity
 @Table(name="PRODUCT_TABLE")
-public class ProductEntity {
+public class ProductEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "PRODUCT_ID")
     private Long id;
 
     @Column(name = "NAME", nullable = false)

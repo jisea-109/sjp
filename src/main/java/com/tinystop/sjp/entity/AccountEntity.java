@@ -2,6 +2,7 @@ package com.tinystop.sjp.entity;
 
 import java.util.List;
 import com.tinystop.sjp.entity.OrderEntity;
+import com.tinystop.sjp.entity.CartEntity;
 import org.springframework.data.annotation.Id;
 
 import jakarta.persistence.Column;
@@ -12,7 +13,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 
@@ -20,12 +20,12 @@ import lombok.ToString;
 @Builder
 @Getter
 @Entity
-@Table(name="ACCOUNT_TABLE")
+@Table(name="ACCOUNT_TABLE") 
 public class AccountEntity extends BaseEntity {
 
     @Id // primary key
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "ACCOUNT_ID")
     private Long userID;
 
     @Column(name = "NAME", nullable = false, length = 15) // not null, varchar(15)
@@ -40,4 +40,7 @@ public class AccountEntity extends BaseEntity {
     @OneToMany
     private List<OrderEntity> orders;
 
+    @OneToMany
+    private List<CartEntity> carts;
+    
 }
