@@ -26,20 +26,83 @@
   transition-duration: 0.4s;
   background-color: #dbdbdb;
 }
-#search {
+#search_box {
   text-align: center;
 }
-input[type="text"] {
+#search {
   text-indent: 20px;
   height: 40px;
   width: 400px;
+  border-style: solid;
+  border-width: thin;
   border-radius: 42px;
   border-color: #505050;
   background-color: white;
-  font-family: 'Roboto';
   font-size: 20px;
 }
-input[type="text"]:hover {
+#search:hover {
   transition-duration: 0.4s;
   background-color: #dbdbdb;
+}
+#login_container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  width: 1000px; 
+  height: 720px;
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 20px;
+}
+#container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  height: 300px;
+  width: 330px;
+}
+#id {
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 20px;
+  height: 50px;
+  width: 310px;
+}
+#id:hover {
+  transition-duration: 0.4s;
+  background-color: #dbdbdb;
+}
+#password {
+  margin-top: 20px;
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 20px;
+  height: 50px;
+  width: 310px;
+}
+#password:hover {
+  transition-duration: 0.4s;
+  background-color: #dbdbdb;
+}
+#btnlogin {
+  color: white;
+  margin-top: 70px;
+  border-style: solid;
+  border-width: thin;
+  border-radius: 5px;
+  background-color: rgb(93, 123, 255);
+  font-size: 20px;
+  height: 50px;
+  width: 310px;
+}
+#btnlogin:hover {
+  transition-duration: 0.2s;
+  background-color: rgb(166, 183, 255);
 }
