@@ -13,21 +13,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
-
 @Builder
 @Getter
 @Entity
 @Table(name="ORDER_TABLE")
 public class OrderEntity {
-
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
-
     @Column(name = "ORDER_ID")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long order_id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name="ACCOUNT_ID", nullable = false)

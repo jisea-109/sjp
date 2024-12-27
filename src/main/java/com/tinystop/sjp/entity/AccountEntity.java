@@ -3,18 +3,17 @@ package com.tinystop.sjp.entity;
 import java.util.List;
 import com.tinystop.sjp.entity.OrderEntity;
 import com.tinystop.sjp.entity.CartEntity;
-import org.springframework.data.annotation.Id;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-
 
 @ToString
 @Builder
@@ -23,7 +22,7 @@ import lombok.ToString;
 @Table(name="ACCOUNT_TABLE") 
 public class AccountEntity extends BaseEntity {
 
-    @Id // primary key
+    @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "ACCOUNT_ID")
     private Long userID;

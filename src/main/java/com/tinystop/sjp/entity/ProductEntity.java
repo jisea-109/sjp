@@ -31,5 +31,5 @@ public class ProductEntity extends BaseEntity{
 
     @Column(name = "SOCKET")
     private String socket;
-    
+
 }
