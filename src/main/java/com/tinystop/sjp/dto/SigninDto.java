@@ -2,9 +2,8 @@ package com.tinystop.sjp.dto;
 
 import lombok.Getter;
 
-
+@Getter
 public class SigninDto {
-    @Getter
     private String username;
     private String password;
 }
