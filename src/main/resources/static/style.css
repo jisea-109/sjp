@@ -22,10 +22,6 @@
   padding: 10px 16px;
   text-decoration: none;
 }
-.nav:hover {
-  transition-duration: 0.4s;
-  background-color: #dbdbdb;
-}
 #search_box {
   text-align: center;
 }
@@ -39,10 +35,6 @@
   border-color: #505050;
   background-color: white;
   font-size: 20px;
-}
-#search:hover {
-  transition-duration: 0.4s;
-  background-color: #dbdbdb;
 }
 #login_container {
   display:flex;
@@ -71,12 +63,13 @@
   font-size: 20px;
   height: 50px;
   width: 310px;
+  text-indent: 10px;
 }
-#id:hover {
+#id:hover, #password:hover, #search:hover, .nav:hover{
   transition-duration: 0.4s;
   background-color: #dbdbdb;
 }
-#password {
+#password, #email {
   margin-top: 20px;
   border-style: solid;
   border-width: thin;
@@ -86,10 +79,7 @@
   font-size: 20px;
   height: 50px;
   width: 310px;
-}
-#password:hover {
-  transition-duration: 0.4s;
-  background-color: #dbdbdb;
+  text-indent: 10px;
 }
 #btnlogin {
   color: white;

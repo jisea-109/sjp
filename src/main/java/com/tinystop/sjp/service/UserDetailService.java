@@ -35,7 +35,7 @@ public class UserDetailService {
         AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).get();
         boolean exists = this.accountRepository.existsByUsername(user.getUsername());
         if (exists) {
-            boolean correctPassword = this.accountRepository.passwordCorrect(user.getPassword()); 
+            boolean correctPassword = this.accountRepository.findByPassword(user.getPassword()); 
             if (!correctPassword) {
                 throw new CustomException(INCORRECT_PASSWORD);
                 //throw new ResponseStatusException(HttpStatus.NOT_FOUND, "INCORRECT PASSWORD");

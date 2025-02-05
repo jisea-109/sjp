@@ -33,7 +33,7 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "PASSWORD", nullable = false, length = 20)
     private String password;
 
-    @Column(name = "EAMIL", length = 30)
+    @Column(name = "EAMIL", nullable = false, length = 30)
     private String email;
 
     @OneToMany

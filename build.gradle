@@ -12,7 +12,9 @@ java {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
-
+compileJava {	
+	options.compilerArgs << '-parameters'
+}
 repositories {
 	mavenCentral()
 }

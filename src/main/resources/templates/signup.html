@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>signin.html</title>
+    <title>signup.html</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/font.css">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
@@ -12,12 +12,12 @@
     </div>
     <div id="login_container">
         <div id="container">
-            <form method="POST" action="/signin">
+            <form action="/signup" method="POST">
                 <input type="text" placeholder="ID" id="id" name="id">
                 <input type="text" placeholder="PASSWORD" id="password" name="password">
-                <input type="submit" id="btnlogin" value="LOGIN"></button>
+                <input type="text" placeholder="EMAIL" id="email" name="email">
+                <input type="submit" id="btnlogin" value="SIGN-UP"></button>
             </form>
-            <a href="/signupPage" >GO TO SIGN-UP</a>
         </div>
     </div>
 </body>
