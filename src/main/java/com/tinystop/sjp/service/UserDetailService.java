@@ -1,20 +1,15 @@
 package com.tinystop.sjp.service;
 
+import org.springframework.stereotype.Service;
+
+import com.tinystop.sjp.dto.CreateAccountDto.SignUp;
+import com.tinystop.sjp.dto.SigninDto;
+import com.tinystop.sjp.entity.AccountEntity;
+import com.tinystop.sjp.exception.CustomException;
+import com.tinystop.sjp.repository.AccountRepository;
 import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_USER;
 import static com.tinystop.sjp.type.ErrorCode.ID_NOT_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.INCORRECT_PASSWORD;
-import java.util.Optional;
-//import org.springframework.http.HttpStatus;
-
-import com.tinystop.sjp.exception.CustomException;
-import com.tinystop.sjp.entity.AccountEntity;
-import com.tinystop.sjp.dto.CreateAccountDto.SignUp;
-import com.tinystop.sjp.dto.SigninDto;
-import com.tinystop.sjp.dto.SigninDto.Response;
-import com.tinystop.sjp.repository.AccountRepository;
-
-import org.springframework.stereotype.Service;
-//import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 

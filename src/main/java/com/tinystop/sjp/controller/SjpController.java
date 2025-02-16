@@ -1,5 +1,6 @@
 package com.tinystop.sjp.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import com.tinystop.sjp.service.UserDetailService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class SjpController {
 
@@ -29,10 +31,9 @@ public class SjpController {
     
     @PostMapping("/signup")
     public String signup(@ModelAttribute SignUp signupRequest) {
-        AccountEntity accountEntity = this.userService.signUp(signupRequest);
+        this.userService.signUp(signupRequest);
         return "signin";
     }
-    
     @GetMapping("/signinPage")
     public String signin() {
         return "signin";
@@ -40,7 +41,7 @@ public class SjpController {
     
     @PostMapping("/signin")
     public String signIn(@ModelAttribute SigninDto signinRequest) {
-        SigninDto.Response accountEntity = this.userService.signIn(signinRequest);
+        userService.signIn(signinRequest);
         return "index";
     }
 

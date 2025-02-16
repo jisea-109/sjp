@@ -1,6 +1,5 @@
 package com.tinystop.sjp.entity;
 
-import com.tinystop.sjp.entity.AccountEntity;
 import com.tinystop.sjp.entity.ProductEntity;
 
 import jakarta.persistence.Column;

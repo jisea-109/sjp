@@ -1,8 +1,6 @@
 package com.tinystop.sjp.entity;
 
 import java.util.List;
-import com.tinystop.sjp.entity.OrderEntity;
-import com.tinystop.sjp.entity.CartEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +25,7 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "ACCOUNT_ID")
     private Long userID;
 
-    @Column(name = "NAME", nullable = false, length = 15) // not null, varchar(15)
+    @Column(name = "NAME", nullable = false, unique = true, length = 15) // not null, varchar(15)
     private String username;
 
     @Column(name = "PASSWORD", nullable = false, length = 20)
@@ -41,5 +39,29 @@ public class AccountEntity extends BaseEntity {
 
     @OneToMany
     private List<CartEntity> carts;
+ 
+    protected AccountEntity() {} // 기본 생성자
+
+    // ⚠ 매개변수 있는 생성자 추가
+    public AccountEntity(Long userID, String username, String password, String email,
+                         List<OrderEntity> orders, List<CartEntity> carts) {
+        this.userID = userID;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.orders = orders;
+        this.carts = carts;
+    }
+
+    // ⚠ id를 제외한 생성자
+    public AccountEntity(String username, String password, String email,
+                         List<OrderEntity> orders, List<CartEntity> carts) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.orders = orders;
+        this.carts = carts;
+    }
+
     
 }
