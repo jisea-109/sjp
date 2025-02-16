@@ -4,7 +4,6 @@ import com.tinystop.sjp.entity.AccountEntity;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class CreateAccountDto {
@@ -24,14 +23,21 @@ public class CreateAccountDto {
                 .email(this.email)
                 .build();
         }
-        @Override
-        public String toString() {
-            return "AccountEntity{" +
-                    "name: " + username + '\'' +
-                    "password: " + password + '\'' +
-                    "email: " + email + '\'' +
-                    '}';
+        public AccountEntity toEntity(String encodedPassword) {
+            return AccountEntity.builder()
+                .username(this.username)
+                .password(encodedPassword)
+                .email(this.email)
+                .build();
         }
+        // @Override
+        // public String toString() {
+        //     return "AccountEntity{" +
+        //             "name: " + username + '\'' +
+        //             "password: " + password + '\'' +
+        //             "email: " + email + '\'' +
+        //             '}';
+        // }
     }
     @Builder
     @Getter
