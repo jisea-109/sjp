@@ -13,8 +13,6 @@ import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_USER;
 import static com.tinystop.sjp.type.ErrorCode.ID_NOT_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.INCORRECT_PASSWORD;
 
-//import lombok.RequiredArgsConstructor;
-
 @Transactional
 @Service
 public class UserDetailService {
@@ -39,13 +37,8 @@ public class UserDetailService {
     
     public SigninDto.Response signIn(SigninDto user) {
         AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(ID_NOT_FOUND));
-        // throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID NOT FOUND");
-        boolean exists = this.accountRepository.existsByUsername(user.getUsername());
-        if (exists) {
-            if (!accountEntity.getPassword().equals(user.getPassword())) {
-                throw new CustomException(INCORRECT_PASSWORD);
-                //throw new ResponseStatusException(HttpStatus.NOT_FOUND, "INCORRECT PASSWORD");
-            }
+        if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) {
+            throw new CustomException(INCORRECT_PASSWORD);
         }
         return SigninDto.Response.from(accountEntity);
     }
