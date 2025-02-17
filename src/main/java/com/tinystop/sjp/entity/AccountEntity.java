@@ -28,7 +28,7 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "NAME", nullable = false, unique = true, length = 15) // not null, varchar(15)
     private String username;
 
-    @Column(name = "PASSWORD", nullable = false, length = 20)
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
     @Column(name = "EMAIL", nullable = false, length = 30)
@@ -42,7 +42,7 @@ public class AccountEntity extends BaseEntity {
  
     protected AccountEntity() {} // 기본 생성자
 
-    // ⚠ 매개변수 있는 생성자 추가
+    // 매개변수 있는 생성자 추가
     public AccountEntity(Long userID, String username, String password, String email,
                          List<OrderEntity> orders, List<CartEntity> carts) {
         this.userID = userID;
@@ -53,7 +53,7 @@ public class AccountEntity extends BaseEntity {
         this.carts = carts;
     }
 
-    // ⚠ id를 제외한 생성자
+    // id를 제외한 생성자
     public AccountEntity(String username, String password, String email,
                          List<OrderEntity> orders, List<CartEntity> carts) {
         this.username = username;
