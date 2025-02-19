@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta charset="UTF-8">
     <title>home</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/font.css">
@@ -8,10 +10,19 @@
 </head>
 <body>
     <div id="header">
-        <a class="nav" href="/home" id="home">HOME</a>
-        <a class="nav" href="/signinPage">SIGN-IN</a>
-        <a class="nav" href="">CART</a>
-        <a class="nav" href="">WISHLIST</a>
+        <div sec:authorize="!isAuthenticated()">
+            <a class="nav" href="/home" id="home">HOME</a>
+            <a class="nav" href="/signinPage">SIGN-IN</a>
+            <a class="nav" href="">CART</a>
+            <a class="nav" href="">WISHLIST</a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <a class="nav" href="/home" id="home">HOME</a>
+            <a class="nav" th:text="${#authentication.name}"></a>
+            <a class="nav" href="/signout">SIGN-OUT</a>
+            <a class="nav" href="">CART</a>
+            <a class="nav" href="">WISHLIST</a>
+        </div>
         <div id="search_box">
             <input type="text" placeholder="Search" id="search">
         </div>

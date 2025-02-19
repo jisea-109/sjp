@@ -39,10 +39,10 @@ public class CreateAccountDto {
         //             '}';
         // }
     }
-    @Builder
-    @Getter
-    public static class SignUpResponse {
-        private String username;
-        private String email;
-    }
+   // @Builder
+   // @Getter
+   // public static class SignUpResponse {
+   //     private String username;
+   //     private String email;
+   // }
 }

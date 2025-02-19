@@ -6,20 +6,21 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 
 public class SecurityConfig {
-    String[] urlsToBePermittedAll_GET = {
+    String[] urlsToBePermittedAll_GET = { // GET methods list
         "/signupPage",
         "/home",
         "/font.css",
         "/style.css",
         "/signinPage",
     };
-    String[] urlsToBePermittedAll_POST = {
+    String[] urlsToBePermittedAll_POST = { // POST methods list
         "/signin",
         "/signup"
     };
@@ -33,16 +34,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,urlsToBePermittedAll_POST).permitAll() // POST method 허용
                         .anyRequest().authenticated()
                 )
+                .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
                 .formLogin(form -> form
                     .loginPage("/signinPage") 
-                    .defaultSuccessUrl("/")   
+                    .defaultSuccessUrl("/home")   
                     .failureUrl("/signinPage?error=true") 
                 .permitAll()
                 )
                 .logout(logout -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/")
+                    .logoutUrl("/signout")
+                    .logoutSuccessUrl("/home")
                     .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
                 );
         return http.build();
     }

@@ -1,6 +1,9 @@
 package com.tinystop.sjp.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,8 @@ public class UserDetailService {
         if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) {
             throw new CustomException(INCORRECT_PASSWORD);
         }
+        Authentication authentication = new UsernamePasswordAuthenticationToken(accountEntity.getUsername(), null, null); // 사용자 정보 인증
+        SecurityContextHolder.getContext().setAuthentication(authentication); // 사용자 정보 저장
         return SigninDto.Response.from(accountEntity);
     }
     
