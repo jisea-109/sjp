@@ -2,7 +2,6 @@ package com.tinystop.sjp.dto;
 
 import com.tinystop.sjp.entity.AccountEntity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,19 +29,5 @@ public class CreateAccountDto {
                 .email(this.email)
                 .build();
         }
-        // @Override
-        // public String toString() {
-        //     return "AccountEntity{" +
-        //             "name: " + username + '\'' +
-        //             "password: " + password + '\'' +
-        //             "email: " + email + '\'' +
-        //             '}';
-        // }
     }
-   // @Builder
-   // @Getter
-   // public static class SignUpResponse {
-   //     private String username;
-   //     private String email;
-   // }
 }

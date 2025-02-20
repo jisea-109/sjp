@@ -9,6 +9,7 @@
   background-color: white;
   width: 80%;
   font-size: 20px;
+  overflow: visible;
 }
 #home {
   float: left;
@@ -95,4 +96,31 @@
 #btnlogin:hover {
   transition-duration: 0.2s;
   background-color: rgb(166, 183, 255);
+}
+.dropdown {
+  position: relative;
+  float: right;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  top: 40px;
+  font-size: 15px;
+}
+.dropdown-content a {
+  color: black;
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {
+  transition-duration: 0.2s;
+  background-color: #ddd;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
 }
