@@ -13,10 +13,10 @@
     <div id="login_container">
         <div id="container">
             <form method="POST" action="/signup">
-                <input type="hidden" name="_csrf" value="${_csrf.token}">
-                <input type="text" placeholder="ID" id="id" name="username">
-                <input type="text" placeholder="PASSWORD" id="password" name="password">
-                <input type="text" placeholder="EMAIL" id="email" name="email">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="text" placeholder="ID" id="id" name="username" required>
+                <input type="text" placeholder="PASSWORD" id="password" name="password" required>
+                <input type="text" placeholder="EMAIL" id="email" name="email" required>
                 <input type="submit" id="btnlogin" value="SIGN-UP"></button>
             </form>
             <a href="/signinPage" >GO TO SIGN-IN</a>

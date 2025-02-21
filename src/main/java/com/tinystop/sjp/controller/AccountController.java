@@ -16,37 +16,37 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/")
 @RequiredArgsConstructor
-public class SjpController {
+public class AccountController {
 
     private final UserDetailService userService;
 
-    @GetMapping("/signupPage") // signup page 
+    @GetMapping("signupPage") // signup page 
     public String signup() {
         return "signup";
     }
     
-    @PostMapping("/signup")
+    @PostMapping("signup")
     public String signup(@ModelAttribute SignUp signupRequest) {
         this.userService.signUp(signupRequest);
         return "signin";
     }
-    @GetMapping("/signinPage") // signin page 
+    @GetMapping("signinPage") // signin page 
     public String signin() {
         return "signin";
     }
     
-    @PostMapping("/signin")
+    @PostMapping("signin")
     public String signIn(@ModelAttribute SigninDto signinRequest) {
         userService.signIn(signinRequest);
         return "index";
     }
-    @GetMapping("/signout")
+    @GetMapping("signout")
     public String signOut() {
         SecurityContextHolder.clearContext();
         return "index";
     }
 
-    @GetMapping("/home")
+    @GetMapping("home")
     public String home() {
         return "index";
     }

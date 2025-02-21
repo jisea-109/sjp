@@ -5,50 +5,62 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfig {
-    String[] urlsToBePermittedAll_GET = { // GET methods list
+    String[] urlsToBePermittedGET = { // GET methods list
         "/signupPage",
         "/home",
         "/font.css",
         "/style.css",
         "/signinPage",
+        "/debug/session"
     };
-    String[] urlsToBePermittedAll_POST = { // POST methods list
+    String[] urlsToBePermittedPOST = { // POST methods list
         "/signin",
         "/signup"
     };
+    String[] urlsToBeAuthenticatedAllPOST = {
+        "/cart",
+        "/wishlist"
+    };
+    String[] urlsToBePermittedAdmin = {
+        "/admin/**"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화
-        // .csrf(csrf -> csrf.enable()) => CSRF 보호 활성화
-                .authorizeHttpRequests((authorize) -> 
-                    authorize
-                        .requestMatchers(HttpMethod.GET,urlsToBePermittedAll_GET).permitAll() // GET method 허용
-                        .requestMatchers(HttpMethod.POST,urlsToBePermittedAll_POST).permitAll() // POST method 허용
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/signin", "/signup")) // CSRF 보호 활성화
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(HttpMethod.GET,urlsToBePermittedGET).permitAll() // GET method 허용
+                        .requestMatchers(HttpMethod.POST,urlsToBePermittedPOST).permitAll() // POST method 허용
+                        .requestMatchers(urlsToBePermittedAdmin).hasRole("ADMIN") // admin 허용
+                        .requestMatchers(urlsToBeAuthenticatedAllPOST).authenticated() // 로그인 했을 시 허용
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(true)
                 )
                 .formLogin(form -> form
                     .loginPage("/signinPage") 
-                    .defaultSuccessUrl("/home")   
+                    .defaultSuccessUrl("/index.html", true)   
                     .failureUrl("/signinPage?error=true") 
                 .permitAll()
                 )
                 .logout(logout -> logout
                     .logoutUrl("/signout")
-                    .logoutSuccessUrl("/home")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessUrl("/index.html")
+                    .invalidateHttpSession(false)
+                    //.deleteCookies("JSESSIONID") // 세션 삭제
                 );
+                //.securityContext(securityContext -> securityContext.requireExplicitSave(true));
         return http.build();
     }
 }

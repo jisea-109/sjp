@@ -1,10 +1,10 @@
 package com.tinystop.sjp.service;
 
-import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tinystop.sjp.dto.CreateAccountDto.SignUp;
@@ -33,7 +33,7 @@ public class UserDetailService {
         if (exists) {
             throw new CustomException(ALREADY_EXIST_USER);
         }
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        String encodedPassword = passwordEncoder.encode(user.getPassword()); // 비밀번호 암호화
 
         return this.accountRepository.save(user.toEntity(encodedPassword));
     }
