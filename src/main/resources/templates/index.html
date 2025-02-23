@@ -10,26 +10,28 @@
 </head>
 <body>
     <div id="header">
-        <a class="nav" href="/home" id="home">HOME</a>
-        <div sec:authorize="!isAuthenticated()">
+        <a class="nav" href="/" id="home">HOME</a>
+        <!-- 로그아웃 상태 -->
+        <th:block sec:authorize="!isAuthenticated()">
             <a class="nav" href="/signinPage">SIGN-IN</a>
-        </div>
-        <div sec:authorize="isAuthenticated()">
-            <a class="nav" href="">CART</a>
-            <a class="nav" href="">WISHLIST</a>
+        </th:block>
+        <!-- 로그인 상태 -->
+        <th:block sec:authorize="isAuthenticated()">
+            <a class="nav" href="/">CART</a>
+            <a class="nav">WISHLIST</a>
         
-            <!-- <div sec:authorize="hasRole('ADMIN')">
+            <th:block sec:authorize="hasRole('ADMIN')">
                 <a class="nav" href="/admin">ADMIN PAGE</a>
-            </div> -->
+            </th:block>
         
             <div class="dropdown">
                 <a class="nav" th:text="${#authentication.name}"></a>
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
-                    <a href="/order-history">ORDER HISTORY</a>
+                    <a href="/">ORDER HISTORY</a>
                 </div>
             </div>
-        </div>
+        </th:block>
         <div id="search_box">
             <input type="text" placeholder="Search" id="search">
         </div>

@@ -1,4 +1,4 @@
-package com.tinystop.sjp.service;
+package com.tinystop.sjp.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.context.SecurityContextHolder;
