@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import java.util.Collections;
-
 import com.tinystop.sjp.dto.CreateAccountDto.SignUp;
 import com.tinystop.sjp.dto.SigninDto;
 import com.tinystop.sjp.entity.AccountEntity;
@@ -51,10 +50,11 @@ public class AuthService {
             throw new CustomException(INCORRECT_PASSWORD);
         }
 
+        String roleName = "ROLE_" + accountEntity.getRole().name().replace("ROLE_", ""); // ROLE_ 를 추가해야 USER로 인식함
         UserDetails userDetails = new User(
         accountEntity.getUsername(),
         accountEntity.getPassword(),
-        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")) // ROLE_ 를 추가해야 USER로 인식함
+        Collections.singletonList(new SimpleGrantedAuthority(roleName))
         );
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
