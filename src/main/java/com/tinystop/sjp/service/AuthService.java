@@ -44,7 +44,7 @@ public class AuthService {
         return this.accountRepository.save(user.toEntity(encodedPassword));
     }
     
-    public SigninDto.Response signIn(SigninDto user, HttpSession session) {
+    public AccountEntity signIn(SigninDto user, HttpSession session) {
         AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(ID_NOT_FOUND));
         if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) {
             throw new CustomException(INCORRECT_PASSWORD);
@@ -67,7 +67,7 @@ public class AuthService {
         securityContext.setAuthentication(authentication); // 로그인한 사용자의 인증 정보 SecurityContextHolder에 저장
 
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext); // SecurityContext를 세션에 저장
-        return SigninDto.Response.from(accountEntity);
+        return accountEntity;
     }
     
 }
