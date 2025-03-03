@@ -48,6 +48,17 @@
   border-color: #505050;
   border-radius: 20px;
 }
+#admin_product_container, #admin_search_container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  width: 1000px; 
+  height: 800px;
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 20px;
+}
 #container {
   display:flex;
   flex-direction: column;
@@ -96,6 +107,10 @@
 #btnlogin:hover {
   transition-duration: 0.2s;
   background-color: rgb(166, 183, 255);
+}
+#product-table, #product-table-content {
+  border:1px solid black;
+  border-collapse: collapse;
 }
 .dropdown {
   position: relative;

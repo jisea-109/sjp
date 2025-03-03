@@ -20,15 +20,14 @@
             <a class="nav" href="/">CART</a>
             <a class="nav">WISHLIST</a>
         
-            <th:block sec:authorize="hasRole('ADMIN')">
-                <a class="nav" href="/admin">ADMIN PAGE</a>
-            </th:block>
-        
             <div class="dropdown">
                 <a class="nav" th:text="${#authentication.name}"></a>
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
                     <a href="/">ORDER HISTORY</a>
+                    <th:block sec:authorize="hasRole('ADMIN')">
+                        <a href="/admin">ADMIN PAGE</a>
+                    </th:block>
                 </div>
             </div>
         </th:block>

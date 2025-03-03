@@ -1,8 +1,8 @@
 package com.tinystop.sjp.type;
 
-public enum Product {
+public enum ProductCategory {
     CPU,
-    VGA,
+    GPU,
     RAM,
     Mainboard,
     Case,

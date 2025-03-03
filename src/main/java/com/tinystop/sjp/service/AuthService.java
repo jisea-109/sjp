@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -23,16 +25,12 @@ import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_USER;
 import static com.tinystop.sjp.type.ErrorCode.ID_NOT_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.INCORRECT_PASSWORD;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class AuthService {
     private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-
-    public AuthService(AccountRepository accountRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.accountRepository = accountRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
     
     public AccountEntity signUp(SignUp user) {
         boolean exists = this.accountRepository.existsByUsername(user.getUsername());

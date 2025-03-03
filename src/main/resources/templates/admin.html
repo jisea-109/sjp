@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>admin</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/font.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
+</head>
+<body>
+    <div id="header">
+        <a class="nav" href="/" id="home">HOME</a>
+        <div class="dropdown">
+            <a class="nav" th:text="${#authentication.name}"></a>
+            <div class="dropdown-content">
+                <a href="/signout">SIGN OUT</a>
+            </div>
+        </div>
+        <form method="GET" action="/admin/findproduct">
+            <div id="search_box">
+                <input type="text" placeholder="Search" id="search">
+            </div>
+        </form>
+    </div>
+    <div id="admin_product_container">
+        <div id="container">
+            <form method="POST" action="/admin/addproduct">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="text" placeholder="name" id="id" name="name" required>
+                <select name="component" id="password" required>
+                    <option value="" disabled selected>Select Component</option>
+                    <option th:each="category : ${productCategories}" th:value="${category}" th:text="${category}"></option>
+                </select>
+                <input type="text" placeholder="socket" id="password" name="socket" required>
+                <input type="text" placeholder="price" id="password" name="price">
+                <input type="submit" id="btnlogin" value="ADD PRODUCT"></button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

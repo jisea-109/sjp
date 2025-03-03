@@ -1,17 +1,30 @@
 package com.tinystop.sjp.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Builder;
+
+import com.tinystop.sjp.type.ProductCategory;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name="PRODUCT_TABLE")
 public class ProductEntity extends BaseEntity{
 
@@ -26,8 +39,9 @@ public class ProductEntity extends BaseEntity{
     @Column(name = "PRICE", nullable = false)
     private int price;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "COMPONENT", nullable = false)
-    private String component;
+    private ProductCategory component;
 
     @Column(name = "SOCKET")
     private String socket;

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>admin-products</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/font.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
+</head>
+<body>
+    <div id="header">
+        <a class="nav" href="/" id="home">HOME</a>
+        <div class="dropdown">
+            <a class="nav" th:text="${#authentication.name}"></a>
+            <div class="dropdown-content">
+                <a href="/signout">SIGN OUT</a>
+                <a href="/admin">ADMIN PAGE</a>
+            </div>
+        </div>
+        <form method="GET" action="/admin/findproduct">
+            <div id="search_box">
+                <input type="text" placeholder="Search" id="search">
+            </div>
+        </form>
+    </div>
+    <div id="admin_search_container">
+        <div id="container">
+            <form method="POST" action="/admin/modifyproduct">
+                <table id="product-table">
+                    <thead>
+                        <td id="product-table-content">NAME</td>
+                        <td id="product-table-content">COMPONENT</td>
+                        <td id="product-table-content">SOCKET</td>
+                        <td id="product-table-content">PRICE</td>
+                        <tr th:each="product : ${products}">
+                            <td id="product-table-content" th:text="${product.name}"></td>
+                            <td id="product-table-content" th:text="${product.component}"></td>
+                            <td id="product-table-content"th:text="${product.socket}"></td>
+                            <td id="product-table-content" th:text="${product.price}"></td>
+                        </tr>
+                    </thead>
+                </table>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
