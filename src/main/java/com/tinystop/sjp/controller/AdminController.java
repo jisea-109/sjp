@@ -25,26 +25,35 @@ public class AdminController {
     private final AdminService adminservice;
 
     @GetMapping("/admin")
-     public String adminPage(Model model) {
+     public String AdminPage(Model model) {
         List<ProductCategory> productCategories = Arrays.asList(ProductCategory.values());
         model.addAttribute("productCategories", productCategories);
         return "admin";
     }
 
-    @PostMapping("/admin/addproduct")
-    public String addproducts(@ModelAttribute ManageProduct product) {
+    @PostMapping("/admin/add-product")
+    public String AddProducts(@ModelAttribute ManageProduct product) {
         adminservice.AddProduct(product);
         return "admin";
     }
 
-    @PostMapping("/admin/modifyproduct")
-    public String modifyproducts(@ModelAttribute ManageProduct product) {
-        adminservice.ModifyProduct(product);
-        return "admin";
+    @GetMapping("/admin/update-product")
+    public String UpdateProductPage(@RequestParam("id") Long id, Model model) {
+        ProductEntity product = adminservice.GetProductById(id);
+        model.addAttribute("product", product);
+
+        model.addAttribute("productCategories", Arrays.asList(ProductCategory.values()));
+        return "update-product-detail";
+    }
+
+    @PostMapping("/admin/update-product-detail")
+    public String UpdateProductDetailPage(@ModelAttribute ManageProduct product) {
+        adminservice.UpdateProduct(product);
+        return "admin-products";
     }
     
-    @GetMapping("/admin/findproduct")
-    public String getproducts(@RequestParam(name = "name", required = false, defaultValue = "") String name, Model model) {
+    @GetMapping("/admin/find-product")
+    public String GetProducts(@RequestParam(name = "name", required = false, defaultValue = "") String name, Model model) {
         List<ProductEntity> products;
 
         if (name == null || name.isEmpty()) {

@@ -18,7 +18,7 @@
                 <a href="/admin">ADMIN PAGE</a>
             </div>
         </div>
-        <form method="GET" action="/admin/findproduct">
+        <form method="GET" action="/admin/find-product">
             <div id="search_box">
                 <input type="text" placeholder="Search" id="search">
             </div>
@@ -26,22 +26,27 @@
     </div>
     <div id="admin_search_container">
         <div id="container">
-            <form method="POST" action="/admin/modifyproduct">
-                <table id="product-table">
-                    <thead>
-                        <td id="product-table-content">NAME</td>
-                        <td id="product-table-content">COMPONENT</td>
-                        <td id="product-table-content">SOCKET</td>
-                        <td id="product-table-content">PRICE</td>
-                        <tr th:each="product : ${products}">
-                            <td id="product-table-content" th:text="${product.name}"></td>
-                            <td id="product-table-content" th:text="${product.component}"></td>
-                            <td id="product-table-content"th:text="${product.socket}"></td>
-                            <td id="product-table-content" th:text="${product.price}"></td>
-                        </tr>
-                    </thead>
-                </table>
-            </form>
+            <table id="product-table">
+                <thead>
+                    <th id="product-table-content">NAME</th>
+                    <th id="product-table-content">COMPONENT</th>
+                    <th id="product-table-content">SOCKET</th>
+                    <th id="product-table-content">PRICE</th>
+                    <th id="product-table-content">ACTION</th>
+                    <tr th:each="product : ${products}">
+                        <td id="product-table-content" th:text="${product.name}"></td>
+                        <td id="product-table-content" th:text="${product.component}"></td>
+                        <td id="product-table-content"th:text="${product.socket}"></td>
+                        <td id="product-table-content" th:text="${product.price}"></td>
+                        <td id="product-table-content">
+                            <form method="GET" action="/admin/update-product">
+                                <input type="hidden" name="id" th:value="${product.id}">
+                                <button type="submit">변경하기</button>
+                            </form>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 

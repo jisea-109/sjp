@@ -111,6 +111,7 @@
 #product-table, #product-table-content {
   border:1px solid black;
   border-collapse: collapse;
+  text-align: center;
 }
 .dropdown {
   position: relative;

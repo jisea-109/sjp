@@ -19,7 +19,6 @@ import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
 public class AdminService {
     private final AdminRepository adminRepository;
 
-    
     public ProductEntity AddProduct(ManageProduct product) {
         boolean exists = adminRepository.existsByName(product.getName());
         
@@ -29,16 +28,18 @@ public class AdminService {
 
         return this.adminRepository.save(product.toEntity());
     }
+    public ProductEntity GetProductById(Long id) {
+        return adminRepository.findById(id).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+    }
+    public ProductEntity UpdateProduct(ManageProduct product) {
+        ProductEntity toUpdateProduct = adminRepository.findById(product.getId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
-    public ProductEntity ModifyProduct(ManageProduct product) {
-        ProductEntity toModifyProduct = adminRepository.findById(product.getId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+        toUpdateProduct.setName(product.getName());
+        toUpdateProduct.setPrice(product.getPrice());
+        toUpdateProduct.setComponent(product.getComponent());
+        toUpdateProduct.setSocket(product.getSocket());
 
-        toModifyProduct.setName(product.getName());
-        toModifyProduct.setPrice(product.getPrice());
-        toModifyProduct.setComponent(product.getComponent());
-        toModifyProduct.setSocket(product.getSocket());
-
-        return this.adminRepository.save(toModifyProduct);
+        return this.adminRepository.save(toUpdateProduct);
     }
     
     public List<ProductEntity> GetProducts(String productName) {
