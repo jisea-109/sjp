@@ -27,6 +27,7 @@
         <div id="container">
             <form method="POST" action="/admin/update-product-detail">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="hidden" name="id" th:value="${product.id}">
                 <input type="text" placeholder="name" id="id" name="name" th:value="${product.name}" required>
                 <select name="component" id="password" required>
                     <option value="" disabled>Select Component</option>

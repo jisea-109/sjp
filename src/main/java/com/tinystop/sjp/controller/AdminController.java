@@ -49,7 +49,7 @@ public class AdminController {
     @PostMapping("/admin/update-product-detail")
     public String UpdateProductDetailPage(@ModelAttribute ManageProduct product) {
         adminservice.UpdateProduct(product);
-        return "admin-products";
+        return "redirect:/admin/find-product";
     }
     
     @GetMapping("/admin/find-product")
