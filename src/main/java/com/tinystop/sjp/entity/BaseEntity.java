@@ -15,8 +15,11 @@ import lombok.Getter;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class) // 자동 업데이트
 public class BaseEntity {
+    
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     @Column(updatable = true)
     private LocalDateTime modifiedAt;

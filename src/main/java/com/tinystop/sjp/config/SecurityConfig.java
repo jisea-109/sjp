@@ -20,7 +20,8 @@ public class SecurityConfig {
         "/font.css",
         "/style.css",
         "/signinPage",
-        "/debug/session"
+        "/debug/session",
+        "/find-product"
     };
     String[] urlsToBePermittedPOST = { // POST methods list
         "/signin",

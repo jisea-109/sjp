@@ -18,7 +18,7 @@
                 <a href="/admin">ADMIN PAGE</a>
             </div>
         </div>
-        <form method="GET" action="/admin/find-product">
+        <form method="GET" action="find-product">
             <div id="search_box">
                 <input type="text" placeholder="Search" id="search">
             </div>
@@ -39,7 +39,7 @@
                         <td id="product-table-content"th:text="${product.socket}"></td>
                         <td id="product-table-content" th:text="${product.price}"></td>
                         <td id="product-table-content">
-                            <form method="GET" action="/admin/update-product">
+                            <form method="GET" action="/admin/update-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
                                 <input type="hidden" name="id" th:value="${product.id}">
                                 <button type="submit">변경하기</button>
                             </form>

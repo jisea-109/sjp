@@ -42,14 +42,4 @@ public class AdminService {
         return this.adminRepository.save(toUpdateProduct);
     }
     
-    public List<ProductEntity> GetProducts(String productName) {
-        List<ProductEntity> productList = adminRepository.findAllByNameContaining(productName);
-
-        if (productName != "" && productList.isEmpty()) {
-            throw new CustomException(PRODUCT_NOT_FOUND);
-        }
-
-        return productList;
-    }
-    
 }

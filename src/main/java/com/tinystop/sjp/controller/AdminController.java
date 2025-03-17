@@ -49,21 +49,6 @@ public class AdminController {
     @PostMapping("/admin/update-product-detail")
     public String UpdateProductDetailPage(@ModelAttribute ManageProduct product) {
         adminservice.UpdateProduct(product);
-        return "redirect:/admin/find-product";
-    }
-    
-    @GetMapping("/admin/find-product")
-    public String GetProducts(@RequestParam(name = "name", required = false, defaultValue = "") String name, Model model) {
-        List<ProductEntity> products;
-
-        if (name == null || name.isEmpty()) {
-            products = adminservice.GetProducts(""); // 기본 값 설정
-        } else {
-            products = adminservice.GetProducts(name);
-        }
-
-        model.addAttribute("products", products);
-
-        return "admin-products";
+        return "redirect:/find-product";
     }
 }
