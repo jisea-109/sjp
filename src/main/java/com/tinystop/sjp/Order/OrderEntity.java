@@ -1,6 +1,7 @@
-package com.tinystop.sjp.entity;
+package com.tinystop.sjp.Order;
 
-import com.tinystop.sjp.entity.ProductEntity;
+import com.tinystop.sjp.Auth.AccountEntity;
+import com.tinystop.sjp.Product.ProductEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

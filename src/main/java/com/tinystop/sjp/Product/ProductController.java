@@ -1,4 +1,4 @@
-package com.tinystop.sjp.controller;
+package com.tinystop.sjp.Product;
 
 import java.util.List;
 
@@ -7,9 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.tinystop.sjp.entity.ProductEntity;
-import com.tinystop.sjp.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +17,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("find-product")
-    public String GetProducts(@RequestParam(name = "name", required = false, defaultValue = "") String name, Model model) {
+    public String GetProducts(@RequestParam(name = "search", required = false, defaultValue = "") String name, Model model) {
         List<ProductEntity> products;
 
         if (name == null || name.isEmpty()) {

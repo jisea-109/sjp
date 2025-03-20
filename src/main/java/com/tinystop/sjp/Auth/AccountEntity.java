@@ -1,9 +1,12 @@
-package com.tinystop.sjp.entity;
+package com.tinystop.sjp.Auth;
 
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.tinystop.sjp.BaseEntity;
+import com.tinystop.sjp.Cart.CartEntity;
+import com.tinystop.sjp.Order.OrderEntity;
 import com.tinystop.sjp.type.Role;
 
 import jakarta.persistence.Column;

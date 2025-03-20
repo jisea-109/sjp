@@ -1,8 +1,9 @@
-package com.tinystop.sjp.entity;
+package com.tinystop.sjp.Product;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,13 +17,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import com.tinystop.sjp.BaseEntity;
 import com.tinystop.sjp.type.ProductCategory;
 
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="PRODUCT_TABLE")

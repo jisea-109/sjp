@@ -1,4 +1,4 @@
-package com.tinystop.sjp.entity;
+package com.tinystop.sjp;
 
 import java.time.LocalDateTime;
 

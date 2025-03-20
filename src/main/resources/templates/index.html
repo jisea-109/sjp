@@ -17,9 +17,8 @@
         </th:block>
         <!-- 로그인 상태 -->
         <th:block sec:authorize="isAuthenticated()">
-            <a class="nav" href="/">CART</a>
+            <a class="nav" href="/cart/list">CART</a>
             <a class="nav">WISHLIST</a>
-        
             <div class="dropdown">
                 <a class="nav" th:text="${#authentication.name}"></a>
                 <div class="dropdown-content">
@@ -31,9 +30,9 @@
                 </div>
             </div>
         </th:block>
-        <form method="GET" action="find-product">
+        <form method="GET" action="/find-product">
             <div id="search_box">
-                <input type="text" placeholder="Search" id="search">
+                <input type="text" placeholder="Search" id="search" name="search">
             </div>
         </form>
     </div>

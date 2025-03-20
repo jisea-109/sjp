@@ -1,6 +1,5 @@
-package com.tinystop.sjp.repository;
+package com.tinystop.sjp.Order;
 
-import com.tinystop.sjp.entity.OrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

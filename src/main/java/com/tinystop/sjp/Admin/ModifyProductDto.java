@@ -1,4 +1,4 @@
-package com.tinystop.sjp.dto;
+package com.tinystop.sjp.Admin;
 
 import lombok.Setter;
 import lombok.Getter;

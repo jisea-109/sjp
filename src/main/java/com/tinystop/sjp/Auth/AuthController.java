@@ -1,4 +1,4 @@
-package com.tinystop.sjp.controller;
+package com.tinystop.sjp.Auth;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -7,10 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.tinystop.sjp.dto.CreateAccountDto.SignUp;
-import com.tinystop.sjp.dto.SigninDto;
-import com.tinystop.sjp.service.AuthService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +26,7 @@ public class AuthController {
     }
     
     @PostMapping("signup")
-    public String signup(@ModelAttribute SignUp signupRequest) {
+    public String signup(@ModelAttribute SignUpDto signupRequest) {
         this.authService.signUp(signupRequest);
         return "signin";
     }

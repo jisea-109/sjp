@@ -1,4 +1,4 @@
-package com.tinystop.sjp.controller;
+package com.tinystop.sjp.Admin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.tinystop.sjp.dto.ManageProductDto.ManageProduct;
-import com.tinystop.sjp.entity.ProductEntity;
-import com.tinystop.sjp.service.AdminService;
+import com.tinystop.sjp.Admin.ManageProductDto.ManageProduct;
+import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.type.ProductCategory;
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class AdminController {
     @PostMapping("/admin/add-product")
     public String AddProducts(@ModelAttribute ManageProduct product) {
         adminservice.AddProduct(product);
-        return "admin";
+        return "redirect:/admin";
     }
 
     @GetMapping("/admin/update-product")

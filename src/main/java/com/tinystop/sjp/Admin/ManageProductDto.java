@@ -1,6 +1,6 @@
-package com.tinystop.sjp.dto;
+package com.tinystop.sjp.Admin;
 
-import com.tinystop.sjp.entity.ProductEntity;
+import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.type.ProductCategory;
 
 import lombok.Getter;

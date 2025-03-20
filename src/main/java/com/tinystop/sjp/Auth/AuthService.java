@@ -1,4 +1,4 @@
-package com.tinystop.sjp.service;
+package com.tinystop.sjp.Auth;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,11 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import java.util.Collections;
-import com.tinystop.sjp.dto.CreateAccountDto.SignUp;
-import com.tinystop.sjp.dto.SigninDto;
-import com.tinystop.sjp.entity.AccountEntity;
+
 import com.tinystop.sjp.exception.CustomException;
-import com.tinystop.sjp.repository.AccountRepository;
 
 import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_USER;
 import static com.tinystop.sjp.type.ErrorCode.ID_NOT_FOUND;
@@ -32,7 +29,7 @@ public class AuthService {
     private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     
-    public AccountEntity signUp(SignUp user) {
+    public AccountEntity signUp(SignUpDto user) {
         boolean exists = this.accountRepository.existsByUsername(user.getUsername());
         if (exists) {
             throw new CustomException(ALREADY_EXIST_USER);

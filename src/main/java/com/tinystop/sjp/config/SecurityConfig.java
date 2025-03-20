@@ -14,7 +14,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    String[] urlsToBePermittedGET = { // GET methods list
+    String[] PermittedGET = { // GET methods list
         "/",
         "/signupPage",
         "/font.css",
@@ -23,17 +23,24 @@ public class SecurityConfig {
         "/debug/session",
         "/find-product"
     };
-    String[] urlsToBePermittedPOST = { // POST methods list
+    String[] PermittedPOST = { // POST methods list
         "/signin",
         "/signup",
         "/signout"
     };
-    String[] urlsAfterAuthenticatedPOST = {
-        "/cart",
+    String[] AfterAuthenticatedGET = {
+        "/cart/list",
         "/wishlist",
         "/orderHistory"
     };
-    String[] urlsToBePermittedAdmin = {
+    String[] AfterAuthenticatedPOST = {
+        "/cart/add",
+        "/cart/remove",
+        "/wishlist",
+        "/orderHistory"
+    };
+    
+    String[] BePermittedAdmin = {
         "/admin/**"
     };
 
@@ -46,12 +53,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,  SecurityContextRepository securityContextRepository) throws Exception {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_THREADLOCAL); // SecurityContext가 현재 실행 중인 스레드에만 저장 (기본상태)
 
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/signin", "/signup")) // CSRF 보호 signin signup 페이지 제외
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/signin", "/signup", "/cart/add", "/cart/remove")) // CSRF 보호 signin signup cart/add 페이지 제외
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(HttpMethod.GET,urlsToBePermittedGET).permitAll() // GET method 허용
-                        .requestMatchers(HttpMethod.POST,urlsToBePermittedPOST).permitAll() // POST method 허용
-                        .requestMatchers(urlsToBePermittedAdmin).hasRole("ADMIN") // admin 허용
-                        .requestMatchers(urlsAfterAuthenticatedPOST).authenticated() // 로그인 했을 시 허용
+                        .requestMatchers(HttpMethod.GET,PermittedGET).permitAll() // GET method 허용
+                        .requestMatchers(HttpMethod.POST,PermittedPOST).permitAll() // POST method 허용
+                        .requestMatchers(AfterAuthenticatedGET).authenticated()
+                        .requestMatchers(AfterAuthenticatedPOST).authenticated() // 로그인 했을 시 허용
+                        .requestMatchers(BePermittedAdmin).hasRole("ADMIN") // admin 허용
                         .anyRequest().authenticated() // 나머진 권한 필요
                 )
                 .sessionManagement(session -> session

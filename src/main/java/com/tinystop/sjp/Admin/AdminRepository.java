@@ -1,8 +1,8 @@
-package com.tinystop.sjp.repository;
+package com.tinystop.sjp.Admin;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.tinystop.sjp.entity.ProductEntity;
+import com.tinystop.sjp.Product.ProductEntity;
 
 public interface AdminRepository extends JpaRepository<ProductEntity, Long> {
     boolean existsByName(String productName);

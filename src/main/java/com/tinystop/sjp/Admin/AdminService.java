@@ -1,4 +1,4 @@
-package com.tinystop.sjp.service;
+package com.tinystop.sjp.Admin;
 
 import java.util.List;
 
@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import com.tinystop.sjp.dto.ManageProductDto.ManageProduct;
-import com.tinystop.sjp.entity.ProductEntity;
+import com.tinystop.sjp.Admin.ManageProductDto.ManageProduct;
+import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.exception.CustomException;
-import com.tinystop.sjp.repository.AdminRepository;
+
 import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_PRODUCT;
 import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
 

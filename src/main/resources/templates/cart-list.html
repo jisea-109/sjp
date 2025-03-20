@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>admin-products</title>
+    <title>cart-list</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/font.css">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
@@ -11,11 +11,6 @@
 <body>
     <div id="header">
         <a class="nav" href="/" id="home">HOME</a>
-        <!-- 로그아웃 상태 -->
-        <th:block sec:authorize="!isAuthenticated()">
-            <a class="nav" href="/signinPage">SIGN-IN</a>
-        </th:block>
-        <!-- 로그인 상태 -->
         <th:block sec:authorize="isAuthenticated()">
             <a class="nav" href="/cart/list">CART</a>
             <a class="nav">WISHLIST</a>
@@ -24,9 +19,6 @@
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
                     <a href="/">ORDER HISTORY</a>
-                    <th:block sec:authorize="hasRole('ADMIN')">
-                        <a href="/admin">ADMIN PAGE</a>
-                    </th:block>
                 </div>
             </div>
         </th:block>
@@ -36,7 +28,7 @@
             </div>
         </form>
     </div>
-    <div id="admin_search_container">
+    <div id="admin_product_container">
         <div id="container">
             <table id="product-table">
                 <thead>
@@ -44,28 +36,27 @@
                     <th id="product-table-content">COMPONENT</th>
                     <th id="product-table-content">SOCKET</th>
                     <th id="product-table-content">PRICE</th>
-                    <th id="product-table-content">ACTION</th>
-                    <tr th:each="product : ${products}">
-                        <td id="product-table-content" th:text="${product.name}"></td>
-                        <td id="product-table-content" th:text="${product.component}"></td>
-                        <td id="product-table-content"th:text="${product.socket}"></td>
-                        <td id="product-table-content" th:text="${product.price}"></td>
+                    <th id="product-table-content">QUANTITY</th>
+                    <tr th:each="cartlist : ${cartlist}">
+                        <td id="product-table-content" th:text="${cartlist.product.name}"></td>
+                        <td id="product-table-content" th:text="${cartlist.product.component}"></td>
+                        <td id="product-table-content"th:text="${cartlist.product.socket}"></td>
+                        <td id="product-table-content" th:text="${cartlist.product.price}"></td>
+                        <td id="product-table-content" th:text="${cartlist.quantity}"></td>
                         <td id="product-table-content">
-                            <form method="GET" action="/admin/update-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
-                                <input type="hidden" name="id" th:value="${product.id}">
-                                <button type="submit">변경하기</button>
-                            </form>
-                            <form method="POST" action="/cart/add" sec:authorize="hasAuthority('ROLE_USER')">
-                                <input type="hidden" name="productId" th:value="${product.id}">
-                                <input type="number" name="quantity" value="1">
-                                <button type="submit">장바구니 담기</button>
-                            </form>
+                        <form method="GET" action="" sec:authorize="hasAuthority('ROLE_USER')">
+                            <input type="hidden" name="id" th:value="${cartlist.product.id}">
+                            <button type="submit">주문하기</button>
+                        </form>
+                        <form method="POST" action="/cart/remove" sec:authorize="hasAuthority('ROLE_USER')">
+                            <input type="hidden" name="productId" th:value="${cartlist.product.id}">
+                            <button type="submit">삭제하기</button>
+                        </form>
                         </td>
                     </tr>
                 </thead>
             </table>
         </div>
     </div>
-
 </body>
 </html>
