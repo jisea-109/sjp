@@ -16,7 +16,11 @@ public enum ErrorCode {
 
     USER_NOT_FOUND("USER NOT FOUND"),
 
-    CART_NOT_FOUND("CART NOT FOUND");
+    CART_NOT_FOUND("CART NOT FOUND"),
+
+    OUT_OF_STOCK("OUT OF STOCK"),
+    NOT_ENOUGH_STOCK("NOT ENOUGH STOCK"),
+    ORDER_NOT_FOUND("ORDER NOT FOUND");
     private final String message;
 
 }

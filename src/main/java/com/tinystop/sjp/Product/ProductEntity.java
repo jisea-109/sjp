@@ -19,6 +19,7 @@ import jakarta.persistence.Table;
 
 import com.tinystop.sjp.BaseEntity;
 import com.tinystop.sjp.type.ProductCategory;
+import com.tinystop.sjp.type.ProductStockStatus;
 
 @Getter
 @Setter
@@ -47,5 +48,12 @@ public class ProductEntity extends BaseEntity{
 
     @Column(name = "SOCKET")
     private String socket;
+
+    @Column(name = "Quantity", nullable = false)
+    private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STOCK", nullable = false)
+    private ProductStockStatus stockStatus;
 
 }

@@ -19,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -52,7 +53,7 @@ public class AccountEntity extends BaseEntity {
     @OneToMany
     private List<OrderEntity> orders;
 
-    @OneToMany
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartEntity> carts;
  
     protected AccountEntity() {} // 기본 생성자

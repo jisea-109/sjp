@@ -45,9 +45,13 @@ public class CartService {
 
         CartEntity toRemoveCart = cartRepository.findByAccountAndProduct(user, product);
 
-        if (toRemoveCart == null) {throw new CustomException(CART_NOT_FOUND);}
+        if (toRemoveCart == null) {
+            throw new CustomException(CART_NOT_FOUND);
+        }
         
-        else {cartRepository.delete(toRemoveCart);}
+        else {
+            cartRepository.delete(toRemoveCart);
+        }
     }
 
     public List<CartEntity> cartList(String username) { // 장바구니 (cart) 목록 표시

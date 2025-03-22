@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>cart-list</title>
+    <title>order-list</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/font.css">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
@@ -18,7 +18,7 @@
                 <a class="nav" th:text="${#authentication.name}"></a>
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
-                    <a href="/order/list">ORDER</a>
+                    <a href="/order-list">ORDER</a>
                 </div>
             </div>
         </th:block>
@@ -37,20 +37,18 @@
                     <th id="product-table-content">SOCKET</th>
                     <th id="product-table-content">PRICE</th>
                     <th id="product-table-content">QUANTITY</th>
-                    <tr th:each="cartlist : ${cartlist}">
-                        <td id="product-table-content" th:text="${cartlist.product.name}"></td>
-                        <td id="product-table-content" th:text="${cartlist.product.component}"></td>
-                        <td id="product-table-content"th:text="${cartlist.product.socket}"></td>
-                        <td id="product-table-content" th:text="${cartlist.product.price}"></td>
-                        <td id="product-table-content" th:text="${cartlist.quantity}"></td>
+                    <th id="product-table-content">ORDER TIME</th>
+                    <tr th:each="orderlist : ${orderlist}">
+                        <td id="product-table-content" th:text="${orderlist.product.name}"></td>
+                        <td id="product-table-content" th:text="${orderlist.product.component}"></td>
+                        <td id="product-table-content"th:text="${orderlist.product.socket}"></td>
+                        <td id="product-table-content" th:text="${orderlist.product.price}"></td>
+                        <td id="product-table-content" th:text="${orderlist.quantity}"></td>
+                        <td id="product-table-content" th:text="${orderlist.createdAt}"></td>
                         <td id="product-table-content">
-                        <form method="POST" action="/order/add" sec:authorize="hasAuthority('ROLE_USER')">
-                            <input type="hidden" name="productId" th:value="${cartlist.product.id}">
-                            <input type="hidden" name="quantity" th:value="${cartlist.quantity}">
-                            <button type="submit">주문하기</button>
-                        </form>
-                        <form method="POST" action="/cart/remove" sec:authorize="hasAuthority('ROLE_USER')">
-                            <input type="hidden" name="productId" th:value="${cartlist.product.id}">
+                        <form method="POST" action="/order/remove" sec:authorize="hasAuthority('ROLE_USER')">
+                            <input type="hidden" name="productId" th:value="${orderlist.product.id}">
+                            <input type="hidden" name="orderId" th:value="${orderlist.id}">
                             <button type="submit">삭제하기</button>
                         </form>
                         </td>

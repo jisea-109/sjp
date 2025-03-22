@@ -17,13 +17,13 @@
         </th:block>
         <!-- 로그인 상태 -->
         <th:block sec:authorize="isAuthenticated()">
-            <a class="nav" href="/cart/list">CART</a>
-            <a class="nav">WISHLIST</a>
+            <a class="nav" href="/cart/list" sec:authorize="hasAuthority('ROLE_USER')">CART</a>
+            <a class="nav" sec:authorize="hasAuthority('ROLE_USER')">WISHLIST</a>
             <div class="dropdown">
                 <a class="nav" th:text="${#authentication.name}"></a>
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
-                    <a href="/">ORDER HISTORY</a>
+                    <a href="/order/list" sec:authorize="hasAuthority('ROLE_USER')">ORDER</a>
                     <th:block sec:authorize="hasRole('ADMIN')">
                         <a href="/admin">ADMIN PAGE</a>
                     </th:block>

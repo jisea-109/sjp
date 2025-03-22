@@ -23,7 +23,7 @@
             </div>
         </form>
     </div>
-    <div id="admin_product_container">
+    <div id="product_container">
         <div id="container">
             <form method="POST" action="/admin/update-product-detail">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -38,7 +38,8 @@
                     </option>
                 </select>
                 <input type="text" placeholder="socket" id="password" name="socket" th:value="${product.socket}" required>
-                <input type="text" placeholder="price" id="password"  th:value="${product.price}"name="price">
+                <input type="text" placeholder="price" id="password"  th:value="${product.price}" name="price" required>
+                <input type="text" placeholder="quantity" id="password" th:value="${product.quantity}" name="quantity" required>
                 <input type="submit" id="btnlogin" value="EDIT PRODUCT DETAIL"></button>
             </form>
         </div>

@@ -23,7 +23,7 @@
                 <a class="nav" th:text="${#authentication.name}"></a>
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
-                    <a href="/">ORDER HISTORY</a>
+                    <a href="/order/list">ORDER</a>
                     <th:block sec:authorize="hasRole('ADMIN')">
                         <a href="/admin">ADMIN PAGE</a>
                     </th:block>
@@ -36,7 +36,7 @@
             </div>
         </form>
     </div>
-    <div id="admin_search_container">
+    <div id="product_container">
         <div id="container">
             <table id="product-table">
                 <thead>
@@ -44,16 +44,21 @@
                     <th id="product-table-content">COMPONENT</th>
                     <th id="product-table-content">SOCKET</th>
                     <th id="product-table-content">PRICE</th>
-                    <th id="product-table-content">ACTION</th>
+                    <th id="product-table-content">QUANTITY</th>
                     <tr th:each="product : ${products}">
                         <td id="product-table-content" th:text="${product.name}"></td>
                         <td id="product-table-content" th:text="${product.component}"></td>
                         <td id="product-table-content"th:text="${product.socket}"></td>
                         <td id="product-table-content" th:text="${product.price}"></td>
+                        <td id="product-table-content" th:text="${product.quantity}"></td>
                         <td id="product-table-content">
                             <form method="GET" action="/admin/update-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
                                 <input type="hidden" name="id" th:value="${product.id}">
                                 <button type="submit">변경하기</button>
+                            </form>
+                            <form method="POST" action="" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                <input type="hidden" name="productId" th:value="${product.id}">
+                                <button type="submit">삭제하기</button>
                             </form>
                             <form method="POST" action="/cart/add" sec:authorize="hasAuthority('ROLE_USER')">
                                 <input type="hidden" name="productId" th:value="${product.id}">

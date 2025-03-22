@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import com.tinystop.sjp.Admin.ManageProductDto.ManageProduct;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.exception.CustomException;
+import com.tinystop.sjp.type.ProductStockStatus;
 
 import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_PRODUCT;
 import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
@@ -17,6 +18,7 @@ import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
 @Transactional
 @Service
 public class AdminService {
+    
     private final AdminRepository adminRepository;
 
     public ProductEntity AddProduct(ManageProduct product) {
@@ -25,7 +27,7 @@ public class AdminService {
         if (exists) { 
             throw new CustomException(ALREADY_EXIST_PRODUCT);
         }
-
+        
         return this.adminRepository.save(product.toEntity());
     }
     public ProductEntity GetProductById(Long id) {
@@ -38,6 +40,13 @@ public class AdminService {
         toUpdateProduct.setPrice(product.getPrice());
         toUpdateProduct.setComponent(product.getComponent());
         toUpdateProduct.setSocket(product.getSocket());
+        toUpdateProduct.setQuantity(product.getQuantity());
+        if(product.getQuantity() > 0) {
+            toUpdateProduct.setStockStatus(ProductStockStatus.IN_STOCK);
+        }
+        else {
+            toUpdateProduct.setStockStatus(ProductStockStatus.SOLD_OUT);
+        }
 
         return this.adminRepository.save(toUpdateProduct);
     }
