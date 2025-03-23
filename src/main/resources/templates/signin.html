@@ -12,10 +12,14 @@
     </div>
     <div id="login_container">
         <div id="container">
-            <form method="POST" action="/signin">
-                <input type="text" placeholder="ID" id="id" name="username" required>
-                <input type="text" placeholder="PASSWORD" id="password" name="password" required>
-                <input type="submit" id="btnlogin" value="LOGIN"></button>
+            <form method="POST" th:object="${signin}" th:action="@{/signin}">
+                <input type="text" th:field="*{username}" placeholder="ID" id="id" required>
+                <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+
+                <input type="password" th:field="*{password}" placeholder="PASSWORD" id="password" autocomplete="off" equired>
+                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                
+                <button type="submit" id="btnlogin">SIGN-IN</button>
             </form>
             <a href="/signupPage" >GO TO SIGN-UP</a>
         </div>

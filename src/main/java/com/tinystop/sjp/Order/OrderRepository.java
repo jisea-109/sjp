@@ -11,6 +11,5 @@ import com.tinystop.sjp.Product.ProductEntity;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     List<OrderEntity> findAllByAccount(AccountEntity user);
-    //OrderEntity findByAccountAndProduct(AccountEntity user, ProductEntity product);
-    boolean existsByIdAndAccountAndProduct(Long orderId, AccountEntity user, ProductEntity product);
+    Optional<OrderEntity> findByIdAndAccountAndProduct(Long orderId, AccountEntity user, ProductEntity product);
 }

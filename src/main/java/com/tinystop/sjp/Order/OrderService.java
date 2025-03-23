@@ -19,8 +19,6 @@ import static com.tinystop.sjp.type.ErrorCode.OUT_OF_STOCK;
 import static com.tinystop.sjp.type.ErrorCode.NOT_ENOUGH_STOCK;
 import static com.tinystop.sjp.type.ErrorCode.ORDER_NOT_FOUND;
 
-// cart에 있는 quantity 그대로 가져와서 order entity에 넣어야함
-// product entity에 quantity를 추가해서 stock이 있는지 없는지 확인하게 기능 만들기
 @RequiredArgsConstructor
 @Service
 public class OrderService {
@@ -63,19 +61,12 @@ public class OrderService {
         AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
-        //OrderEntity order = orderRepository.findByAccountAndProduct(user, product);
-        boolean exists = orderRepository.existsByIdAndAccountAndProduct(orderId,user,product);
-        if (!exists) { // order entity에 없으면 exception 처리
-            throw new CustomException(ORDER_NOT_FOUND);
+        OrderEntity order = orderRepository.findByIdAndAccountAndProduct(orderId,user,product).orElseThrow(() -> new CustomException(ORDER_NOT_FOUND));
+        if (product.getStockStatus() == ProductStockStatus.SOLD_OUT) { // 주문 취소했을 때 product 재고 다시 채우기
+            product.setStockStatus(ProductStockStatus.IN_STOCK);
         }
-        else {
-            OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(ORDER_NOT_FOUND));
-            if (product.getStockStatus() == ProductStockStatus.SOLD_OUT) { // 주문 취소했을 때 product 재고 다시 채우기
-                product.setStockStatus(ProductStockStatus.IN_STOCK);
-            }
-            product.setQuantity(product.getQuantity() + order.getQuantity());
-            orderRepository.delete(order);
-        }
+        product.setQuantity(product.getQuantity() + order.getQuantity());
+        orderRepository.delete(order);
     }
 
     public List<OrderEntity> orderList(String username) {

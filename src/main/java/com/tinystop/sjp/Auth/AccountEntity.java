@@ -20,13 +20,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.CascadeType;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @ToString
 @Builder
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class) // createdAt modifiedAt 자동 업데이트
 @Table(name="ACCOUNT_TABLE") 
@@ -40,7 +45,7 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "USERNAME", nullable = false, unique = true, length = 15) // not null, varchar(15)
     private String username;
 
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(name = "PASSWORD", nullable = false, length = 20)
     private String password;
 
     @Column(name = "EMAIL", nullable = false, unique = true, length = 30)
@@ -55,31 +60,6 @@ public class AccountEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartEntity> carts;
- 
-    protected AccountEntity() {} // 기본 생성자
-
-    // 매개변수 있는 생성자 추가
-    public AccountEntity(Long userID, String username, String password, String email,
-                        Role role, List<OrderEntity> orders, List<CartEntity> carts) {
-        this.userID = userID;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.orders = orders;
-        this.carts = carts;
-    }
-
-    // id를 제외한 생성자
-    public AccountEntity(String username, String password, String email, Role role,
-                         List<OrderEntity> orders, List<CartEntity> carts) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.orders = orders;
-        this.carts = carts;
-    }
 
     
 }
