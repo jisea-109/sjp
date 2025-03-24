@@ -19,7 +19,7 @@ public class ProductService {
         List<ProductEntity> productList = productRepository.findAllByNameContaining(productName);
 
         if (productName != "" && productList.isEmpty()) {
-            throw new CustomException(PRODUCT_NOT_FOUND);
+            throw new CustomException(PRODUCT_NOT_FOUND,"product-list");
         }
 
         return productList;

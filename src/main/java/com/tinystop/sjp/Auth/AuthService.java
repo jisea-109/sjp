@@ -21,6 +21,9 @@ import com.tinystop.sjp.exception.CustomException;
 import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_USER;
 import static com.tinystop.sjp.type.ErrorCode.ID_NOT_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.INCORRECT_PASSWORD;
+import static com.tinystop.sjp.type.ErrorCode.USER_NOT_FOUND;
+import static com.tinystop.sjp.type.ErrorCode.DUPLICATE_EMAIL_FOUND;
+
 
 @RequiredArgsConstructor
 @Transactional
@@ -30,9 +33,11 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
     
     public AccountEntity signUp(SignUpDto user) {
-        boolean exists = this.accountRepository.existsByUsername(user.getUsername());
-        if (exists) {
-            throw new CustomException(ALREADY_EXIST_USER);
+        if (this.accountRepository.existsByUsername(user.getUsername())) {
+            throw new CustomException(ALREADY_EXIST_USER,"signup");
+        }
+        if (accountRepository.existsByEmail(user.getEmail())) {
+            throw new CustomException(DUPLICATE_EMAIL_FOUND,"signup");
         }
         String encodedPassword = passwordEncoder.encode(user.getPassword()); // 비밀번호 암호화
 
@@ -40,9 +45,9 @@ public class AuthService {
     }
     
     public AccountEntity signIn(SigninDto user, HttpSession session) {
-        AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(ID_NOT_FOUND));
+        AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"signin"));
         if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) {
-            throw new CustomException(INCORRECT_PASSWORD);
+            throw new CustomException(INCORRECT_PASSWORD,"signin");
         }
 
         String roleName = "ROLE_" + accountEntity.getRole().name().replace("ROLE_", ""); // ROLE_ 를 추가해야 USER로 인식함

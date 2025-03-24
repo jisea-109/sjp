@@ -29,15 +29,15 @@ public class OrderService {
     private final CartRepository cartRepository;
 
     public OrderEntity addToOrder(String username, AddtoOrderDto addToOrderDto) {
-        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        ProductEntity product = productRepository.findById(addToOrderDto.getProductId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"product-list"));
+        ProductEntity product = productRepository.findById(addToOrderDto.getProductId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
         
         if(product.getStockStatus() == ProductStockStatus.SOLD_OUT) {
-            throw new CustomException(OUT_OF_STOCK);
+            throw new CustomException(OUT_OF_STOCK, "product-list");
         }
 
         if (addToOrderDto.getQuantity() > product.getQuantity()) {
-            throw new CustomException(NOT_ENOUGH_STOCK);
+            throw new CustomException(NOT_ENOUGH_STOCK, "product-list");
         }
 
         CartEntity cart = cartRepository.findByAccountAndProduct(user, product);
@@ -58,10 +58,10 @@ public class OrderService {
     }   
     
     public void cancelOrder(String username, Long productId, Long orderId) { 
-        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"product-list"));
+        ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
 
-        OrderEntity order = orderRepository.findByIdAndAccountAndProduct(orderId,user,product).orElseThrow(() -> new CustomException(ORDER_NOT_FOUND));
+        OrderEntity order = orderRepository.findByIdAndAccountAndProduct(orderId,user,product).orElseThrow(() -> new CustomException(ORDER_NOT_FOUND,"product-list"));
         if (product.getStockStatus() == ProductStockStatus.SOLD_OUT) { // 주문 취소했을 때 product 재고 다시 채우기
             product.setStockStatus(ProductStockStatus.IN_STOCK);
         }
@@ -70,7 +70,7 @@ public class OrderService {
     }
 
     public List<OrderEntity> orderList(String username) {
-        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "order-list"));
         List<OrderEntity> orderList = orderRepository.findAllByAccount(user);
 
         return orderList;

@@ -20,7 +20,7 @@ public class SignUpDto {
     @Size(min = 8, message = "비밀번호는 8자 이상, 20자 이하이어야 합니다")
     private String password;
 
-    @Email(message = "올바른 이메일 형식이 아닙니다")
+    @Email(message = "올바른 이메일 형식이 아니거나 이미 가입된 이메일이 있습니다.")
     private String email;
     
     public AccountEntity toEntity(String encodedPassword) {

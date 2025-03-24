@@ -23,16 +23,16 @@ public class AdminService {
         boolean exists = adminRepository.existsByName(product.getName());
         
         if (exists) { 
-            throw new CustomException(ALREADY_EXIST_PRODUCT);
+            throw new CustomException(ALREADY_EXIST_PRODUCT,"admin");
         }
         
         return this.adminRepository.save(product.toEntity());
     }
     public ProductEntity GetProductById(Long id) {
-        return adminRepository.findById(id).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+        return adminRepository.findById(id).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
     }
     public ProductEntity UpdateProduct(ManageProduct product) {
-        ProductEntity toUpdateProduct = adminRepository.findById(product.getId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+        ProductEntity toUpdateProduct = adminRepository.findById(product.getId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
 
         toUpdateProduct.setName(product.getName());
         toUpdateProduct.setPrice(product.getPrice());

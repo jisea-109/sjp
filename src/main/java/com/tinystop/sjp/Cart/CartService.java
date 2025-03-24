@@ -25,9 +25,9 @@ public class CartService {
     private final AccountRepository accountRepository;
 
     public CartEntity addToCart(String username, AddtoCartDto addToCartDto) { // product를 cart에 담기
-        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND)); // 유저 확인
+        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "product-list")); // 유저 확인
 
-        ProductEntity product = productRepository.findById(addToCartDto.getProductId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND)); // Product 확인인
+        ProductEntity product = productRepository.findById(addToCartDto.getProductId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list")); // Product 확인인
 
         CartEntity toCart = cartRepository.findByAccountAndProduct(user, product); // 기존 Cart에 추가되있는지 확인
 
@@ -39,14 +39,14 @@ public class CartService {
     }
 
     public void removeFromCart(String username, Long productId) {
-        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND)); // 유저 확인
+        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "cart-list")); // 유저 확인
 
-        ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND)); // Product 확인인
+        ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "cart-list")); // Product 확인인
 
         CartEntity toRemoveCart = cartRepository.findByAccountAndProduct(user, product);
 
         if (toRemoveCart == null) {
-            throw new CustomException(CART_NOT_FOUND);
+            throw new CustomException(CART_NOT_FOUND,"cart-list");
         }
         
         else {
@@ -55,7 +55,7 @@ public class CartService {
     }
 
     public List<CartEntity> cartList(String username) { // 장바구니 (cart) 목록 표시
-        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "cart-list"));
         List<CartEntity> carts = cartRepository.findAllByAccount(user);
         return carts;
     }

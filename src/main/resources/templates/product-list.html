@@ -36,6 +36,9 @@
             </div>
         </form>
     </div>
+    <div th:if="${errorMessage}" style="color: red; text-align: center;">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <div id="product_container">
         <div id="container">
             <table id="product-table">

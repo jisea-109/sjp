@@ -10,6 +10,9 @@
     <div id="header">
         <a href="/" class="nav" id="home">HOME</a>
     </div>
+    <div th:if="${errorMessage}" style="color: red; text-align: center;">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <div id="login_container">
         <div id="container">
             <form method="POST" th:object="${signin}" th:action="@{/signin}">
