@@ -36,6 +36,12 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    @PostMapping("/admin/remove-product")
+        public String RemoveProduct(@ModelAttribute ManageProduct product) {
+            adminservice.RemoveProduct(product);
+            return "redirect:/find-product";
+        }
+        
     @GetMapping("/admin/update-product")
     public String UpdateProductPage(@RequestParam("id") Long id, Model model) {
         ProductEntity product = adminservice.GetProductById(id);
@@ -50,4 +56,5 @@ public class AdminController {
         adminservice.UpdateProduct(product);
         return "redirect:/find-product";
     }
+    
 }

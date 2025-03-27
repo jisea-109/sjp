@@ -48,5 +48,9 @@ public class AdminService {
 
         return this.adminRepository.save(toUpdateProduct);
     }
-    
+    public void RemoveProduct(ManageProduct product) {
+        ProductEntity toRemoveProduct = adminRepository.findById(product.getId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list"));
+
+        this.adminRepository.delete(toRemoveProduct);
+    }
 }

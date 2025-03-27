@@ -53,7 +53,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,  SecurityContextRepository securityContextRepository) throws Exception {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_THREADLOCAL); // SecurityContext가 현재 실행 중인 스레드에만 저장 (기본상태)
 
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/signin", "/signup", "/cart/add", "/cart/remove", "/order/**")) // CSRF 보호 signin signup cart/add 페이지 제외
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/signin", "/signup", "/cart/add", "/cart/remove", "/order/**", "/admin/remove-product")) // CSRF 보호 제외 목록
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(HttpMethod.GET,PermittedGET).permitAll() // GET method 허용
                         .requestMatchers(HttpMethod.POST,PermittedPOST).permitAll() // POST method 허용

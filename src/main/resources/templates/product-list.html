@@ -59,8 +59,8 @@
                                 <input type="hidden" name="id" th:value="${product.id}">
                                 <button type="submit">변경하기</button>
                             </form>
-                            <form method="POST" action="" sec:authorize="hasAuthority('ROLE_ADMIN')">
-                                <input type="hidden" name="productId" th:value="${product.id}">
+                            <form method="POST" action="/admin/remove-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                <input type="hidden" name="id" th:value="${product.id}">
                                 <button type="submit">삭제하기</button>
                             </form>
                             <form method="POST" action="/cart/add" sec:authorize="hasAuthority('ROLE_USER')">
