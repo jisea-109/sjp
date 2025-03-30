@@ -10,7 +10,7 @@
     <div id="header">
         <a href="/" class="nav" id="home">HOME</a>
     </div>
-    <div th:if="${errorMessage}" style="color: red; text-align: center;">
+    <div th:if="${errorMessage}" id="errorMessage">
         <p th:text="${errorMessage}"></p>
     </div>
     <div id="login_container">
@@ -23,13 +23,20 @@
                 <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 
                 <input type="text" th:field="*{email}" placeholder="EMAIL" id="email" required>
+                <button type="button" onclick="SendSecurityCode()">인증번호 전송</button>
                 <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 
+                <input type="text" id="emailCode" placeholder="인증번호 입력" required>
+                <button type="button" onclick="VerifySecurityCode()">인증 확인</button>
+            
+                <p id="emailNotification"></p>
+
                 <button type="submit" id="btnlogin">SIGN-UP</button>
             </form>
             <a href="/signinPage" >GO TO SIGN-IN</a>
         </div>
         </div>
     </div>
+    <script src="/js/signup.js"></script>
 </body>
 </html>

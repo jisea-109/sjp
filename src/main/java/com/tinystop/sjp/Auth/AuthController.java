@@ -30,12 +30,13 @@ public class AuthController {
     }
     
     @PostMapping("signup")
-    public String signup(@ModelAttribute("signup") @Valid SignUpDto signupRequest, BindingResult bindingResult, Model model) {
+    public String signup(@ModelAttribute("signup") @Valid SignUpDto signupRequest, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("signup", signupRequest);
             return "signup";
         }
-        this.authService.signUp(signupRequest);
-        return "signin";
+        this.authService.signUp(signupRequest, session);
+        return "redirect:/signinPage";
     }
     @GetMapping("signinPage") // signin page 
     public String signinPage(Model model) {

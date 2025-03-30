@@ -113,6 +113,13 @@
   border-collapse: collapse;
   text-align: center;
 }
+#emailNotification {
+  margin-top: 5px;
+}
+#errorMessage {
+  color: red;
+  text-align: center;
+}
 .dropdown {
   position: relative;
   float: right;

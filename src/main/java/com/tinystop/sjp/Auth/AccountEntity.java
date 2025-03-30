@@ -1,5 +1,6 @@
 package com.tinystop.sjp.Auth;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -45,7 +46,7 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "USERNAME", nullable = false, unique = true, length = 15) // not null, varchar(15)
     private String username;
 
-    @Column(name = "PASSWORD", nullable = false, length = 20)
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
     @Column(name = "EMAIL", nullable = false, unique = true, length = 30)

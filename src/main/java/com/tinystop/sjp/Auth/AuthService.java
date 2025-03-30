@@ -23,6 +23,8 @@ import static com.tinystop.sjp.type.ErrorCode.ID_NOT_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.INCORRECT_PASSWORD;
 import static com.tinystop.sjp.type.ErrorCode.USER_NOT_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.DUPLICATE_EMAIL_FOUND;
+import static com.tinystop.sjp.type.ErrorCode.EMAIL_NOT_VERIFIED;
+import static com.tinystop.sjp.type.ErrorCode.EXPIRED_OR_INCORRECT_CODE;
 
 
 @RequiredArgsConstructor
@@ -32,21 +34,29 @@ public class AuthService {
     private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     
-    public AccountEntity signUp(SignUpDto user) {
-        if (this.accountRepository.existsByUsername(user.getUsername())) {
+    public AccountEntity signUp(SignUpDto user, HttpSession session) { // 회원가입
+
+        if (this.accountRepository.existsByUsername(user.getUsername())) { // 중복 유저 확인
             throw new CustomException(ALREADY_EXIST_USER,"signup");
         }
-        if (accountRepository.existsByEmail(user.getEmail())) {
-            throw new CustomException(DUPLICATE_EMAIL_FOUND,"signup");
+        if (accountRepository.existsByEmail(user.getEmail())) { // 중복 이메일 확인
+            throw new CustomException(DUPLICATE_EMAIL_FOUND,"signup"); 
         }
+        if (session.getAttribute("emailVerified:" + user.getEmail()) == null || !session.getAttribute("emailVerified:" + user.getEmail()).equals(user.getEmail())) { // 이메일 인증 체크
+            System.out.println(session.getAttribute("emailVerified:"+user.getEmail()));
+            throw new CustomException(EMAIL_NOT_VERIFIED,"signup");
+        }
+
+        session.removeAttribute("emailVerified:"+user.getEmail()); // 이메일 인증 세션 삭제
         String encodedPassword = passwordEncoder.encode(user.getPassword()); // 비밀번호 암호화
 
         return this.accountRepository.save(user.toEntity(encodedPassword));
     }
     
-    public AccountEntity signIn(SigninDto user, HttpSession session) {
-        AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"signin"));
-        if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) {
+    public AccountEntity signIn(SigninDto user, HttpSession session) { // 로그인
+
+        AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"signin")); // 유저 있는지 확인
+        if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) { // 비밀번호 확인
             throw new CustomException(INCORRECT_PASSWORD,"signin");
         }
 
