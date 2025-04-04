@@ -1,4 +1,4 @@
-package com.tinystop.sjp.exception;
+package com.tinystop.sjp.Exception;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

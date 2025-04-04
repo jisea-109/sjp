@@ -1,4 +1,4 @@
-package com.tinystop.sjp.exception;
+package com.tinystop.sjp.Exception;
 
 import com.tinystop.sjp.type.ErrorCode;
 

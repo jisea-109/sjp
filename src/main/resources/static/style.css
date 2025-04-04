@@ -63,8 +63,8 @@
   display:flex;
   flex-direction: column;
   margin:auto;
-  height: 300px;
-  width: 330px;
+  height: 600px;
+  width: 400px;
 }
 #id {
   border-style: solid;
@@ -92,6 +92,35 @@
   height: 50px;
   width: 310px;
   text-indent: 10px;
+}
+#email_code_container {
+  display: flex;
+  align-items: center;
+}
+#sendCodeBtn{
+  color: white;
+  border-style: solid;
+  border-width: thin;
+  border-radius: 5px;
+  background-color: rgb(93, 123, 255);
+  font-size: 15px;
+  height: 50px;
+  width: 120px;
+}
+#emailCode {
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 18px;
+  height: 50px;
+  width: 180px;
+  text-indent: 10px;
+  display:flex;
+}
+#timerDisplay {
+  color: blue;
 }
 #btnlogin {
   color: white;

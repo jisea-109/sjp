@@ -3,9 +3,10 @@ package com.tinystop.sjp.Product;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 
-import com.tinystop.sjp.exception.CustomException;
+import com.tinystop.sjp.Exception.CustomException;
+
+import lombok.RequiredArgsConstructor;
 
 import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
 

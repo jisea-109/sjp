@@ -16,18 +16,30 @@
     <div id="login_container">
         <div id="container">
             <form method="POST" th:object="${signup}" th:action="@{/signup}">
-                <input type="text" th:field="*{username}" placeholder="ID" id="id" required>
+                <input type="text" th:field="*{username}" placeholder="ID" id="id" required
+                    oninput="CheckUsername()"
+                    pattern="^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{7,15}$"
+                    title="아이디는 영문과 숫자를 포함한 7자 이상, 15자 이하이어야 합니다.">
+                <p id="check_username_noti"></p>
                 <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
 
-                <input type="password" th:field="*{password}" placeholder="PASSWORD" id="password" autocomplete="off" required>
+                <input type="password" th:field="*{password}" placeholder="PASSWORD" id="password" autocomplete="off" required 
+                    oninput="CheckPassword()"
+                    pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=]).{8,20}$"
+                    title="비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상, 20자 이하이어야 합니다.">
+                <p id="check_password_noti"></p>
                 <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 
-                <input type="text" th:field="*{email}" placeholder="EMAIL" id="email" required>
-                <button type="button" onclick="SendSecurityCode()">인증번호 전송</button>
+                <input type="email" th:field="*{email}" placeholder="EMAIL" id="email" required oninput="CheckEmail()">
+                <p id="checkEmailNoti"></p>
                 <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                
-                <input type="text" id="emailCode" placeholder="인증번호 입력" required>
-                <button type="button" onclick="VerifySecurityCode()">인증 확인</button>
+
+                <div id="email_code_container">
+                    <button type="button" id="sendCodeBtn" onclick="SendSecurityCode()">인증번호 전송</button>
+                    <input type="text" id="emailCode" placeholder="인증번호 입력" required>
+                    <button type="button" disabled=true id="verifyCodeBtn" onclick="VerifySecurityCode()">인증 확인</button>
+                </div>
+                <div id="timerDisplay"></div>
             
                 <p id="emailNotification"></p>
 

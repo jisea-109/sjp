@@ -1,10 +1,11 @@
-package com.tinystop.sjp.Auth;
+package com.tinystop.sjp.Auth.Email;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,15 +14,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.tinystop.sjp.exception.CustomException;
+import com.tinystop.sjp.Auth.AccountRepository;
+import com.tinystop.sjp.Exception.CustomException;
 
-import static com.tinystop.sjp.type.ErrorCode.EXPIRED_OR_INCORRECT_CODE;
+import static com.tinystop.sjp.type.ErrorCode.INCORRECT_SECURITY_CODE;
 import static com.tinystop.sjp.type.ErrorCode.FAILED_TO_READ_TEMPLATE;
 import static com.tinystop.sjp.type.ErrorCode.FAILED_TO_SEND_EMAIL;
+import static com.tinystop.sjp.type.ErrorCode.SECURITY_CODE_EXPIRED;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,8 +34,21 @@ public class EmailService {
     private Resource template;
 
     private final JavaMailSender javaMailSender;
+    private final EmailVerificationRepository emailVerificationRepository;
+    private final int EMAIL_SECURE_CODE_EXIRATION_TIME = 5;
+    public void SendSecurityCode(String email) { // 이메일 인증코드 보내기
+        String securityCode = SecurityCode(); // 보안코드 생성
 
-    public void SendSecurityCode(String email, String securityCode, HttpSession session) {
+        LocalDateTime expiry = LocalDateTime.now().plusMinutes(EMAIL_SECURE_CODE_EXIRATION_TIME); // 5분 카운트
+        EmailVerificationEntity verification = emailVerificationRepository.findByEmail(email).orElse(new EmailVerificationEntity());
+
+        verification.setEmail(email);
+        verification.setCode(securityCode);
+        verification.setExpiryTime(expiry);
+        verification.setVerified(false);
+
+        emailVerificationRepository.save(verification);
+
         try { // HTML 템플릿 읽기
             String templateToEmail;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(template.getInputStream(), StandardCharsets.UTF_8))) {
@@ -57,7 +72,6 @@ public class EmailService {
         } catch (IOException e) {
             throw new CustomException(FAILED_TO_READ_TEMPLATE,"signup");
         }
-        session.setAttribute("emailCode:" + email, securityCode); // 세션 저장
     }
 
     public String SecurityCode() { // 코드 랜덤조합기
@@ -73,17 +87,19 @@ public class EmailService {
         return securityCode.toString();
     }
 
-    public boolean VerifySecurityCode(String email, String inputCode, HttpSession session) {
-        String expectedCode = (String) session.getAttribute("emailCode:" + email);
-        if (expectedCode == null) { // 세션 확인 안될시
-            throw new CustomException(EXPIRED_OR_INCORRECT_CODE, "signup");
+    public boolean VerifySecurityCode(String email, String inputCode) { // 코드 확인
+        EmailVerificationEntity verification = emailVerificationRepository.findByEmail(email).orElseThrow(() -> new CustomException(SECURITY_CODE_EXPIRED, "signup"));
+
+        if (LocalDateTime.now().isAfter(verification.getExpiryTime() )) { // 시간 지나면 코드 만료
+            throw new CustomException(SECURITY_CODE_EXPIRED, "signup");
         }
-        if (expectedCode.equals(inputCode)) { // 인증 성공후 세션 삭제
-            session.removeAttribute("emailCode:" + email); 
-            session.setAttribute("emailVerified:" + email, email);
-            return true;
+    
+        if (!verification.getCode().equals(inputCode)) { // 인증코드 다르게 입력하면 throw
+            throw new CustomException(INCORRECT_SECURITY_CODE, "signup");
         }
 
-        return false; // 인증 안되면 false 리턴
+        verification.setVerified(true);  // 인증 완료
+        emailVerificationRepository.save(verification); // entity에 저장
+        return true;
     }
 }

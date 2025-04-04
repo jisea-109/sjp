@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tinystop.sjp.Auth.AccountEntity;
 import com.tinystop.sjp.Auth.AccountRepository;
+import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.Product.ProductRepository;
-import com.tinystop.sjp.exception.CustomException;
 
 import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.USER_NOT_FOUND;

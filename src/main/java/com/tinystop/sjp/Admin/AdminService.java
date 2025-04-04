@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.tinystop.sjp.Admin.ManageProductDto.ManageProduct;
+import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
-import com.tinystop.sjp.exception.CustomException;
 import com.tinystop.sjp.type.ProductStockStatus;
 
 import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_PRODUCT;

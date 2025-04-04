@@ -1,4 +1,4 @@
-package com.tinystop.sjp.config;
+package com.tinystop.sjp.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,9 @@ public class SecurityConfig {
         "/js/signup.js",
         "/signinPage",
         "/debug/session",
-        "/find-product"
+        "/find-product",
+        "/check-username",
+        "/check-email"
     };
     String[] PermittedPOST = { // POST methods list
         "/signin",
