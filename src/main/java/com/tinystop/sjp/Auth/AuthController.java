@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.tinystop.sjp.Exception.CustomException;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,8 +47,16 @@ public class AuthController {
     }
     
     @PostMapping("signin")
-    public String signIn(@ModelAttribute("signin") @Valid SigninDto signinRequest, BindingResult bindingResult, HttpSession session) {
+    public String signIn(@ModelAttribute("signin") @Valid SigninDto signinRequest, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("signin", signinRequest);
+            return "signin";
+        }
+        try {
+            authService.signIn(signinRequest, session);
+        } catch (CustomException error) {
+            model.addAttribute("signin", signinRequest);
+            model.addAttribute("errorMessage", error.getMessage());
             return "signin";
         }
         authService.signIn(signinRequest, session);
