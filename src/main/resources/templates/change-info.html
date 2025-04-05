@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>change-info</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/font.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
+</head>
+<body>
+    <div id="header">
+        <a class="nav" href="/" id="home">HOME</a>
+        <th:block sec:authorize="isAuthenticated()">
+            <a class="nav" href="/cart/list">CART</a>
+            <a class="nav">WISHLIST</a>
+            <div class="dropdown">
+                <a class="nav" th:text="${#authentication.name}"></a>
+                <div class="dropdown-content">
+                    <a href="/signout">SIGN OUT</a>
+                    <a href="/order/list">ORDER</a>
+                </div>
+            </div>
+        </th:block>
+        <form method="GET" action="/find-product">
+            <div id="search_box">
+                <input type="text" placeholder="Search" id="search" name="search">
+            </div>
+        </form>
+    </div>
+    <div th:if="${errorMessage}" style="color: red; text-align: center;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <div id="login_container">
+        <div id="container">
+            <form method="POST" th:object="${changePassword}" th:action="@{/change-password}">
+                <input type="password" th:field="*{currentPassword}" placeholder="CURRENT PASSWORD" id="current_password" autocomplete="off" required>
+                <input type="password" th:field="*{newPassword}" placeholder="NEW PASSWORD" id="new_password" autocomplete="off" required>
+                <button type="submit" id="btnlogin">비밀번호 변경</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

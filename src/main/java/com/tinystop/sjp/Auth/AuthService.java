@@ -56,6 +56,7 @@ public class AuthService {
     public AccountEntity signIn(SigninDto user, HttpSession session) { // 로그인
 
         AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"signin")); // 유저 있는지 확인
+
         if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) { // 비밀번호 확인
             throw new CustomException(INCORRECT_PASSWORD,"signin");
         }
@@ -80,4 +81,15 @@ public class AuthService {
         return accountEntity;
     }
     
+    public void changePassword(ChangePasswordDto toChangePassword, String username) {
+        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-password"));
+
+        if (!passwordEncoder.matches(toChangePassword.getCurrentPassword(), accountEntity.getPassword())) { // 비밀번호 확인
+            throw new CustomException(INCORRECT_PASSWORD,"change-password");
+        }
+
+        String encodedPassword = passwordEncoder.encode(toChangePassword.getNewPassword());
+        accountEntity.setPassword(encodedPassword);
+        this.accountRepository.save(accountEntity);
+    }
 }

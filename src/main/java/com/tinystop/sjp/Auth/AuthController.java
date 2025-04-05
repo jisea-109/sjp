@@ -1,6 +1,8 @@
 package com.tinystop.sjp.Auth;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +19,10 @@ import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+
 
 @Controller
 @RequestMapping("/")
@@ -26,13 +32,13 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("signupPage") // signup page 
-    public String signupPage(Model model) {
+    public String SignupPage(Model model) {
         model.addAttribute("signup", new SignUpDto());
         return "signup";
     }
     
     @PostMapping("signup")
-    public String signup(@ModelAttribute("signup") @Valid SignUpDto signupRequest, BindingResult bindingResult, Model model, HttpSession session) {
+    public String SigUp(@ModelAttribute("signup") @Valid SignUpDto signupRequest, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("signup", signupRequest);
             return "signup";
@@ -40,14 +46,15 @@ public class AuthController {
         this.authService.signUp(signupRequest, session);
         return "redirect:/signinPage";
     }
+
     @GetMapping("signinPage") // signin page 
-    public String signinPage(Model model) {
+    public String SigninPage(Model model) {
         model.addAttribute("signin", new SigninDto());
         return "signin";
     }
     
     @PostMapping("signin")
-    public String signIn(@ModelAttribute("signin") @Valid SigninDto signinRequest, BindingResult bindingResult, Model model, HttpSession session) {
+    public String SignIn(@ModelAttribute("signin") @Valid SigninDto signinRequest, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("signin", signinRequest);
             return "signin";
@@ -59,14 +66,44 @@ public class AuthController {
             model.addAttribute("errorMessage", error.getMessage());
             return "signin";
         }
-        authService.signIn(signinRequest, session);
         return "redirect:/";
     }
+    
     @GetMapping("signout")
-    public String signout(HttpServletRequest request, HttpServletResponse response) { //(클라이언트에서 보낸 HTTP 요청, 서버가 클라이언트에게 응답을 보낼 객체)
+    public String SignOut(HttpServletRequest request, HttpServletResponse response) { //(클라이언트에서 보낸 HTTP 요청, 서버가 클라이언트에게 응답을 보낼 객체)
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication()); // SecurityContext에서 인증 정보 삭제
         return "redirect:/";
     }
+    
+    @GetMapping("change-info")
+    public String ChangeInfoPage(Model model) {
+        model.addAttribute("changePassword", new ChangePasswordDto());
+        return "change-info";
+    }
+    
+    @PostMapping("change-password")
+    public String ChangePassword(@ModelAttribute("changePassword") @Valid ChangePasswordDto changePasswordRequest,
+                                 BindingResult bindingResult,
+                                 Model model,
+                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("changePassword", changePasswordRequest);
+            return "change-info";
+        }
+        try {
+            authService.changePassword(changePasswordRequest, userDetails.getUsername());
+            new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+            redirectAttributes.addFlashAttribute("message", "비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.");
+        } catch (CustomException error) {
+            model.addAttribute("errorMessage", error.getMessage());
+            return "change-info";
+        }
+        return "redirect:/";
+    }
+    
     @GetMapping("")
     public String home() {
         return "index";

@@ -1,6 +1,5 @@
 package com.tinystop.sjp.Auth;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -62,5 +61,7 @@ public class AccountEntity extends BaseEntity {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartEntity> carts;
 
-    
+    public String setPassword(String password) {
+        return this.password = password;
+    }
 }

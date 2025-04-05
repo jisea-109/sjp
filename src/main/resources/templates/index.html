@@ -24,6 +24,7 @@
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
                     <a href="/order/list" sec:authorize="hasAuthority('ROLE_USER')">ORDER</a>
+                    <a href="/change-info">MANAGE ACCOUNT</a>
                     <th:block sec:authorize="hasRole('ADMIN')">
                         <a href="/admin">ADMIN PAGE</a>
                     </th:block>
@@ -35,6 +36,9 @@
                 <input type="text" placeholder="Search" id="search" name="search">
             </div>
         </form>
+    </div>
+    <div th:if="${message}" style="color: green; text-align: center; margin-top: 10px;">
+        <p th:text="${message}"></p>
     </div>
 
 </body>
