@@ -33,10 +33,12 @@
         <div id="container">
             <form method="POST" th:object="${changePassword}" th:action="@{/change-password}">
                 <input type="password" th:field="*{currentPassword}" placeholder="CURRENT PASSWORD" id="current_password" autocomplete="off" required>
-                <input type="password" th:field="*{newPassword}" placeholder="NEW PASSWORD" id="new_password" autocomplete="off" required>
+                <input type="password" th:field="*{newPassword}" placeholder="NEW PASSWORD" id="new_password" oninput="CheckNewPassword()" autocomplete="off" required>
+                <p id="check_password_noti"></p>
                 <button type="submit" id="btnlogin">비밀번호 변경</button>
             </form>
         </div>
     </div>
+    <script src="/js/signup.js"></script>
 </body>
 </html>

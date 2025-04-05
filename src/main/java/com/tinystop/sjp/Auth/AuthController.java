@@ -90,7 +90,7 @@ public class AuthController {
                                  HttpServletResponse response,
                                  RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("changePassword", changePasswordRequest);
+            model.addAttribute("errorMessage", "비밀번호 형식이 맞지 않습니다."); 
             return "change-info";
         }
         try {

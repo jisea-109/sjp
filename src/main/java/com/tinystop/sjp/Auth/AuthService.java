@@ -82,10 +82,10 @@ public class AuthService {
     }
     
     public void changePassword(ChangePasswordDto toChangePassword, String username) {
-        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-password"));
+        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-info"));
 
         if (!passwordEncoder.matches(toChangePassword.getCurrentPassword(), accountEntity.getPassword())) { // 비밀번호 확인
-            throw new CustomException(INCORRECT_PASSWORD,"change-password");
+            throw new CustomException(INCORRECT_PASSWORD,"change-info");
         }
 
         String encodedPassword = passwordEncoder.encode(toChangePassword.getNewPassword());
