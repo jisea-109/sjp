@@ -21,8 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/")
@@ -30,6 +29,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
     private final AuthService authService;
+
+    @GetMapping("")
+    public String home() {
+        return "index";
+    }
 
     @GetMapping("signupPage") // signup page 
     public String SignupPage(Model model) {
@@ -88,7 +92,7 @@ public class AuthController {
                                  @AuthenticationPrincipal UserDetails userDetails, 
                                  HttpServletRequest request,
                                  HttpServletResponse response,
-                                 RedirectAttributes redirectAttributes ) {
+                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage", "비밀번호 형식이 맞지 않습니다."); 
             return "change-info";
@@ -103,10 +107,34 @@ public class AuthController {
         }
         return "redirect:/";
     }
-    
-    @GetMapping("")
-    public String home() {
-        return "index";
+
+    @GetMapping("deleteAccountPage")
+    public String DeleteAccountPage(Model model) {
+        model.addAttribute("deleteAccount", new DeleteAccountDto());
+        return "delete-account";
     }
-   
+    
+    @PostMapping("deleteAccount") 
+    public String DeleteAccount(@ModelAttribute("deleteAccount") @Valid DeleteAccountDto DeleteAccountRequest,
+                                BindingResult bindingResult,
+                                Model model,
+                                @AuthenticationPrincipal UserDetails userDetails,
+                                HttpServletRequest request,
+                                HttpServletResponse response,
+                                RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "비밀번호 형식이 맞지 않습니다."); 
+            return "change-info";
+        }
+        try {
+            authService.deleteAccount(DeleteAccountRequest, userDetails.getUsername());
+            new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+            redirectAttributes.addFlashAttribute("message", "회원탈퇴가 성공적으로 마무리 되었습니다.");
+        } catch (CustomException error) {
+            model.addAttribute("errorMessage", error.getMessage());
+            return "change-info"; // 에러메세지 띄우고 다시 보여주기
+        }
+        return "redirect:/";
+    }
+
 }

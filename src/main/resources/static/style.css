@@ -81,7 +81,7 @@
   transition-duration: 0.4s;
   background-color: #dbdbdb;
 }
-#password, #email, #new_password{
+#password, #email, #new_password, #confirm_password{
   margin-top: 20px;
   border-style: solid;
   border-width: thin;

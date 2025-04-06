@@ -25,6 +25,7 @@ import static com.tinystop.sjp.type.ErrorCode.INCORRECT_PASSWORD;
 import static com.tinystop.sjp.type.ErrorCode.USER_NOT_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.DUPLICATE_EMAIL_FOUND;
 import static com.tinystop.sjp.type.ErrorCode.EMAIL_NOT_VERIFIED;
+import static com.tinystop.sjp.type.ErrorCode.PASSWORD_DOES_NOT_MATCH;
 
 @RequiredArgsConstructor
 @Transactional
@@ -91,5 +92,18 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(toChangePassword.getNewPassword());
         accountEntity.setPassword(encodedPassword);
         this.accountRepository.save(accountEntity);
+    }
+
+    public void deleteAccount(DeleteAccountDto toDeleteAccount, String username) {
+        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-info"));
+
+        if (!passwordEncoder.matches(toDeleteAccount.getCurrentPassword(), accountEntity.getPassword())) { // 비밀번호 맞는지 확인
+            throw new CustomException(INCORRECT_PASSWORD,"deleteAccountPage");
+        }
+        if (!toDeleteAccount.getCurrentPassword().equals(toDeleteAccount.getConfirmPassword())) { // 비밀번호와 재확인 비밀번호가 맞는지 확인
+            throw new CustomException(PASSWORD_DOES_NOT_MATCH,"deleteAccountPage");
+        }
+
+        this.accountRepository.delete(accountEntity); // 회원탈퇴
     }
 }

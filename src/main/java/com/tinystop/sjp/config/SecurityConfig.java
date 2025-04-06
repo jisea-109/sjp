@@ -24,7 +24,9 @@ public class SecurityConfig {
         "/debug/session",
         "/find-product",
         "/check-username",
-        "/check-email"
+        "/check-email",
+        "/change-info",
+        "deleteAccountPage"
     };
     String[] PermittedPOST = { // POST methods list
         "/signin",
@@ -42,7 +44,8 @@ public class SecurityConfig {
         "/cart/remove",
         "/wishlist",
         "/order/**",
-        "/change-password"
+        "/change-password",
+        "/deleteAccount"
     };
     
     String[] BePermittedAdmin = {
@@ -58,7 +61,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,  SecurityContextRepository securityContextRepository) throws Exception {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_THREADLOCAL); // SecurityContext가 현재 실행 중인 스레드에만 저장 (기본상태)
 
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/signin", "/signup", "/cart/add", "/cart/remove", "/order/**", "/admin/remove-product", "/email/send-code", "/email/verify-code", "/change-password")) // CSRF 보호 제외 목록
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/signin", "/signup", "/cart/add", "/cart/remove", "/order/**", "/admin/remove-product", "/email/send-code", "/email/verify-code", "/change-password", "/deleteAccount")) // CSRF 보호 제외 목록
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(HttpMethod.GET,PermittedGET).permitAll() // GET method 허용
                         .requestMatchers(HttpMethod.POST,PermittedPOST).permitAll() // POST method 허용

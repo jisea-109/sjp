@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>change-info</title>
+    <title>delete-account</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/font.css">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
@@ -31,15 +31,12 @@
     </div>
     <div id="login_container">
         <div id="container">
-            <form method="POST" th:object="${changePassword}" th:action="@{/change-password}">
+            <form method="POST" th:object="${deleteAccount}" th:action="@{/deleteAccount}">
                 <input type="password" th:field="*{currentPassword}" placeholder="CURRENT PASSWORD" id="current_password" autocomplete="off" required>
-                <input type="password" th:field="*{newPassword}" placeholder="NEW PASSWORD" id="new_password" oninput="CheckNewPassword()" autocomplete="off" required>
-                <p id="check_password_noti"></p>
-                <button type="submit" id="btnlogin">비밀번호 변경</button>
+                <input type="password" th:field="*{confirmPassword}" placeholder="CONFIRM PASSWORD" id="confirm_password" autocomplete="off" required>
+                <button type="submit" id="btnlogin">아이디 삭제</button>
             </form>
         </div>
-        <a href="/deleteAccountPage">회원탈퇴</a>
     </div>
-    <script src="/js/change-password.js"></script>
 </body>
 </html>
