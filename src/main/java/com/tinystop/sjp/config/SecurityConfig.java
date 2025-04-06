@@ -68,7 +68,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 나머진 권한 필요
                 )
                 .sessionManagement(session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) //필요한 경우 세션 생성 Always로 할 시 모든 요청마다 세션 생성
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) //필요한 경우 세션 생성 Always로 할 시 모든 요청마다 세션 생성, STATELESS는 REST API용
+                    .sessionFixation(sessionFixation -> sessionFixation.migrateSession()) // 로그인 할 때마다 새로운 세션 ID 발급 (세션 고정 공격 방지)
                     .maximumSessions(1) // 한 유저당 1 세션
                     .maxSessionsPreventsLogin(true) // 1 세션 넘으면 다른 로그인 차단
                     .expiredUrl("/login?expired") // 세션 만료되면 여기 페이지로 다이렉트함. 30분 후 만료
@@ -88,7 +89,6 @@ public class SecurityConfig {
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID") // 로그아웃 후 세션 삭제
                 );
-                //.securityContext(securityContext -> securityContext.requireExplicitSave(true));
         return http.build();
     }
 }

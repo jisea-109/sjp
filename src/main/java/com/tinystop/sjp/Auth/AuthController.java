@@ -85,10 +85,10 @@ public class AuthController {
     public String ChangePassword(@ModelAttribute("changePassword") @Valid ChangePasswordDto changePasswordRequest,
                                  BindingResult bindingResult,
                                  Model model,
-                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 @AuthenticationPrincipal UserDetails userDetails, 
                                  HttpServletRequest request,
                                  HttpServletResponse response,
-                                 RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes ) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage", "비밀번호 형식이 맞지 않습니다."); 
             return "change-info";
