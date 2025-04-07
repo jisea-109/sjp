@@ -10,11 +10,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.tinystop.sjp.Exception.CustomException;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.validation.Valid;
 
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('USER')")
@@ -24,30 +29,38 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    // @GetMapping("toConfirmation")
-    // public String ToConfirmation() {
-    //     return "confirmation";
-    // }
-
     @PostMapping("add") 
     public String AddtoOrder(@ModelAttribute AddtoOrderDto addtoOrderDto, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        System.out.println(addtoOrderDto.getQuantity());
         orderService.addToOrder(username, addtoOrderDto);
         return "redirect:/order/list";
     }
 
     @PostMapping("remove")
-    public String RemoveOrder(@RequestParam("productId") long productId, @RequestParam("orderId") long orderId, @AuthenticationPrincipal UserDetails userDetails) {
+    public String RemoveOrder(@ModelAttribute("removeOrder") @Valid RemoveOrderDto removeOrderRequest, 
+                              BindingResult bindingResult,
+                              Model model,
+                              @AuthenticationPrincipal UserDetails userDetails) {
+                                
         String username = userDetails.getUsername();
-        orderService.cancelOrder(username, productId, orderId);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("order-list", "예상치 못한 에러가 생겼습니다.");
+        }
+        try { 
+            orderService.cancelOrder(username, removeOrderRequest);
+        } catch (CustomException error) {
+            model.addAttribute("errorMessage", error.getMessage());
+        }
+        
         return "redirect:/order/list";
     }
     
     @GetMapping("list")
-    public String OrderList(Model model,@AuthenticationPrincipal UserDetails userDetails) {
+    public String OrderList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
         List<OrderEntity> orderList = orderService.orderList(username);
+        model.addAttribute("removeOrder", new RemoveOrderDto());
         model.addAttribute("orderlist", orderList);
         return "order-list";
     }

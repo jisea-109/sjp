@@ -8,6 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.validation.Valid;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
@@ -25,15 +28,17 @@ public class CartController {
 
     private final CartService cartService;
     
-    @PostMapping("add")
-    public String AddToCart(@ModelAttribute AddtoCartDto addToCartDto, @AuthenticationPrincipal UserDetails userDetails) {
+    @PostMapping("add") // 0 이하일때 에러 나게 해야함
+    public String AddToCart(@ModelAttribute("addToCart") @Valid AddToCartDto addToCartDto, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
+        System.out.println("받은 productId: " + addToCartDto.getProductId());
+        System.out.println("받은 quantity: " + addToCartDto.getQuantity());
         cartService.addToCart(username, addToCartDto);
         return "redirect:/cart/list";
     }
     
     @PostMapping("remove")
-    public String AddToCart(@RequestParam("productId") long productId, @AuthenticationPrincipal UserDetails userDetails) {
+    public String RemoveFromCart(@RequestParam("productId") long productId, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
         cartService.removeFromCart(username, productId);
         return "redirect:/cart/list";
@@ -44,6 +49,7 @@ public class CartController {
         String username = userDetails.getUsername();
         List<CartEntity> cartList = cartService.cartList(username);
         model.addAttribute("cartlist", cartList);
+        model.addAttribute("addToCart", new AddToCartDto());
         return "cart-list";
     }
     

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.tinystop.sjp.Cart.AddToCartDto;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class ProductController {
         }
 
         model.addAttribute("products", products);
-
+        model.addAttribute("addToCart", new AddToCartDto());
         return "product-list";
     }
 }

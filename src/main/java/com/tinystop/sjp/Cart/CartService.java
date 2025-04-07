@@ -24,7 +24,7 @@ public class CartService {
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
 
-    public CartEntity addToCart(String username, AddtoCartDto addToCartDto) { // product를 cart에 담기
+    public CartEntity addToCart(String username, AddToCartDto addToCartDto) { // product를 cart에 담기
         AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "product-list")); // 유저 확인
 
         ProductEntity product = productRepository.findById(addToCartDto.getProductId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list")); // Product 확인인

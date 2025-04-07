@@ -28,23 +28,24 @@
     </div>
     <div id="product_container">
         <div id="container">
-            <form method="POST" action="/admin/update-product-detail">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <input type="hidden" name="id" th:value="${product.id}">
-                <input type="text" placeholder="name" id="id" name="name" th:value="${product.name}" required>
-                <select name="component" id="password" required>
-                    <option value="" disabled>Select Component</option>
+            <form method="POST" th:action="@{/admin/update-product-detail}" th:object="${modifyProduct}">
+                <input type="hidden" th:field="*{id}">
+                <input type="text" th:field="*{name}" placeholder="name" id="id" required>
+            
+                <select th:field="*{component}" id="password" required>
                     <option th:each="category : ${productCategories}" 
                             th:value="${category}" 
-                            th:text="${category}"
-                            th:selected="${category.name() == product.component.name()}">
+                            th:text="${category}">
                     </option>
                 </select>
-                <input type="text" placeholder="socket" id="password" name="socket" th:value="${product.socket}" required>
-                <input type="text" placeholder="price" id="password"  th:value="${product.price}" name="price" required>
-                <input type="text" placeholder="quantity" id="password" th:value="${product.quantity}" name="quantity" required>
-                <input type="submit" id="btnlogin" value="EDIT PRODUCT DETAIL"></button>
+            
+                <input type="text" id="password" th:field="*{socket}" placeholder="socket" required>
+                <input type="number" id="password" th:field="*{price}" placeholder="price" required>
+                <input type="number" id="password" th:field="*{quantity}" placeholder="quantity" required>
+            
+                <input type="submit" id="btnlogin" value="EDIT PRODUCT DETAIL">
             </form>
+            
         </div>
     </div>
 

@@ -57,11 +57,11 @@ public class OrderService {
         return orderRepository.save(addToOrderDto.toEntity(user, product, addToOrderDto.getQuantity())); // order entity 저장
     }   
     
-    public void cancelOrder(String username, Long productId, Long orderId) { 
+    public void cancelOrder(String username, RemoveOrderDto removeOrderRequest) { 
         AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"product-list"));
-        ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
+        ProductEntity product = productRepository.findById(removeOrderRequest.getProductId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
 
-        OrderEntity order = orderRepository.findByIdAndAccountAndProduct(orderId,user,product).orElseThrow(() -> new CustomException(ORDER_NOT_FOUND,"product-list"));
+        OrderEntity order = orderRepository.findByIdAndAccountAndProduct(removeOrderRequest.getOrderId(),user,product).orElseThrow(() -> new CustomException(ORDER_NOT_FOUND,"product-list"));
         if (product.getStockStatus() == ProductStockStatus.SOLD_OUT) { // 주문 취소했을 때 product 재고 다시 채우기
             product.setStockStatus(ProductStockStatus.IN_STOCK);
         }

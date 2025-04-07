@@ -4,7 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import com.tinystop.sjp.Admin.ManageProductDto.ManageProduct;
+import com.tinystop.sjp.Admin.ManageProductDto;
+import com.tinystop.sjp.Admin.ModifyProductDto;
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.type.ProductStockStatus;
@@ -19,7 +20,7 @@ public class AdminService {
     
     private final AdminRepository adminRepository;
 
-    public ProductEntity AddProduct(ManageProduct product) {
+    public ProductEntity AddProduct(ManageProductDto product) {
         boolean exists = adminRepository.existsByName(product.getName());
         
         if (exists) { 
@@ -31,7 +32,7 @@ public class AdminService {
     public ProductEntity GetProductById(Long id) {
         return adminRepository.findById(id).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
     }
-    public ProductEntity UpdateProduct(ManageProduct product) {
+    public ProductEntity UpdateProduct(ModifyProductDto product) {
         ProductEntity toUpdateProduct = adminRepository.findById(product.getId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
 
         toUpdateProduct.setName(product.getName());
@@ -48,8 +49,8 @@ public class AdminService {
 
         return this.adminRepository.save(toUpdateProduct);
     }
-    public void RemoveProduct(ManageProduct product) {
-        ProductEntity toRemoveProduct = adminRepository.findById(product.getId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list"));
+    public void RemoveProduct(Long productId) {
+        ProductEntity toRemoveProduct = adminRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list"));
 
         this.adminRepository.delete(toRemoveProduct);
     }
