@@ -50,7 +50,10 @@
                         <form method="POST" action="/order/add" sec:authorize="hasAuthority('ROLE_USER')">
                             <input type="hidden" name="productId" th:value="${cartlist.product.id}">
                             <input type="hidden" name="quantity" th:value="${cartlist.quantity}">
-                            <button type="submit">주문하기</button>
+                            <button type="submit"
+                                    th:disabled="${cartlist.status.name() == 'NOT_ORDERABLE'}"
+                                    th:text="${cartlist.status.name() == 'NOT_ORDERABLE' ? '주문 불가' : '주문하기'}">
+                            </button>
                         </form>
                         <form method="POST" action="/cart/remove" sec:authorize="hasAuthority('ROLE_USER')">
                             <input type="hidden" name="productId" th:value="${cartlist.product.id}">

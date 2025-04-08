@@ -9,5 +9,4 @@ import com.tinystop.sjp.Product.ProductEntity;
 public interface CartRepository extends JpaRepository<CartEntity, Long> {
     List<CartEntity> findAllByAccount(AccountEntity account);
     CartEntity findByAccountAndProduct(AccountEntity account, ProductEntity product);
-
 }

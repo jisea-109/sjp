@@ -28,11 +28,9 @@ public class CartController {
 
     private final CartService cartService;
     
-    @PostMapping("add") // 0 이하일때 에러 나게 해야함
+    @PostMapping("add")
     public String AddToCart(@ModelAttribute("addToCart") @Valid AddToCartDto addToCartDto, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        System.out.println("받은 productId: " + addToCartDto.getProductId());
-        System.out.println("받은 quantity: " + addToCartDto.getQuantity());
         cartService.addToCart(username, addToCartDto);
         return "redirect:/cart/list";
     }

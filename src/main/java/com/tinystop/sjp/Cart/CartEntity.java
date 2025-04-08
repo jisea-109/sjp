@@ -2,9 +2,12 @@ package com.tinystop.sjp.Cart;
 
 import com.tinystop.sjp.Auth.AccountEntity;
 import com.tinystop.sjp.Product.ProductEntity;
+import com.tinystop.sjp.type.OrderableStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,4 +46,8 @@ public class CartEntity {
 
     @Column(name = "Quantity", nullable = false)
     private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STOCK", nullable = false)
+    private OrderableStatus status;
 }
