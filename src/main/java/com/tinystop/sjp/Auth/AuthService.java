@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tinystop.sjp.Auth.AuthDto.ChangePasswordDto;
+import com.tinystop.sjp.Auth.AuthDto.DeleteAccountDto;
+import com.tinystop.sjp.Auth.AuthDto.SignUpDto;
+import com.tinystop.sjp.Auth.AuthDto.SigninDto;
 import com.tinystop.sjp.Auth.Email.EmailVerificationRepository;
 import com.tinystop.sjp.Exception.CustomException;
 

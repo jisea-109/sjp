@@ -1,5 +1,8 @@
 package com.tinystop.sjp.Cart;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.tinystop.sjp.Auth.AccountEntity;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.type.OrderableStatus;
@@ -41,6 +44,7 @@ public class CartEntity {
     private AccountEntity account;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name= "PRODUCT", nullable = false)
     private ProductEntity product;
 

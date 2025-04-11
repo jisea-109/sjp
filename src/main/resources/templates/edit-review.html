@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>home</title>
+    <title>review</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/font.css">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
@@ -11,24 +11,15 @@
 <body>
     <div id="header">
         <a class="nav" href="/" id="home">HOME</a>
-        <!-- 로그아웃 상태 -->
-        <th:block sec:authorize="!isAuthenticated()">
-            <a class="nav" href="/signinPage">SIGN-IN</a>
-        </th:block>
-        <!-- 로그인 상태 -->
         <th:block sec:authorize="isAuthenticated()">
-            <a class="nav" href="/cart/list" sec:authorize="hasAuthority('ROLE_USER')">CART</a>
-            <a class="nav" sec:authorize="hasAuthority('ROLE_USER')">WISHLIST</a>
+            <a class="nav" href="/cart/list">CART</a>
+            <a class="nav">WISHLIST</a>
             <div class="dropdown">
                 <a class="nav" th:text="${#authentication.name}"></a>
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
-                    <a href="/order/list" sec:authorize="hasAuthority('ROLE_USER')">ORDER</a>
-                    <a href="/change-info">MANAGE ACCOUNT</a>
+                    <a href="/order/list">ORDER</a>
                     <a href="/review/list">REVIEW</a>
-                    <th:block sec:authorize="hasRole('ADMIN')">
-                        <a href="/admin">ADMIN PAGE</a>
-                    </th:block>
                 </div>
             </div>
         </th:block>
@@ -38,9 +29,19 @@
             </div>
         </form>
     </div>
-    <div th:if="${message}" style="color: green; text-align: center; margin-top: 10px;">
-        <p th:text="${message}"></p>
+    <div th:if="${errorMessage}" style="color: red; text-align: center;">
+        <p th:text="${errorMessage}"></p>
     </div>
-
+    <div id="product_container">
+        <div id="container">
+            <form method="POST" th:action="@{/review/edit}" th:object="${editReview}">
+                <input type="hidden" th:field="*{id}">
+                <input type="text" th:field="*{reviewTitle}" id="review_header" placeholder="HEADER" required>
+                <input type="text" th:field="*{reviewText}" id="review_text" placeholder="TEXT" required>
+                <input type="number" th:field="*{rating}" id="review_rating" placeholder="RATING" required>
+                <button type="submit" id="btnlogin">수정하기</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

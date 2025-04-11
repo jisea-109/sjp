@@ -6,7 +6,12 @@ import lombok.Setter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+
+import java.util.List;
+
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,9 +20,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import com.tinystop.sjp.BaseEntity;
+import com.tinystop.sjp.Review.ReviewEntity;
 import com.tinystop.sjp.type.ProductCategory;
 import com.tinystop.sjp.type.ProductStockStatus;
 
@@ -51,6 +58,9 @@ public class ProductEntity extends BaseEntity{
 
     @Column(name = "Quantity", nullable = false)
     private int quantity;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewEntity> reviews;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STOCK", nullable = false)

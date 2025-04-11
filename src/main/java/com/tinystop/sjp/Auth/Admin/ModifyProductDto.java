@@ -1,4 +1,4 @@
-package com.tinystop.sjp.Admin;
+package com.tinystop.sjp.Auth.Admin;
 
 import lombok.Setter;
 

@@ -19,6 +19,8 @@
                 <div class="dropdown-content">
                     <a href="/signout">SIGN OUT</a>
                     <a href="/order-list">ORDER</a>
+                    <a href="/change-info">MANAGE ACCOUNT</a>
+                    <a href="/review/list">REVIEW</a>
                 </div>
             </div>
         </th:block>
@@ -49,12 +51,19 @@
                         <td id="product-table-content" th:text="${orderlist.quantity}"></td>
                         <td id="product-table-content" th:text="${orderlist.createdAt}"></td>
                         <td id="product-table-content">
-                        <form method="POST" th:action="@{/order/remove}" th:object="${removeOrder}" sec:authorize="hasAuthority('ROLE_USER')">
-                            <input type="hidden" name="productId" th:value="${orderlist.product.id}">
-                            <input type="hidden" name="orderId" th:value="${orderlist.id}">
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <button type="submit">삭제하기</button>
-                        </form>
+                            <form method="POST" th:action="@{/order/remove}" th:object="${removeOrder}" sec:authorize="hasAuthority('ROLE_USER')">
+                                <input type="hidden" name="productId" th:value="${orderlist.product.id}">
+                                <input type="hidden" name="orderId" th:value="${orderlist.id}">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit">삭제하기</button>
+                            </form>
+                        </td>
+                        <td id="product-table-content">
+                            <form method="GET" action="/review/add">
+                                <input type="hidden" name="productId" th:value="${orderlist.product.id}">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit">리뷰하기</button>
+                            </form>
                         </td>
                     </tr>
                 </thead>

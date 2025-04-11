@@ -1,11 +1,11 @@
-package com.tinystop.sjp.Admin;
+package com.tinystop.sjp.Auth.Admin;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import com.tinystop.sjp.Admin.ManageProductDto;
-import com.tinystop.sjp.Admin.ModifyProductDto;
+import com.tinystop.sjp.Auth.Admin.ManageProductDto;
+import com.tinystop.sjp.Auth.Admin.ModifyProductDto;
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.type.ProductStockStatus;

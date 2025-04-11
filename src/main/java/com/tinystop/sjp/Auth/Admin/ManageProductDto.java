@@ -1,4 +1,4 @@
-package com.tinystop.sjp.Admin;
+package com.tinystop.sjp.Auth.Admin;
 
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.type.ProductCategory;

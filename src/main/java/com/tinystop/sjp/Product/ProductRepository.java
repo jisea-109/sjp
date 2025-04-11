@@ -9,4 +9,5 @@ import org.springframework.data.repository.query.Param;
 public interface ProductRepository extends JpaRepository<ProductEntity, Long>{
     List<ProductEntity> findAllByNameContaining(@Param("name") String productName);
     Optional<ProductEntity> findByName(String username);
+    Optional<ProductEntity> findById(long id);
 }

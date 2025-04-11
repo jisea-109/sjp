@@ -149,6 +149,39 @@
   color: red;
   text-align: center;
 }
+#review_header{
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 20px;
+  height: 50px;
+  width: 500px;
+  text-indent: 10px;
+}
+#review_text{
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 20px;
+  height: 300px;
+  width: 500px;
+  text-indent: 10px;
+}
+#review_rating{
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 20px;
+  height: 50px;
+  width: 100px;
+  text-indent: 10px;
+}
 .dropdown {
   position: relative;
   float: right;

@@ -1,4 +1,4 @@
-package com.tinystop.sjp.Auth;
+package com.tinystop.sjp.Auth.AuthDto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>review-list</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/font.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
+</head>
+<body>
+    <div id="header">
+        <a class="nav" href="/" id="home">HOME</a>
+        <th:block sec:authorize="isAuthenticated()">
+            <a class="nav" href="/cart/list">CART</a>
+            <a class="nav">WISHLIST</a>
+            <div class="dropdown">
+                <a class="nav" th:text="${#authentication.name}"></a>
+                <div class="dropdown-content">
+                    <a href="/signout">SIGN OUT</a>
+                    <a href="/order/list">ORDER</a>
+                    <a href="/change-info">MANAGE ACCOUNT</a>
+                    <a href="/review/list">REVIEW</a>
+                </div>
+            </div>
+        </th:block>
+        <form method="GET" action="/find-product">
+            <div id="search_box">
+                <input type="text" placeholder="Search" id="search" name="search">
+            </div>
+        </form>
+    </div>
+    <div th:if="${errorMessage}" style="color: red; text-align: center;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <div id="product_container">
+        <div id="container">
+            <table id="product-table">
+                <thead>
+                    <tr>
+                        <th id="product-table-content">PRODUCT NAME</th>
+                        <th id="product-table-content">PRODUCT PRICE</th>
+                        <th id="product-table-content">TITLE</th>
+                        <th id="product-table-content">REVIEW CREATED AT</th>
+                        <th id="product-table-content"></th>
+                        <th id="product-table-content"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="review : ${reviewList}">
+                        <td id="product-table-content" th:text="${review.product.name}"></td>
+                        <td id="product-table-content" th:text="${review.product.price}"></td>
+                        <td id="product-table-content" th:text="${review.reviewTitle}"></td>
+                        <td id="product-table-content" th:text="${review.createdAt}"></td>
+                        <td id="product-table-content" th:text="${review.modifiedAt}"></td>
+                        <td id="product-table-content">
+                            <form method="GET" action="/review/edit">
+                                <input type="hidden" name="id" th:value="${review.id}">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit">수정하기</button>
+                            </form>
+                            <form method="POST" th:action="@{/review/remove}" th:object="${removeReview}">
+                                <input type="hidden" name="id" th:value="${review.id}">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit">삭제하기</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

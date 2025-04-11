@@ -1,5 +1,6 @@
 package com.tinystop.sjp.Auth;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.tinystop.sjp.BaseEntity;
 import com.tinystop.sjp.Cart.CartEntity;
 import com.tinystop.sjp.Order.OrderEntity;
+import com.tinystop.sjp.Review.ReviewEntity;
 import com.tinystop.sjp.type.Role;
 
 import jakarta.persistence.Column;
@@ -55,13 +57,16 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "ROLE", nullable = false)
     private Role role = Role.USER;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewEntity> reviews;
+
     @OneToMany
     private List<OrderEntity> orders;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartEntity> carts;
 
-    public String setPassword(String password) {
-        return this.password = password;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
