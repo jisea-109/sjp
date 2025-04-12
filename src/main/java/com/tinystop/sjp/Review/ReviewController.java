@@ -97,6 +97,11 @@ public class ReviewController {
         reviewService.removeReview(userDetails.getUsername(), reviewId); 
         return "redirect:/review/list";
     }
-    
-    
+
+    @GetMapping("productReview")
+    public String GetProductReviews(@RequestParam("id") Long productId, Model model) {
+        List<ReviewEntity> reviewList = reviewService.productReviewList(productId);
+        model.addAttribute("reviewList", reviewList);
+        return "product-review-list";
+    }
 }

@@ -26,7 +26,8 @@ public class SecurityConfig {
         "/check-username",
         "/check-email",
         "/change-info",
-        "deleteAccountPage"
+        "deleteAccountPage",
+        "/review/productReview"
     };
     String[] PermittedPOST = { // POST methods list
         "/signin",

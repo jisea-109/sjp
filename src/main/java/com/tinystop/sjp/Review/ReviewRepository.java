@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     List<ReviewEntity> findByAccount(AccountEntity account);
+    List<ReviewEntity> findByProduct(ProductEntity prouct);
     boolean existsByAccountAndProduct(AccountEntity account, ProductEntity product);
     ReviewEntity findByAccountAndId(AccountEntity account, Long id);
-    ReviewEntity findByAccountAndProduct(AccountEntity account, ProductEntity product);
+    
 }
