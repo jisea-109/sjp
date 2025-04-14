@@ -71,7 +71,7 @@ public class ReviewService {
             sum += reviews.get(i).getRating();
         }
         double average = (double) sum / reviews.size();
-        return BigDecimal.valueOf(average).setScale(2, RoundingMode.HALF_UP);
+        return BigDecimal.valueOf(average).setScale(1, RoundingMode.HALF_UP);
     }
     public void removeReview(String username, Long reviewId) {
         AccountEntity account = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "reivew-list"));

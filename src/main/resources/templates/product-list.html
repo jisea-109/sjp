@@ -43,30 +43,28 @@
     </div>
     <div id="product_container">
         <div id="container">
-            <table id="product-table">
+            <table id="product_table">
                 <thead>
                     <tr>
-                        <th id="product-table-content">NAME</th>
-                        <th id="product-table-content">COMPONENT</th>
-                        <th id="product-table-content">SOCKET</th>
-                        <th id="product-table-content">PRICE</th>
-                        <th id="product-table-content">QUANTITY</th>
-                        <th id="product-table-content">RATING</th>
-                        <th id="product-table-content"></th>
+                        <th id="product_table_content">NAME</th>
+                        <th id="product_table_content">COMPONENT</th>
+                        <th id="product_table_content">SOCKET</th>
+                        <th id="product_table_content">PRICE</th>
+                        <th id="product_table_content">RATING</th>
+                        <th id="product_table_content"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="product : ${products}">
-                        <td id="product-table-content" th:text="${product.name}"></td>
-                        <td id="product-table-content" th:text="${product.component}"></td>
-                        <td id="product-table-content" th:text="${product.socket}"></td>
-                        <td id="product-table-content" th:text="${product.price}"></td>
-                        <td id="product-table-content" th:text="${product.quantity}"></td>
-                        <td id="product-table-content">
-                            <span th:if="${productRatings[product.id] != 0}" th:text="${#numbers.formatDecimal(productRatings[product.id], 1, 2)}"></span>
+                        <td id="product_table_content" th:text="${product.name}"></td>
+                        <td id="product_table_content" th:text="${product.component}"></td>
+                        <td id="product_table_content" th:text="${product.socket}"></td>
+                        <td id="product_table_content" th:text="${product.price}"></td>
+                        <td id="product_table_content">
+                            <span th:if="${productRatings[product.id] != 0}" th:text="${#numbers.formatDecimal(productRatings[product.id], 1, 1)}"></span>
                             <span th:if="${productRatings[product.id] == 0}">리뷰 X</span>
                         </td>
-                        <td id="product-table-content">
+                        <td id="product_table_content">
                             <form method="GET" action="/admin/update-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
                                 <input type="hidden" name="id" th:value="${product.id}">
                                 <button type="submit">변경하기</button>

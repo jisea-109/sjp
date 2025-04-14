@@ -41,7 +41,7 @@
   display:flex;
   flex-direction: column;
   margin:auto;
-  width: 1000px; 
+  width: 600px; 
   height: 720px;
   border-style: solid;
   border-width: thin;
@@ -52,14 +52,24 @@
   display:flex;
   flex-direction: column;
   margin:auto;
-  width: 800px; 
+  width: 1000px; 
   height: 800px;
-  border-style: solid;
-  border-width: thin;
-  border-color: #505050;
-  border-radius: 20px;
 }
 #container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  height: 700px;
+  width: 930px;
+}
+#singup_inner_container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  height: 500px;
+  width: 330px;
+}
+#login_inner_container {
   display:flex;
   flex-direction: column;
   margin:auto;
@@ -82,7 +92,7 @@
   background-color: #dbdbdb;
 }
 #password, #email, #new_password, #confirm_password{
-  margin-top: 20px;
+  margin-top: 30px;
   border-style: solid;
   border-width: thin;
   border-color: #505050;
@@ -93,19 +103,49 @@
   width: 310px;
   text-indent: 10px;
 }
+#check_username_noti, #check_password_noti, #checkEmailNoti{
+  min-height: 1em;
+  font-size: 0.9em;
+  margin-top: 4px;
+  position: absolute;
+}
+#message-in-username, #message-in-password, #message-in-email{
+  min-height: 1em;
+  font-size: 0.9em;
+  margin-top: 4px;
+}
 #email_code_container {
+  margin-top: 40px;
   display: flex;
   align-items: center;
 }
-#sendCodeBtn{
+#send_code_btn{
   color: white;
   border-style: solid;
   border-width: thin;
   border-radius: 5px;
   background-color: rgb(93, 123, 255);
-  font-size: 15px;
+  font-size: 16px;
   height: 50px;
   width: 120px;
+}
+#send_code_btn:hover {
+  transition-duration: 0.2s;
+  background-color: rgb(166, 183, 255);
+}
+#verify_code_btn {
+  color: white;
+  border-style: solid;
+  border-width: thin;
+  border-radius: 5px;
+  background-color: rgb(93, 123, 255);
+  font-size: 16px;
+  height: 50px;
+  width: 120px;
+}
+#verify_code_btn:hover {
+  transition-duration: 0.2s;
+  background-color: rgb(166, 183, 255);
 }
 #emailCode {
   border-style: solid;
@@ -114,17 +154,19 @@
   border-radius: 5px;
   background-color: white;
   font-size: 18px;
-  height: 50px;
+  height: 47px;
   width: 180px;
   text-indent: 10px;
   display:flex;
 }
 #timerDisplay {
   color: blue;
+  position:absolute;
+  margin-top: 40px;
 }
-#btnlogin {
+#btnlogin, #btn_to_sign_up, #btn_to_sign_in{
   color: white;
-  margin-top: 70px;
+  margin-top: 20px;
   border-style: solid;
   border-width: thin;
   border-radius: 5px;
@@ -133,17 +175,29 @@
   height: 50px;
   width: 310px;
 }
-#btnlogin:hover {
+#btnlogin:hover, #btn_to_sign_up:hover, #btn_to_sign_in:hover, #btnsignup:hover{
   transition-duration: 0.2s;
   background-color: rgb(166, 183, 255);
 }
-#product-table, #product-table-content {
+#btnsignup {
+  color: white;
+  margin-top: 80px;
+  border-style: solid;
+  border-width: thin;
+  border-radius: 5px;
+  background-color: rgb(93, 123, 255);
+  font-size: 20px;
+  height: 50px;
+  width: 310px;
+}
+#product_table, #product_table_content {
   border:1px solid black;
   border-collapse: collapse;
   text-align: center;
 }
 #emailNotification {
   margin-top: 5px;
+  position:absolute;
 }
 #errorMessage {
   color: red;

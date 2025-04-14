@@ -124,10 +124,12 @@ function CheckEmail(){
     const message = document.getElementById("checkEmailNoti")
     if (!email) {
         message.innerText = "이메일을 입력해주세요.";
+        message.style.color = "black";
         return;
     }
     if (!emailRegex.test(email)) {
         message.innerText = "올바른 이메일 형식을 입력해주세요.";
+        message.style.color = "red"
         return;
     }
     fetch(`/check-email?email=${encodeURIComponent(email)}`)
@@ -160,8 +162,8 @@ function startTimer() {
         if (codeExpireTime <= 0) {
             clearInterval(timer);
             document.getElementById("timerDisplay").innerText = "인증 시간이 만료되었습니다.";
-            document.getElementById("sendCodeBtn").disabled = false;
-            document.getElementById("verifyCodeBtn").disabled = true;
+            document.getElementById("send_code_btn").disabled = false;
+            document.getElementById("verify_code_btn").disabled = true;
         } else {
             let minutes = Math.floor(codeExpireTime / 60);
             let seconds = codeExpireTime % 60;

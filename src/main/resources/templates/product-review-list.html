@@ -43,19 +43,19 @@
     </div>
     <div id="product_container">
         <div id="container">
-            <table id="product-table">
+            <table id="product_table">
                 <thead>
                     <tr>
-                        <th id="product-table-content">TITLE</th>
-                        <th id="product-table-content">TEXT</th>
-                        <th id="product-table-content">RATING</th>
+                        <th id="product_table_content">TITLE</th>
+                        <th id="product_table_content">TEXT</th>
+                        <th id="product_table_content">RATING</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="review : ${reviewList}">
-                        <td id="product-table-content" th:text="${review.reviewTitle}"></td>
-                        <td id="product-table-content" th:text="${review.reviewText}"></td>
-                        <td id="product-table-content" th:text="${review.rating}"></td>
+                        <td id="product_table_content" th:text="${review.reviewTitle}"></td>
+                        <td id="product_table_content" th:text="${review.reviewText}"></td>
+                        <td id="product_table_content" th:text="${review.rating}"></td>
                     </tr>
                 </tbody>
             </table>
