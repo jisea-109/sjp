@@ -1,4 +1,4 @@
-package com.tinystop.sjp.Auth.Admin;
+package com.tinystop.sjp.Admin;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

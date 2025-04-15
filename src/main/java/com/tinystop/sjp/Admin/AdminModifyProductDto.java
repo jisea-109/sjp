@@ -1,4 +1,4 @@
-package com.tinystop.sjp.Auth.Admin;
+package com.tinystop.sjp.Admin;
 
 import lombok.Setter;
 
@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Setter
-public class ModifyProductDto {
+public class AdminModifyProductDto {
     private Long id;
     private String name;
     private int price;
@@ -16,8 +16,8 @@ public class ModifyProductDto {
     private String socket;
     private int quantity;
 
-    public static ModifyProductDto from(ProductEntity product) {
-        ModifyProductDto dto = new ModifyProductDto();
+    public static AdminModifyProductDto from(ProductEntity product) {
+        AdminModifyProductDto dto = new AdminModifyProductDto();
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());

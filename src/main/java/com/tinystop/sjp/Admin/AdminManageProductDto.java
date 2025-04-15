@@ -1,4 +1,4 @@
-package com.tinystop.sjp.Auth.Admin;
+package com.tinystop.sjp.Admin;
 
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.type.ProductCategory;
@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ManageProductDto {
+public class AdminManageProductDto {
 
     private Long id;
     private String name;
@@ -19,7 +19,7 @@ public class ManageProductDto {
     private int quantity;
     private ProductStockStatus stockStatus;
 
-    public ManageProductDto() {}
+    public AdminManageProductDto() {}
 
     public ProductEntity toEntity() {
         if (this.quantity > 0) { stockStatus = ProductStockStatus.IN_STOCK; }

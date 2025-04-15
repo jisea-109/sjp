@@ -1,4 +1,4 @@
-package com.tinystop.sjp.Auth.Admin;
+package com.tinystop.sjp.Admin;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ public class AdminService {
     
     private final AdminRepository adminRepository;
 
-    public ProductEntity AddProduct(ManageProductDto product) {
+    public ProductEntity AddProduct(AdminManageProductDto product) {
         boolean exists = adminRepository.existsByName(product.getName());
         
         if (exists) { 
@@ -30,7 +30,7 @@ public class AdminService {
     public ProductEntity GetProductById(Long id) {
         return adminRepository.findById(id).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
     }
-    public ProductEntity UpdateProduct(ModifyProductDto product) {
+    public ProductEntity UpdateProduct(AdminModifyProductDto product) {
         ProductEntity toUpdateProduct = adminRepository.findById(product.getId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
 
         toUpdateProduct.setName(product.getName());

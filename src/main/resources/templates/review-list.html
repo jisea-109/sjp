@@ -38,6 +38,7 @@
             <table id="product_table">
                 <thead>
                     <tr>
+                        <th id="product_table_content">PRODUCT PHOTO</th>
                         <th id="product_table_content">PRODUCT NAME</th>
                         <th id="product_table_content">PRODUCT PRICE</th>
                         <th id="product_table_content">TITLE</th>
@@ -48,6 +49,13 @@
                 </thead>
                 <tbody>
                     <tr th:each="review : ${reviewList}">
+                        <td id="product_table_content">
+                            <div th:if="${review.imagePaths != null}">
+                                <img th:each="path : ${review.imagePaths}" 
+                                     th:src="@{${path}}" 
+                                     style="width: 200px; height: auto; margin: 5px;" />
+                            </div>
+                        </td>
                         <td id="product_table_content" th:text="${review.product.name}"></td>
                         <td id="product_table_content" th:text="${review.product.price}"></td>
                         <td id="product_table_content" th:text="${review.reviewTitle}"></td>

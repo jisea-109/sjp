@@ -1,12 +1,17 @@
 package com.tinystop.sjp.Review;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.tinystop.sjp.BaseEntity;
 import com.tinystop.sjp.Auth.AccountEntity;
 import com.tinystop.sjp.Product.ProductEntity;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -15,7 +20,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -49,6 +53,11 @@ public class ReviewEntity extends BaseEntity{
     @Min(1)
     @Max(10)
     private int rating;
+
+    @ElementCollection
+    @CollectionTable(name = "REVIEW_IMAGES", joinColumns = @JoinColumn(name = "review_id"))
+    @Column(name = "IMAGE_PATH")
+    private List<String> imagePaths = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "PRODUCT", nullable = false)

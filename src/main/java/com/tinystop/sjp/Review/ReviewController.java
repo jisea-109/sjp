@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tinystop.sjp.Exception.CustomException;
 
@@ -59,12 +60,13 @@ public class ReviewController {
     public String AddReview(@ModelAttribute("addReview") @Valid AddReviewDto addReviewRequest,
                             BindingResult bindingResult,
                             @AuthenticationPrincipal UserDetails userDetails,
+                            @RequestParam("uploadImages") MultipartFile[] uploadImages,
                             Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("addReview", addReviewRequest);
         }
         try {
-            reviewService.addReview(userDetails.getUsername(), addReviewRequest);
+            reviewService.addReview(userDetails.getUsername(), addReviewRequest, uploadImages);
         } catch (CustomException error) {
             model.addAttribute("addReview", addReviewRequest);
             model.addAttribute("errorMessage", error.getMessage());
@@ -77,13 +79,14 @@ public class ReviewController {
     public String EditReview(@ModelAttribute("editReview") @Valid EditReviewDto editReviewRequest,
                              BindingResult bindingResult,
                              @AuthenticationPrincipal UserDetails userDetails,
+                             @RequestParam("uploadImages") MultipartFile[] uploadImages,
                              Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("editReview", editReviewRequest);
             return "edit-review";
         }
         try {
-            reviewService.editReview(userDetails.getUsername(), editReviewRequest);
+            reviewService.editReview(userDetails.getUsername(), editReviewRequest, uploadImages);
         } catch (CustomException error) {
             model.addAttribute("editReview", editReviewRequest);
             model.addAttribute("errorMessage", error.getMessage());

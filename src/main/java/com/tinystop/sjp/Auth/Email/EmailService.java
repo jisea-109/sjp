@@ -14,7 +14,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.tinystop.sjp.Auth.AccountRepository;
 import com.tinystop.sjp.Exception.CustomException;
 
 import static com.tinystop.sjp.type.ErrorCode.INCORRECT_SECURITY_CODE;

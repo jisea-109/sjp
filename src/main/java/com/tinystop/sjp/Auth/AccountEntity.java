@@ -1,6 +1,5 @@
 package com.tinystop.sjp.Auth;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

@@ -34,11 +34,12 @@
     </div>
     <div id="product_container">
         <div id="container">
-            <form method="POST" th:action="@{/review/add}" th:object="${addReview}">
+            <form method="POST" th:action="@{/review/add}" th:object="${addReview}" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{productId}">
                 <input type="text" th:field="*{reviewTitle}" id="review_header" placeholder="HEADER" required>
                 <input type="text" th:field="*{reviewText}" id="review_text" placeholder="TEXT" required>
-                <input type="number" th:field="*{rating}" id="review_rating" placeholder="RATING" required>
-                <input type="hidden" th:field="*{productId}">
+                <input type="number" th:field="*{rating}" id="review_rating" placeholder="RATING" min="1" max="10" required>
+                <input type="file" name="uploadImages" multiple /><br/>
                 <button type="submit" id="btnlogin">추가하기</button>
             </form>
         </div>

@@ -59,7 +59,10 @@
                         <td id="product_table_content" th:text="${product.name}"></td>
                         <td id="product_table_content" th:text="${product.component}"></td>
                         <td id="product_table_content" th:text="${product.socket}"></td>
-                        <td id="product_table_content" th:text="${product.price}"></td>
+                        <td id="product_table_content">
+                            <span th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')}"></span>
+                            <span> 원</span>
+                        </td>
                         <td id="product_table_content">
                             <span th:if="${productRatings[product.id] != 0}" th:text="${#numbers.formatDecimal(productRatings[product.id], 1, 1)}"></span>
                             <span th:if="${productRatings[product.id] == 0}">리뷰 X</span>
@@ -82,7 +85,8 @@
                                 <input type="hidden" name="productId" th:value="${product.id}">
                                 <input type="number" th:field="*{quantity}" value="1" min="1">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <button type="submit">장바구니 담기</button>
+                                <button type="submit" th:if="${product.quantity > 0}">장바구니 담기</button>
+                                <span th:unless="${product.quantity > 0}">품절</span>
                             </form>
                         </td>
                     </tr>

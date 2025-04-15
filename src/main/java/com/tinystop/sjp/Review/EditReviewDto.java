@@ -1,7 +1,7 @@
 package com.tinystop.sjp.Review;
 
-import com.tinystop.sjp.Auth.Admin.ModifyProductDto;
-import com.tinystop.sjp.Product.ProductEntity;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -27,6 +27,9 @@ public class EditReviewDto {
     @Min(1)
     @Max(10)
     private int rating;
+
+    private List<String> imagePaths = new ArrayList<>();
+    private List<String> deleteImagePaths = new ArrayList<>();
     
     public static EditReviewDto from(ReviewEntity review) {
         EditReviewDto dto = new EditReviewDto();
@@ -34,6 +37,7 @@ public class EditReviewDto {
         dto.setReviewTitle(review.getReviewTitle());
         dto.setReviewText(review.getReviewText());
         dto.setRating(review.getRating());
+        dto.setImagePaths(review.getImagePaths());
         return dto;
     }
 }

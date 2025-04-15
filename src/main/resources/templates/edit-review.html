@@ -34,11 +34,22 @@
     </div>
     <div id="product_container">
         <div id="container">
-            <form method="POST" th:action="@{/review/edit}" th:object="${editReview}">
+            <form method="POST" th:action="@{/review/edit}" th:object="${editReview}" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}">
                 <input type="text" th:field="*{reviewTitle}" id="review_header" placeholder="HEADER" required>
                 <input type="text" th:field="*{reviewText}" id="review_text" placeholder="TEXT" required>
                 <input type="number" th:field="*{rating}" id="review_rating" placeholder="RATING" required>
+                <div th:if="${editReview.imagePaths != null}">
+                    <label>등록된 이미지</label>
+                    <div th:each="path : ${editReview.imagePaths}">
+                        <img th:src="@{${path}}" style="width: 200px; height: auto; margin: 5px;" />
+                        <label>
+                            <input type="checkbox" th:name="deleteImagePaths" th:value="${path}" />
+                            삭제
+                        </label>
+                    </div>
+                </div>
+                <input type="file" name="uploadImages" multiple /><br/>
                 <button type="submit" id="btnlogin">수정하기</button>
             </form>
         </div>

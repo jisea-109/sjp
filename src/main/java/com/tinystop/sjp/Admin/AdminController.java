@@ -1,4 +1,4 @@
-package com.tinystop.sjp.Auth.Admin;
+package com.tinystop.sjp.Admin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.tinystop.sjp.Auth.Admin.ManageProductDto;
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.type.ProductCategory;
@@ -30,12 +29,12 @@ public class AdminController {
      public String AdminPage(Model model) {
         List<ProductCategory> productCategories = Arrays.asList(ProductCategory.values());
         model.addAttribute("productCategories", productCategories);
-        model.addAttribute("addProduct", new ManageProductDto());
+        model.addAttribute("addProduct", new AdminManageProductDto());
         return "admin";
     }
 
     @PostMapping("/admin/add-product")
-    public String AddProducts(@ModelAttribute("addProduct") @Valid ManageProductDto product, BindingResult bindingResult, Model model) {
+    public String AddProducts(@ModelAttribute("addProduct") @Valid AdminManageProductDto product, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("admin", product);
         }
@@ -57,7 +56,7 @@ public class AdminController {
     @GetMapping("/admin/update-product")
     public String UpdateProductPage(@RequestParam("id") Long id, Model model) {
         ProductEntity product = adminservice.GetProductById(id);
-        ModifyProductDto modifyProductDto = ModifyProductDto.from(product);
+        AdminModifyProductDto modifyProductDto = AdminModifyProductDto.from(product);
         
         model.addAttribute("modifyProduct", modifyProductDto);
         model.addAttribute("productCategories", Arrays.asList(ProductCategory.values()));
@@ -65,7 +64,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/update-product-detail")
-    public String UpdateProductDetailPage(@ModelAttribute("modifyProduct") @Valid ModifyProductDto modifyProduct, BindingResult bindingResult,  Model model) {
+    public String UpdateProductDetailPage(@ModelAttribute("modifyProduct") @Valid AdminModifyProductDto modifyProduct, BindingResult bindingResult,  Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("update-product-detail", modifyProduct);
         }

@@ -1,8 +1,14 @@
 package com.tinystop.sjp.Review;
 
 import com.tinystop.sjp.Product.ProductEntity;
+
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.tinystop.sjp.Auth.AccountEntity;
 
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,10 +20,11 @@ import lombok.Setter;
 @Setter
 public class AddReviewDto {
 
-    @NotBlank
+    @NotBlank(message = "제목을 작성해주세요.")
     private String reviewTitle;
-    @NotBlank
+    @NotBlank(message = "리뷰 내용을 작성해주세요.")
     private String reviewText;
+    
     @NotNull
     @Min(1)
     @Max(10)
@@ -31,6 +38,17 @@ public class AddReviewDto {
             .reviewText(this.reviewText)
             .rating(this.rating)
             .product(product)
+            .account(account)
+            .build();
+    }
+
+    public ReviewEntity toEntity(AccountEntity account, ProductEntity product, List<String> imagePaths) {
+        return ReviewEntity.builder()
+            .reviewTitle(this.reviewTitle)
+            .reviewText(this.reviewText)
+            .rating(this.rating)
+            .product(product)
+            .imagePaths(imagePaths)
             .account(account)
             .build();
     }
