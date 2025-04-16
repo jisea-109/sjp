@@ -1,4 +1,4 @@
-package com.tinystop.sjp.type;
+package com.tinystop.sjp.Type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +34,11 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND("REVIEW NOT FOUND"),
     NO_PERMISSION_TO_EDIT("NO PERMISSION TO EDIT"),
     FAILED_TO_UPLOAD_IMAGE("FAILED TO UPLOAD IMAGE"),
+    TOO_MANY_IMAGES_TO_UPLOAD("TOO MANY IMAGES TO UPLOAD"),
+    UNSUPPORTED_FILE_TYPE("UNSUPPORTED FILE TYPE"),
+    PATH_TRAVERSAL_DETECTED("PATH TRAVERSAL DETECTED"),
     ALREADY_EXIST_REVIEW("ALREADY EXIST REVIEW");
+
     private final String message;
 
 }

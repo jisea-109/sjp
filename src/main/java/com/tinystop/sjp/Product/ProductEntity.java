@@ -25,8 +25,8 @@ import jakarta.persistence.Table;
 
 import com.tinystop.sjp.BaseEntity;
 import com.tinystop.sjp.Review.ReviewEntity;
-import com.tinystop.sjp.type.ProductCategory;
-import com.tinystop.sjp.type.ProductStockStatus;
+import com.tinystop.sjp.Type.ProductCategory;
+import com.tinystop.sjp.Type.ProductStockStatus;
 
 @Getter
 @Setter

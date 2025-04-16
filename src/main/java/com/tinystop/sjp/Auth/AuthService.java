@@ -22,14 +22,15 @@ import com.tinystop.sjp.Exception.CustomException;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import java.util.Collections;
 
-import static com.tinystop.sjp.type.ErrorCode.ALREADY_EXIST_USER;
-import static com.tinystop.sjp.type.ErrorCode.INCORRECT_PASSWORD;
-import static com.tinystop.sjp.type.ErrorCode.USER_NOT_FOUND;
-import static com.tinystop.sjp.type.ErrorCode.DUPLICATE_EMAIL_FOUND;
-import static com.tinystop.sjp.type.ErrorCode.EMAIL_NOT_VERIFIED;
-import static com.tinystop.sjp.type.ErrorCode.PASSWORD_DOES_NOT_MATCH;
+import static com.tinystop.sjp.Type.ErrorCode.ALREADY_EXIST_USER;
+import static com.tinystop.sjp.Type.ErrorCode.DUPLICATE_EMAIL_FOUND;
+import static com.tinystop.sjp.Type.ErrorCode.EMAIL_NOT_VERIFIED;
+import static com.tinystop.sjp.Type.ErrorCode.INCORRECT_PASSWORD;
+import static com.tinystop.sjp.Type.ErrorCode.PASSWORD_DOES_NOT_MATCH;
+import static com.tinystop.sjp.Type.ErrorCode.USER_NOT_FOUND;
+
+import java.util.Collections;
 
 @RequiredArgsConstructor
 @Transactional
@@ -55,7 +56,7 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(user.getPassword()); // 비밀번호 암호화
         emailVerificationRepository.deleteByEmail(user.getEmail()); // EmailVerificationEntity에 있는 데이터 삭제
         
-        return this.accountRepository.save(user.toEntity(encodedPassword)); // 저장
+        return accountRepository.save(user.toEntity(encodedPassword)); // 저장
     }
     
     public AccountEntity signIn(SigninDto user, HttpSession session) { // 로그인

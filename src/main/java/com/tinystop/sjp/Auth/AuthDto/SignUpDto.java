@@ -1,7 +1,7 @@
 package com.tinystop.sjp.Auth.AuthDto;
 
 import com.tinystop.sjp.Auth.AccountEntity;
-import com.tinystop.sjp.type.Role;
+import com.tinystop.sjp.Type.Role;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

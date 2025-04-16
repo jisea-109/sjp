@@ -5,7 +5,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.tinystop.sjp.Auth.AccountEntity;
 import com.tinystop.sjp.Product.ProductEntity;
-import com.tinystop.sjp.type.OrderableStatus;
+import com.tinystop.sjp.Type.OrderableStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

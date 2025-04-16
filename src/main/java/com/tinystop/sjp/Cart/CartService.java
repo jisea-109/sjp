@@ -1,5 +1,13 @@
 package com.tinystop.sjp.Cart;
 
+import static com.tinystop.sjp.Type.ErrorCode.CART_NOT_FOUND;
+import static com.tinystop.sjp.Type.ErrorCode.INAPPROPRIATE_QUANTITY_VALUE;
+import static com.tinystop.sjp.Type.ErrorCode.PRODUCT_NOT_FOUND;
+import static com.tinystop.sjp.Type.ErrorCode.USER_NOT_FOUND;
+import static com.tinystop.sjp.Type.OrderableStatus.IN_STOCK;
+import static com.tinystop.sjp.Type.OrderableStatus.NOT_ORDERABLE;
+import static com.tinystop.sjp.Type.ProductStockStatus.SOLD_OUT;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,14 +18,6 @@ import com.tinystop.sjp.Auth.AccountRepository;
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.Product.ProductRepository;
-
-import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
-import static com.tinystop.sjp.type.ErrorCode.USER_NOT_FOUND;
-import static com.tinystop.sjp.type.ErrorCode.CART_NOT_FOUND;
-import static com.tinystop.sjp.type.ErrorCode.INAPPROPRIATE_QUANTITY_VALUE;
-import static com.tinystop.sjp.type.ProductStockStatus.SOLD_OUT;
-import static com.tinystop.sjp.type.OrderableStatus.NOT_ORDERABLE;
-import static com.tinystop.sjp.type.OrderableStatus.IN_STOCK;
 
 @RequiredArgsConstructor
 @Transactional
@@ -48,7 +48,7 @@ public class CartService {
         if (addToCartDto.getQuantity() > product.getQuantity()) {
             throw new CustomException(INAPPROPRIATE_QUANTITY_VALUE, "product-list");
         }
-        return this.cartRepository.save(addToCartDto.toEntity(user, product, addToCartDto.getQuantity())); // 기존 Cart에 없는 신규 Cart면 새로 entity save
+        return cartRepository.save(addToCartDto.toEntity(user, product, addToCartDto.getQuantity())); // 기존 Cart에 없는 신규 Cart면 새로 entity save
     }
 
     public void removeFromCart(String username, Long productId) {

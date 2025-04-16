@@ -1,5 +1,11 @@
 package com.tinystop.sjp.Order;
 
+import static com.tinystop.sjp.Type.ErrorCode.NOT_ENOUGH_STOCK;
+import static com.tinystop.sjp.Type.ErrorCode.ORDER_NOT_FOUND;
+import static com.tinystop.sjp.Type.ErrorCode.OUT_OF_STOCK;
+import static com.tinystop.sjp.Type.ErrorCode.PRODUCT_NOT_FOUND;
+import static com.tinystop.sjp.Type.ErrorCode.USER_NOT_FOUND;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -12,12 +18,7 @@ import com.tinystop.sjp.Cart.CartRepository;
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.Product.ProductRepository;
-import com.tinystop.sjp.type.ProductStockStatus;
-import static com.tinystop.sjp.type.ErrorCode.USER_NOT_FOUND;
-import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
-import static com.tinystop.sjp.type.ErrorCode.OUT_OF_STOCK;
-import static com.tinystop.sjp.type.ErrorCode.NOT_ENOUGH_STOCK;
-import static com.tinystop.sjp.type.ErrorCode.ORDER_NOT_FOUND;
+import com.tinystop.sjp.Type.ProductStockStatus;
 
 @RequiredArgsConstructor
 @Service

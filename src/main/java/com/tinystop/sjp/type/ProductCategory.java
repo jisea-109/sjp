@@ -1,4 +1,4 @@
-package com.tinystop.sjp.type;
+package com.tinystop.sjp.Type;
 
 public enum ProductCategory {
     CPU,

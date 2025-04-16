@@ -1,5 +1,10 @@
 package com.tinystop.sjp.Auth.Email;
 
+import static com.tinystop.sjp.Type.ErrorCode.FAILED_TO_READ_TEMPLATE;
+import static com.tinystop.sjp.Type.ErrorCode.FAILED_TO_SEND_EMAIL;
+import static com.tinystop.sjp.Type.ErrorCode.INCORRECT_SECURITY_CODE;
+import static com.tinystop.sjp.Type.ErrorCode.SECURITY_CODE_EXPIRED;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,11 +20,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.tinystop.sjp.Exception.CustomException;
-
-import static com.tinystop.sjp.type.ErrorCode.INCORRECT_SECURITY_CODE;
-import static com.tinystop.sjp.type.ErrorCode.FAILED_TO_READ_TEMPLATE;
-import static com.tinystop.sjp.type.ErrorCode.FAILED_TO_SEND_EMAIL;
-import static com.tinystop.sjp.type.ErrorCode.SECURITY_CODE_EXPIRED;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

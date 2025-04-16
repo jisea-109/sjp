@@ -3,7 +3,8 @@ package com.tinystop.sjp.Admin;
 import lombok.Setter;
 
 import com.tinystop.sjp.Product.ProductEntity;
-import com.tinystop.sjp.type.ProductCategory;
+import com.tinystop.sjp.Type.ProductCategory;
+
 import lombok.Getter;
 
 @Getter

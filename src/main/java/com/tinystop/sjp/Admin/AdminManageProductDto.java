@@ -1,8 +1,8 @@
 package com.tinystop.sjp.Admin;
 
 import com.tinystop.sjp.Product.ProductEntity;
-import com.tinystop.sjp.type.ProductCategory;
-import com.tinystop.sjp.type.ProductStockStatus;
+import com.tinystop.sjp.Type.ProductCategory;
+import com.tinystop.sjp.Type.ProductStockStatus;
 
 import lombok.Getter;
 import lombok.Setter;

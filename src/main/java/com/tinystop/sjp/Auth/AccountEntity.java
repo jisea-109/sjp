@@ -8,7 +8,7 @@ import com.tinystop.sjp.BaseEntity;
 import com.tinystop.sjp.Cart.CartEntity;
 import com.tinystop.sjp.Order.OrderEntity;
 import com.tinystop.sjp.Review.ReviewEntity;
-import com.tinystop.sjp.type.Role;
+import com.tinystop.sjp.Type.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

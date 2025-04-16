@@ -46,13 +46,14 @@ public class OrderController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("order-list", "예상치 못한 에러가 생겼습니다.");
+            return "order-list";
         }
         try { 
             orderService.cancelOrder(username, removeOrderRequest);
         } catch (CustomException error) {
             model.addAttribute("errorMessage", error.getMessage());
+            return "order-list";
         }
-        
         return "redirect:/order/list";
     }
     

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
-import com.tinystop.sjp.type.ProductCategory;
+import com.tinystop.sjp.Type.ProductCategory;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +37,14 @@ public class AdminController {
     public String AddProducts(@ModelAttribute("addProduct") @Valid AdminManageProductDto product, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("admin", product);
+            return "admin";
         }
         try {
             adminservice.AddProduct(product);
         } catch(CustomException error) {
             model.addAttribute("admin", product);
             model.addAttribute("errorMessage", error.getMessage());
+            return "admin";
         }
         return "redirect:/admin";
     }
@@ -67,12 +69,14 @@ public class AdminController {
     public String UpdateProductDetailPage(@ModelAttribute("modifyProduct") @Valid AdminModifyProductDto modifyProduct, BindingResult bindingResult,  Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("update-product-detail", modifyProduct);
+            return "update-product-detail";
         }
         try {
             adminservice.UpdateProduct(modifyProduct);
         } catch(CustomException error) {
             model.addAttribute("update-product-detail", modifyProduct);
             model.addAttribute("errorMessage", error.getMessage());
+            return "update-product-detail";
         }
         adminservice.UpdateProduct(modifyProduct);
         return "redirect:/find-product";

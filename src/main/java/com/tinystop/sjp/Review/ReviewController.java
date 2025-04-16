@@ -34,7 +34,7 @@ public class ReviewController {
 
     @GetMapping("list")
     public String GetReivewList(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        List<ReviewEntity> reviewList = reviewService.reviewList(userDetails.getUsername());
+        List<ReviewEntity> reviewList = reviewService.userReviewList(userDetails.getUsername());
         model.addAttribute("reviewList", reviewList);
         return "review-list";
     }
@@ -64,12 +64,14 @@ public class ReviewController {
                             Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("addReview", addReviewRequest);
+            return "add-review";
         }
         try {
             reviewService.addReview(userDetails.getUsername(), addReviewRequest, uploadImages);
         } catch (CustomException error) {
             model.addAttribute("addReview", addReviewRequest);
             model.addAttribute("errorMessage", error.getMessage());
+            return "add-review";
         }
         
         return "redirect:/review/list";

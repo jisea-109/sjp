@@ -4,11 +4,8 @@ import com.tinystop.sjp.Product.ProductEntity;
 
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.tinystop.sjp.Auth.AccountEntity;
 
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

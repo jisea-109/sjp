@@ -1,6 +1,6 @@
 package com.tinystop.sjp.Exception;
 
-import com.tinystop.sjp.type.ErrorCode;
+import com.tinystop.sjp.Type.ErrorCode;
 
 import lombok.Getter;
 

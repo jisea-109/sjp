@@ -1,5 +1,7 @@
 package com.tinystop.sjp.Product;
 
+import static com.tinystop.sjp.Type.ErrorCode.PRODUCT_NOT_FOUND;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -7,8 +9,6 @@ import org.springframework.stereotype.Service;
 import com.tinystop.sjp.Exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.tinystop.sjp.type.ErrorCode.PRODUCT_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
