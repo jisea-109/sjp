@@ -1,47 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <title>modify-product-detail</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/font.css">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
-</head>
-<body>
-    <div id="header">
-        <a class="nav" href="/" id="home">HOME</a>
-        <div class="dropdown">
-            <a class="nav" th:text="${#authentication.name}"></a>
-            <div class="dropdown-content">
-                <a href="/signout">SIGN OUT</a>
-            </div>
-        </div>
-        <form method="GET" action="/find-product">
-            <div id="search_box">
-                <input type="text" placeholder="Search" id="search" name="search">
-            </div>
-        </form>
-    </div>
+    <head>
+        <meta charset="UTF-8">
+        <title>Update Product Detail</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/font.css">
+    </head>
+    <body>
+    <div th:replace="~{base-layout-admin :: layout}"></div> <!--base-layout-admin layout 불러오기 -->
     <div th:if="${errorMessage}" style="color: red; text-align: center;">
         <p th:text="${errorMessage}"></p>
     </div>
     <div id="product_container">
         <div id="container">
             <form method="POST" th:action="@{/admin/update-product-detail}" th:object="${modifyProduct}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <input type="hidden" th:field="*{id}">
-                <input type="text" th:field="*{name}" placeholder="name" id="id" required>
+                <input type="text" th:field="*{name}" placeholder="NAME" id="product_name" required>
+                <div class="textarea-wrapper">
+                    <textarea th:field="*{description}" placeholder="DESCRIPTION" rows="5" cols="40" id="product_description" required></textarea>
+                </div>
             
-                <select th:field="*{component}" id="password" required>
+                <select name="component" id="product_component" required>
                     <option th:each="category : ${productCategories}" 
                             th:value="${category}" 
                             th:text="${category}">
                     </option>
                 </select>
             
-                <input type="text" id="password" th:field="*{socket}" placeholder="socket" required>
-                <input type="number" id="password" th:field="*{price}" placeholder="price" required>
-                <input type="number" id="password" th:field="*{quantity}" placeholder="quantity" required>
+                <input type="text" th:field="*{socket}" placeholder="SOCKET" id="product_socket" required>
+                <input type="number" th:field="*{price}" placeholder="PRICE" id="product_price" required>
+                <input type="number" th:field="*{quantity}" placeholder="QUANTITY" id="product_quantity"  required>
             
                 <input type="submit" id="btnlogin" value="EDIT PRODUCT DETAIL">
             </form>

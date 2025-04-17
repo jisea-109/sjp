@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail' // JavaMailSender
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.2.1' // thymeleaf base layout
 
 	compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'

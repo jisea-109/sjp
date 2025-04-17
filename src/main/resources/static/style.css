@@ -59,8 +59,31 @@
   display:flex;
   flex-direction: column;
   margin:auto;
-  height: 700px;
   width: 930px;
+  height: 700px;
+}
+#admin_container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  width: 600px;
+  height: 850px;
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 20px;
+}
+#admin_inner_container {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  width: 410px;
+  height: auto;
+}
+#admin_inner_container input,
+#admin_inner_container select {
+  width: 100%;
 }
 #singup_inner_container {
   display:flex;
@@ -76,7 +99,7 @@
   height: 300px;
   width: 330px;
 }
-#id, #current_password{
+#id, #product_name, #current_password{
   border-style: solid;
   border-width: thin;
   border-color: #505050;
@@ -87,11 +110,9 @@
   width: 310px;
   text-indent: 10px;
 }
-#id:hover, #password:hover, #search:hover, .nav:hover{
-  transition-duration: 0.4s;
-  background-color: #dbdbdb;
-}
-#password, #email, #new_password, #confirm_password{
+#password, #email, #new_password, #confirm_password, #product_component,
+#product_socket, #product_price, #product_quantity, 
+#product_component, #product_socket, #product_price, #product_quantity {
   margin-top: 30px;
   border-style: solid;
   border-width: thin;
@@ -102,6 +123,53 @@
   height: 50px;
   width: 310px;
   text-indent: 10px;
+}
+#id:hover, #password:hover, #search:hover, .nav:hover,
+#product_component:hover, #product_socket:hover, #product_price:hover,
+#product_quantity:hover, #product_description:hover, #product_name:hover{
+  transition-duration: 0.2s;
+  background-color: #dbdbdb;
+}
+#product_name {
+  margin-top: 30px;
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 20px;
+  height: 50px;
+  width: 410px;
+  text-indent: 10px;
+}
+#product_description {
+  margin-top: 30px;
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 20px;
+  height: 300px;
+}
+.textarea-wrapper {
+  position: relative;
+}
+
+.textarea-wrapper textarea {
+  width: 100%;
+  height: 150px;
+  font-size: 14px;
+  resize: vertical;
+}
+.textarea-wrapper textarea::placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #aaa;
+  pointer-events: none;
+  text-align: center;
 }
 #check_username_noti, #check_password_noti, #checkEmailNoti{
   min-height: 1em;

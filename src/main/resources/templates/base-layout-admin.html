@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title th:replace="${pageTitle}">base-admin</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/font.css">
+        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+    </head>
+    <body>
+        <div th:fragment="layout">
+            <div id="header">
+                <a class="nav" href="/" id="home">HOME</a>
+                <th:block sec:authorize="isAuthenticated()">
+                    <div class="dropdown">
+                        <a class="nav" th:text="${#authentication.name}"></a>
+                        <div class="dropdown-content">
+                            <th:block sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin">ADMIN PAGE</a>
+                            </th:block>
+                            <a href="/change-info">MANAGE ACCOUNT</a>
+                            <a href="/signout">SIGN OUT</a>
+                        </div>
+                    </div>
+                </th:block>
+                <form method="GET" action="/find-product">
+                    <div id="search_box">
+                        <input type="text" placeholder="Search" id="search" name="search">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,22 +1,23 @@
 package com.tinystop.sjp.Admin;
 
-import lombok.Setter;
-
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.Type.ProductCategory;
+import com.tinystop.sjp.Type.ProductStockStatus;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-public class AdminModifyProductDto {
+public class AdminAddProductDto {
     
-    @NotNull(message = "상품 등록 시 ID는 자동 생성됩니다.")
+    @Null(message = "상품 등록 시 ID는 자동 생성됩니다.")
     private Long id;
 
     @NotBlank(message = "이름을 입력해주세요.")
@@ -24,7 +25,7 @@ public class AdminModifyProductDto {
     private String name;
 
     @NotBlank(message = "내용을 입력해주세요.")
-    @Size(max = 300, message = "내용은 10자 이상 300자 이하로 입력해주세요.")
+    @Size(max = 300, message = "내용은 300자 이하로 입력해주세요.")
     private String description;
 
     @NotNull(message = "가격을 입력해주세요. (쉼표, 단위 빼고 숫자만 입력해주세요.)")
@@ -42,16 +43,22 @@ public class AdminModifyProductDto {
     @NotNull(message = "수량을 입력해주세요.")
     @Min(value = 0, message = "수량은 음수가 될 수 없습니다.")
     private int quantity;
-    
-    public static AdminModifyProductDto from(ProductEntity product) {
-        AdminModifyProductDto dto = new AdminModifyProductDto();
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setDescription(product.getDescription());
-        dto.setPrice(product.getPrice());
-        dto.setComponent(product.getComponent());
-        dto.setSocket(product.getSocket());
-        dto.setQuantity(product.getQuantity());
-        return dto;
+
+    private ProductStockStatus stockStatus;
+
+    public ProductEntity toEntity() {
+        if (this.quantity > 0) {stockStatus = ProductStockStatus.IN_STOCK;}
+        else {stockStatus = ProductStockStatus.SOLD_OUT;}
+        return ProductEntity.builder()
+            .id(this.id)
+            .name(this.name)
+            .description(this.description)
+            .price(this.price)
+            .component(this.component)
+            .socket(this.socket)
+            .quantity(this.quantity)
+            .stockStatus(this.stockStatus)
+            .build();
     }
 }
+

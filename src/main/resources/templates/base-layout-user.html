@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title th:replace="${pageTitle}">base-user</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/font.css">
+        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+    </head>
+    <body>
+        <div th:fragment="layout">
+            <div id="header">
+                <a class="nav" href="/" id="home">HOME</a>
+                <th:block sec:authorize="!isAuthenticated()">
+                    <a class="nav" href="/signinPage">SIGN-IN</a>
+                </th:block>
+                <th:block sec:authorize="isAuthenticated()">
+                    <a class="nav" href="/cart/list" sec:authorize="hasAuthority('ROLE_USER')">CART</a>
+                    <a class="nav" sec:authorize="hasAuthority('ROLE_USER')">WISHLIST</a>
+                    <div class="dropdown">
+                        <a class="nav" th:text="${#authentication.name}"></a>
+                        <div class="dropdown-content">
+                            <a href="/signout">SIGN OUT</a>
+                            <a href="/order/list" sec:authorize="hasAuthority('ROLE_USER')">ORDER</a>
+                            <a href="/change-info">MANAGE ACCOUNT</a>
+                            <a href="/review/list" sec:authorize="hasAuthority('ROLE_USER')">REVIEW</a>
+                        </div>
+                    </div>
+                </th:block>
+                <form method="GET" action="/find-product">
+                    <div id="search_box">
+                        <input type="text" placeholder="Search" id="search" name="search">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

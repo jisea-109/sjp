@@ -1,33 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <title>cart-list</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/font.css">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
-</head>
-<body>
-    <div id="header">
-        <a class="nav" href="/" id="home">HOME</a>
-        <th:block sec:authorize="isAuthenticated()">
-            <a class="nav" href="/cart/list">CART</a>
-            <a class="nav">WISHLIST</a>
-            <div class="dropdown">
-                <a class="nav" th:text="${#authentication.name}"></a>
-                <div class="dropdown-content">
-                    <a href="/signout">SIGN OUT</a>
-                    <a href="/order/list">ORDER</a>
-                </div>
-            </div>
-        </th:block>
-        <form method="GET" action="/find-product">
-            <div id="search_box">
-                <input type="text" placeholder="Search" id="search" name="search">
-            </div>
-        </form>
-    </div>
+    <head>
+        <meta charset="UTF-8">
+        <title>Cart List</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/font.css">
+    </head>
+    <body>
+    <div th:replace="~{base-layout :: layout}"></div> <!--base-layout-user layout 불러오기 -->
     <div th:if="${errorMessage}" style="color: red; text-align: center;">
         <p th:text="${errorMessage}"></p>
     </div>
