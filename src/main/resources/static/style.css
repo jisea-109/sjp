@@ -37,7 +37,7 @@
   background-color: white;
   font-size: 20px;
 }
-#login_container {
+#login_container, #change_info_container, #signup_container{
   display:flex;
   flex-direction: column;
   margin:auto;
@@ -47,6 +47,39 @@
   border-width: thin;
   border-color: #505050;
   border-radius: 20px;
+}
+#signup_container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  align-items: center;
+  width: 600px; 
+  height: 720px;
+  border-style: solid;
+  border-width: thin;
+  border-color: #505050;
+  border-radius: 20px;
+}
+#singup_inner_container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  height: 500px;
+  width: 330px;
+}
+#login_inner_container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  height: 300px;
+  width: 330px;
+}
+#change_info_inner_container {
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  height: 300px;
+  width: 330px;
 }
 #product_container, #admin_search_container {
   display:flex;
@@ -73,7 +106,7 @@
   border-color: #505050;
   border-radius: 20px;
 }
-#admin_inner_container{
+#admin_inner_container {
   display: flex;
   flex-direction: column;
   margin-left: auto;
@@ -91,25 +124,10 @@
 }
 #product_detail_hr {
   width:100%
-
 }
 #admin_inner_container input,
 #admin_inner_container select {
   width: 100%;
-}
-#singup_inner_container {
-  display:flex;
-  flex-direction: column;
-  margin:auto;
-  height: 500px;
-  width: 330px;
-}
-#login_inner_container {
-  display:flex;
-  flex-direction: column;
-  margin:auto;
-  height: 300px;
-  width: 330px;
 }
 #id, #product_name, #current_password{
   border-style: solid;
@@ -278,10 +296,6 @@
 #emailNotification {
   margin-top: 5px;
   position:absolute;
-}
-#errorMessage {
-  color: red;
-  text-align: center;
 }
 #review_header{
   border-style: solid;

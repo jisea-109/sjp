@@ -30,6 +30,12 @@
                     </div>
                 </form>
             </div>
+            <script th:inline="javascript">
+                let errorMessage = /*[[${errorMessage}]]*/ '';
+                if (errorMessage) {
+                    alert(errorMessage);
+                }
+            </script>
         </div>
     </body>
 </html>

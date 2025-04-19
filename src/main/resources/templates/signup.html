@@ -1,19 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>signup</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/font.css">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
-</head>
-<body>
-    <div id="header">
-        <a href="/" class="nav" id="home">HOME</a>
-    </div>
-    <div th:if="${errorMessage}" id="errorMessage">
-        <p th:text="${errorMessage}"></p>
-    </div>
-    <div id="login_container">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title>Sign Up</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/font.css">
+    </head>
+    <body>
+    <div th:replace="~{base-layout-auth :: layout}"></div>
+    <div id="signup_container">
         <div id="singup_inner_container">
             <form method="POST" th:object="${signup}" th:action="@{/signup}">
                 <input type="text" th:field="*{username}" placeholder="ID" id="id" required

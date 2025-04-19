@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="/font.css">
         <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+        
     </head>
     <body>
         <div th:fragment="layout">
@@ -34,6 +35,12 @@
                     </div>
                 </form>
             </div>
+            <script th:inline="javascript">
+                let errorMessage = /*[[${errorMessage}]]*/ '';
+                if (errorMessage) {
+                    alert(errorMessage);
+                }
+            </script>
         </div>
     </body>
 </html>

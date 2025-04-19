@@ -9,11 +9,8 @@
     </head>
     <body>
     <div th:replace="~{base-layout :: layout}"></div> <!--base-layout-user layout 불러오기 -->
-    <div th:if="${errorMessage}" style="color: red; text-align: center;">
-        <p th:text="${errorMessage}"></p>
-    </div>
-    <div id="login_container">
-        <div id="container">
+    <div id="change_info_container">
+        <div id="change_info_inner_container">
             <form method="POST" th:object="${changePassword}" th:action="@{/change-password}">
                 <input type="password" th:field="*{currentPassword}" placeholder="CURRENT PASSWORD" id="current_password" autocomplete="off" required>
                 <input type="password" th:field="*{newPassword}" placeholder="NEW PASSWORD" id="new_password" oninput="CheckNewPassword()" autocomplete="off" required>

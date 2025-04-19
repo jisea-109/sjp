@@ -8,12 +8,10 @@
         <link rel="stylesheet" href="/font.css">
     </head>
     <body>
-    <div th:replace="~{base-layout-user :: layout}"></div> <!--base-layout-user layout 불러오기 -->
-    <div th:if="${errorMessage}" style="color: red; text-align: center;">
-        <p th:text="${errorMessage}"></p>
+    <div th:replace="~{base-layout-user :: layout}"></div>
     </div>
-    <div id="login_container">
-        <div id="container">
+    <div id="change_info_container">
+        <div id="change_info_inner_container">
             <form method="POST" th:object="${deleteAccount}" th:action="@{/deleteAccount}">
                 <input type="password" th:field="*{currentPassword}" placeholder="CURRENT PASSWORD" id="current_password" autocomplete="off" required>
                 <input type="password" th:field="*{confirmPassword}" placeholder="CONFIRM PASSWORD" id="confirm_password" autocomplete="off" required>

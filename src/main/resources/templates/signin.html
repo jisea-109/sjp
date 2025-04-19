@@ -1,18 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>signin</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/font.css">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' >
-</head>
-<body>
-    <div id="header">
-        <a href="/" class="nav" id="home">HOME</a>
-    </div>
-    <div th:if="${errorMessage}" style="color: red; text-align: center;">
-        <p th:text="${errorMessage}"></p>
-    </div>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title>Sign In</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/font.css">
+    </head>
+    <body>
+    <div th:replace="~{base-layout-auth :: layout}"></div>
     <div id="login_container">
         <div id="login_inner_container">
             <form method="POST" th:object="${signin}" th:action="@{/signin}">

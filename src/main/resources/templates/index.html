@@ -8,10 +8,6 @@
         <link rel="stylesheet" href="/font.css">
     </head>
     <body>
-    <div th:replace="~{base-layout :: layout}"></div> <!--base-layout layout 불러오기 -->
-    <div th:if="${message}" style="color: green; text-align: center; margin-top: 10px;">
-        <p th:text="${message}"></p>
-    </div>
-
+    <div th:replace="~{base-layout :: layout}"></div>
 </body>
 </html>

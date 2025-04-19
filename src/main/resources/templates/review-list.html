@@ -8,10 +8,7 @@
         <link rel="stylesheet" href="/font.css">
     </head>
     <body>
-    <div th:replace="~{base-layout-user :: layout}"></div> <!--base-layout-user layout 불러오기 -->
-    <div th:if="${errorMessage}" style="color: red; text-align: center;">
-        <p th:text="${errorMessage}"></p>
-    </div>
+    <div th:replace="~{base-layout-user :: layout}"></div>
     <div id="product_container">
         <div id="container">
             <table id="product_table">

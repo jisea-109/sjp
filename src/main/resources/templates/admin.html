@@ -8,10 +8,7 @@
         <link rel="stylesheet" href="/font.css">
     </head>
     <body>
-    <div th:replace="~{base-layout-admin :: layout}"></div> <!--base-layout-admin layout 불러오기 -->
-    <div th:if="${errorMessage}" style="color: red; text-align: center;">
-        <p th:text="${errorMessage}"></p>
-    </div>
+    <div th:replace="~{base-layout-admin :: layout}"></div>
     <div id="admin_container">
         <div id="admin_inner_container">
             <form method="POST" th:action="@{/admin/add-product}" th:object="${addProduct}">

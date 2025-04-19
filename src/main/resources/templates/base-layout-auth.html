@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title th:replace="${pageTitle}">base-auth</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/font.css">
+        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+    </head>
+    <body>
+        <div th:fragment="layout">
+            <div id="header">
+                <a class="nav" href="/" id="home">HOME</a>
+                </form>
+            </div>
+            <script th:inline="javascript">
+                let errorMessage = /*[[${errorMessage}]]*/ '';
+                if (errorMessage) {
+                    alert(errorMessage);
+                }
+            </script>
+        </div>
+    </body>
+</html>
