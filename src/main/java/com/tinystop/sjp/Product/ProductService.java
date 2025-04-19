@@ -25,4 +25,9 @@ public class ProductService {
 
         return productList;
     }
+
+    public ProductEntity GetProduct(Long productId) {
+        ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
+        return product;
+    }
 }

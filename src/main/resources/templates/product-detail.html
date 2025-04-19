@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title>Product Detail</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/font.css">
+    </head>
+    <body>
+    <div th:replace="~{base-layout :: layout}"></div>
+    <div th:if="${errorMessage}" style="color: red; text-align: center;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <div id="product_detail_container">
+        <div id="product_detail_inner_container">
+            <h1 th:text="${product.name}">상품 이름</h1>
+            <div class="product-description">
+                <pre th:text="${product.description}"></pre>
+            </div>
+            <p><strong>가격:</strong> <span th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')}"></span> 원</p>
+            <p><strong>카테고리:</strong> <span th:text="${product.component}"></span></p>
+            <p><strong>소켓:</strong> <span th:text="${product.socket}"></span></p>
+            <hr id="product_detail_hr">
+        <div class="back-button">
+            <a href="/find-product">목록으로 돌아가기</a>
+        </div>
+        </div>
+    </div>
+
+</body>
+</html>

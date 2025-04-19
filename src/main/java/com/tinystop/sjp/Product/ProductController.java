@@ -49,4 +49,12 @@ public class ProductController {
         model.addAttribute("addToCart", new AddToCartDto());
         return "product-list";
     }
+    
+    @GetMapping("product/detail")
+    public String GetProductDetail(@RequestParam("id") Long id, Model model) {
+        ProductEntity product = productService.GetProduct(id);
+        model.addAttribute("product", product);
+        return "product-detail";
+    }
+    
 }
