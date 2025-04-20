@@ -11,7 +11,7 @@
     <div th:replace="~{base-layout-admin :: layout}"></div>
     <div id="product_container">
         <div id="container">
-            <form method="POST" th:action="@{/admin/update-product-detail}" th:object="${modifyProduct}">
+            <form method="POST" th:action="@{/admin/update-product-detail}" th:object="${editProduct}" enctype="multipart/form-data">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <input type="hidden" th:field="*{id}">
                 <input type="text" th:field="*{name}" placeholder="NAME" id="product_name" required>
@@ -29,7 +29,17 @@
                 <input type="text" th:field="*{socket}" placeholder="SOCKET" id="product_socket" required>
                 <input type="number" th:field="*{price}" placeholder="PRICE" id="product_price" required>
                 <input type="number" th:field="*{quantity}" placeholder="QUANTITY" id="product_quantity"  required>
-            
+                <div th:if="${editProduct.imagePaths != null}">
+                    <label>등록된 이미지</label>
+                    <div th:each="path : ${editProduct.imagePaths}">
+                        <img th:src="@{${path}}" style="width: 200px; height: auto; margin: 5px;" />
+                        <label>
+                            <input type="checkbox" th:name="deleteImagePaths" th:value="${path}" />
+                            삭제
+                        </label>
+                    </div>
+                </div>
+                <input type="file" name="uploadImages" multiple /><br/>
                 <input type="submit" id="btnlogin" value="EDIT PRODUCT DETAIL">
             </form>
             

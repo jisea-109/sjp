@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,10 +52,10 @@ public class ReviewService {
             throw new CustomException(ALREADY_EXIST_REVIEW, "");
         }
         if (uploadImages != null) { // 리뷰에 이미지 올리는게 선택이기에 만약 이미지가 있으면 이미지 체크 후 업로드, 없을 시 넘기기
-            if (uploadImages.length > 5) { // 6개 이상 올리는지 체크
+            if (uploadImages.length > maxAllowedImages) { // 6개 이상 올리는지 체크
                 throw new CustomException(TOO_MANY_IMAGES_TO_UPLOAD, "add-review");
             }
-            checkImages(uploadImages); // 이미지 형태 체크
+            checkImages(uploadImages, "add-review"); // 이미지 형태 체크
             List<String> imagePaths = new ArrayList<>();
             imagePaths = uploadImages(uploadImages, "add-review"); // 이미지 업로드
             return reviewRepository.save(addReviewRequest.toEntity(account, product, imagePaths)); // 업로드 후 review entity에 저장
@@ -82,9 +83,9 @@ public class ReviewService {
             }
         }
 
-        if (uploadImages != null) {
+        if (Arrays.stream(uploadImages).anyMatch(file -> !file.isEmpty())) {
             checkTheNumberOfImages(currentImages, uploadImages); // 기존에 저장되있던 이미지 수량과 새로 업로드 하는 사진 수량 비교 (삭제되는 사진 갯수도 현재 이미지 수량에 포함되있음)
-            checkImages(uploadImages); // 이미지 파일 보안 체크
+            checkImages(uploadImages, "edit-review" ); // 이미지 파일 보안 체크
             List<String> uploaded = uploadImages(uploadImages, "edit-review");
             review.getImagePaths().addAll(uploaded); // 이미지 경로 추가
         }
@@ -96,16 +97,16 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    public void checkImages(MultipartFile[] uploadImages) { // 이미지 파일 보안 체크
+    public void checkImages(MultipartFile[] uploadImages, String page) { // 이미지 파일 보안 체크
         for (MultipartFile image : uploadImages) { 
             if (!allowedImageTypes.contains(image.getContentType())) { // "image/jpeg", "image/png", "image/webp", "image/gif" 파일이 있는지 확인
-                throw new CustomException(UNSUPPORTED_FILE_TYPE, "add-review");
+                throw new CustomException(UNSUPPORTED_FILE_TYPE, page);
             }
             String originalFileName = image.getOriginalFilename();
             if (originalFileName != null) {
                 for (String fileExtension : executableFileTypes) {  
                     if (originalFileName.endsWith(fileExtension)) { // 파일 확장명 체크 (jsp, html, php, java 등)
-                        throw new CustomException(UNSUPPORTED_FILE_TYPE, "add-review");
+                        throw new CustomException(UNSUPPORTED_FILE_TYPE, page);
                     }
                 }
             }

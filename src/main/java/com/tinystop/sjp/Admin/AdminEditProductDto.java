@@ -2,6 +2,9 @@ package com.tinystop.sjp.Admin;
 
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.Type.ProductCategory;
 
@@ -14,7 +17,7 @@ import lombok.Getter;
 
 @Getter
 @Setter
-public class AdminModifyProductDto {
+public class AdminEditProductDto {
     
     @NotNull(message = "상품 등록 시 ID는 자동 생성됩니다.")
     private Long id;
@@ -42,14 +45,18 @@ public class AdminModifyProductDto {
     @NotNull(message = "수량을 입력해주세요.")
     @Min(value = 0, message = "수량은 음수가 될 수 없습니다.")
     private int quantity;
+
+    private List<String> imagePaths = new ArrayList<>();
+    private List<String> deleteImagePaths = new ArrayList<>();
     
-    public static AdminModifyProductDto from(ProductEntity product) {
-        AdminModifyProductDto dto = new AdminModifyProductDto();
+    public static AdminEditProductDto from(ProductEntity product) {
+        AdminEditProductDto dto = new AdminEditProductDto();
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setPrice(product.getPrice());
         dto.setComponent(product.getComponent());
+        dto.setImagePaths(product.getImagePaths());
         dto.setSocket(product.getSocket());
         dto.setQuantity(product.getQuantity());
         return dto;

@@ -7,12 +7,15 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -20,6 +23,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -61,6 +65,11 @@ public class ProductEntity extends BaseEntity{
 
     @Column(name = "Quantity", nullable = false)
     private int quantity;
+
+    @ElementCollection
+    @CollectionTable(name = "PRODUCT_IMAGES", joinColumns = @JoinColumn(name = "PRODUCT_ID"))
+    @Column(name = "IMAGE_PATH")
+    private List<String> imagePaths = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviews;

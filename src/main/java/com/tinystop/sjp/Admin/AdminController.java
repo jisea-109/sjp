@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
@@ -35,15 +36,18 @@ public class AdminController {
     }
 
     @PostMapping("/admin/add-product")
-    public String AddProducts(@ModelAttribute("addProduct") @Valid AdminAddProductDto product, BindingResult bindingResult, Model model) {
+    public String AddProducts(@ModelAttribute("addProduct") @Valid AdminAddProductDto addProductRequest, 
+                              BindingResult bindingResult,
+                              @RequestParam("uploadImages") MultipartFile[] uploadImages,
+                              Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("addProduct", product);
+            model.addAttribute("addProduct", addProductRequest);
             return "admin";
         }
         try {
-            adminservice.addProduct(product);
+            adminservice.addProduct(addProductRequest, uploadImages);
         } catch(CustomException error) {
-            model.addAttribute("addProduct", product);
+            model.addAttribute("addProduct", addProductRequest);
             model.addAttribute("errorMessage", error.getMessage());
             return "admin";
         }
@@ -59,30 +63,28 @@ public class AdminController {
     @GetMapping("/admin/update-product")
     public String UpdateProductPage(@RequestParam("id") Long id, Model model) {
         ProductEntity product = adminservice.getProductById(id);
-        AdminModifyProductDto modifyProductDto = AdminModifyProductDto.from(product);
+        AdminEditProductDto editProductDto = AdminEditProductDto.from(product);
         
-        model.addAttribute("modifyProduct", modifyProductDto);
+        model.addAttribute("editProduct", editProductDto);
         model.addAttribute("productCategories", Arrays.asList(ProductCategory.values()));
         return "update-product-detail";
     }
 
     @PostMapping("/admin/update-product-detail")
-    public String UpdateProductDetailPage(@ModelAttribute("modifyProduct") @Valid AdminModifyProductDto modifyProduct, BindingResult bindingResult,  Model model) {
+    public String UpdateProductDetailPage(@ModelAttribute("editProduct") @Valid AdminEditProductDto editProductRequest,
+                                          BindingResult bindingResult,
+                                          @RequestParam("uploadImages") MultipartFile[] uploadImages,
+                                          Model model) {
         if (bindingResult.hasErrors()) {
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                System.out.println("Field: " + error.getField() + " / Message: " + error.getDefaultMessage());
-            }
-            model.addAttribute("update-product-detail", modifyProduct);
+            model.addAttribute("update-product-detail", editProductRequest);
             return "update-product-detail";
         }
         try {
-            adminservice.updateProduct(modifyProduct);
+            adminservice.updateProduct(editProductRequest, uploadImages);
         } catch(CustomException error) {
-            model.addAttribute("update-product-detail", modifyProduct);
+            model.addAttribute("update-product-detail", editProductRequest);
             model.addAttribute("errorMessage", error.getMessage());
-            return "update-product-detail";
         }
-        adminservice.updateProduct(modifyProduct);
         return "redirect:/find-product";
     }
     

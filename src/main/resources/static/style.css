@@ -289,13 +289,13 @@
   width: 310px;
 }
 #product_table, #product_table_content {
-  border:1px solid black;
+  border: 1px solid rgb(158, 158, 158);
   border-collapse: collapse;
   text-align: center;
 }
 #emailNotification {
   margin-top: 5px;
-  position:absolute;
+  position: absolute;
 }
 #review_header{
   border-style: solid;

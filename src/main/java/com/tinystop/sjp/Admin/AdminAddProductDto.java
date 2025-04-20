@@ -1,5 +1,7 @@
 package com.tinystop.sjp.Admin;
 
+import java.util.List;
+
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.Type.ProductCategory;
 import com.tinystop.sjp.Type.ProductStockStatus;
@@ -56,6 +58,22 @@ public class AdminAddProductDto {
             .price(this.price)
             .component(this.component)
             .socket(this.socket)
+            .quantity(this.quantity)
+            .stockStatus(this.stockStatus)
+            .build();
+    }
+
+    public ProductEntity toEntity(List<String> imagePaths) {
+        if (this.quantity > 0) {stockStatus = ProductStockStatus.IN_STOCK;}
+        else {stockStatus = ProductStockStatus.SOLD_OUT;}
+        return ProductEntity.builder()
+            .id(this.id)
+            .name(this.name)
+            .description(this.description)
+            .price(this.price)
+            .component(this.component)
+            .socket(this.socket)
+            .imagePaths(imagePaths)
             .quantity(this.quantity)
             .stockStatus(this.stockStatus)
             .build();

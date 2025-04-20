@@ -55,7 +55,7 @@ public class ReviewEntity extends BaseEntity{
     private int rating;
 
     @ElementCollection
-    @CollectionTable(name = "REVIEW_IMAGES", joinColumns = @JoinColumn(name = "review_id"))
+    @CollectionTable(name = "REVIEW_IMAGES", joinColumns = @JoinColumn(name = "REVIEW_ID"))
     @Column(name = "IMAGE_PATH")
     private List<String> imagePaths = new ArrayList<>();
 

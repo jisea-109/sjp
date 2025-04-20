@@ -30,12 +30,14 @@
                     </div>
                 </form>
             </div>
-            <script th:inline="javascript">
-                let errorMessage = /*[[${errorMessage}]]*/ '';
-                if (errorMessage) {
-                    alert(errorMessage);
-                }
-            </script>
+            <body th:attr="data-error=${errorMessage}">
+                <script>
+                    const error = document.body.dataset.error;
+                    if (error && error !== 'null') {
+                        alert(error);
+                    }
+                </script>
+            </body>
         </div>
     </body>
 </html>

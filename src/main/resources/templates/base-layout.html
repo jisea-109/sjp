@@ -17,11 +17,11 @@
                 </th:block>
                 <th:block sec:authorize="isAuthenticated()">
                     <a class="nav" href="/cart/list" sec:authorize="hasAuthority('ROLE_USER')">CART</a>
-                    <a class="nav" sec:authorize="hasAuthority('ROLE_USER')">WISHLIST</a>
+                    <!-- <a class="nav" sec:authorize="hasAuthority('ROLE_USER')">WISHLIST</a> -->
+                    <a class="nav" href="/order/list" sec:authorize="hasAuthority('ROLE_USER')">ORDER</a>
                     <div class="dropdown">
                         <a class="nav" th:text="${#authentication.name}"></a>
                         <div class="dropdown-content">
-                            <a href="/order/list" sec:authorize="hasAuthority('ROLE_USER')">ORDER</a>
                             <a href="/review/list" sec:authorize="hasAuthority('ROLE_USER')" >REVIEW</a>
                             <th:block sec:authorize="hasRole('ADMIN')">
                                 <a href="/admin">ADMIN PAGE</a>
@@ -37,12 +37,14 @@
                     </div>
                 </form>
             </div>
-            <script th:inline="javascript">
-                let errorMessage = /*[[${errorMessage}]]*/ '';
-                if (errorMessage) {
-                    alert(errorMessage);
-                }
-            </script>
+            <body th:attr="data-error=${errorMessage}">
+                <script>
+                    const error = document.body.dataset.error;
+                    if (error && error !== 'null') {
+                        alert(error);
+                    }
+                </script>
+            </body>
         </div>
     </body>
 </html>

@@ -11,7 +11,7 @@
     <div th:replace="~{base-layout-admin :: layout}"></div>
     <div id="admin_container">
         <div id="admin_inner_container">
-            <form method="POST" th:action="@{/admin/add-product}" th:object="${addProduct}">
+            <form method="POST" th:action="@{/admin/add-product}" th:object="${addProduct}" enctype="multipart/form-data">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <input type="text" th:field="*{name}" placeholder="NAME" id="product_name" required>
                 <div class="textarea-wrapper">
@@ -24,6 +24,7 @@
                 <input type="text" th:field="*{socket}" placeholder="SOCKET" id="product_socket" required>
                 <input type="number" th:field="*{price}" placeholder="PRICE" id="product_price" required>
                 <input type="number" th:field="*{quantity}" placeholder="QUANTITY" id="product_quantity"  required>
+                <input type="file" name="uploadImages" multiple /><br/>
                 <input type="submit" id="btnlogin" value="ADD PRODUCT"></button>
             </form>
         </div>
