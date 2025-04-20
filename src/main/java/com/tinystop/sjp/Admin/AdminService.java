@@ -145,7 +145,7 @@ public class AdminService {
                     }
 
                     image.transferTo(dest);
-                    imagePaths.add("/reviews/" + savedFilename);
+                    imagePaths.add("/ProductPhoto/" + savedFilename);
                 } catch (IOException e) {
                     throw new CustomException(FAILED_TO_UPLOAD_IMAGE, page);
                 }
@@ -157,6 +157,14 @@ public class AdminService {
     public void removeProduct(Long productId) {
         ProductEntity toRemoveProduct = this.adminRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list"));
 
+        if (toRemoveProduct.getImagePaths() != null) {  // 리뷰가 사진이 있으면 삭제
+            for (String path : toRemoveProduct.getImagePaths()) { // 하나하나 삭제하게끔 for loop 사용
+                File file = new File("src/main/resources/static" + path);
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        }
         this.adminRepository.delete(toRemoveProduct);
     }
 }
