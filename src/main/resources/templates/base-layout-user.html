@@ -35,14 +35,14 @@
                     </div>
                 </form>
             </div>
-            <body th:attr="data-error=${errorMessage}">
+            <div th:attr="data-error=${errorMessage}">
                 <script>
-                    const error = document.body.dataset.error;
+                    const error = document.querySelector('[data-error]').dataset.error;
                     if (error && error !== 'null') {
                         alert(error);
                     }
                 </script>
-            </body>
+            </div>
         </div>
     </body>
 </html>

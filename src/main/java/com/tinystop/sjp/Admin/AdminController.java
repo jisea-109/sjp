@@ -2,6 +2,7 @@ package com.tinystop.sjp.Admin;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -41,13 +42,18 @@ public class AdminController {
                               @RequestParam("uploadImages") MultipartFile[] uploadImages,
                               Model model) {
         if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
+
+            model.addAttribute("errorMessage", errors);
             model.addAttribute("addProduct", addProductRequest);
+            model.addAttribute("productCategories", Arrays.asList(ProductCategory.values()));
             return "admin";
         }
         try {
             adminservice.addProduct(addProductRequest, uploadImages);
         } catch(CustomException error) {
             model.addAttribute("addProduct", addProductRequest);
+            System.out.println(error.getMessage());
             model.addAttribute("errorMessage", error.getMessage());
             return "admin";
         }
@@ -76,7 +82,11 @@ public class AdminController {
                                           @RequestParam("uploadImages") MultipartFile[] uploadImages,
                                           Model model) {
         if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
+
+            model.addAttribute("errorMessage", errors);
             model.addAttribute("update-product-detail", editProductRequest);
+            model.addAttribute("productCategories", Arrays.asList(ProductCategory.values()));
             return "update-product-detail";
         }
         try {

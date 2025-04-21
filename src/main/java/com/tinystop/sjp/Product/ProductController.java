@@ -43,7 +43,6 @@ public class ProductController {
                 productRatings.put(product.getId(), BigDecimal.ZERO);
             }
         }
-
         model.addAttribute("products", products);
         model.addAttribute("productRatings", productRatings);
         model.addAttribute("addToCart", new AddToCartDto());
@@ -54,6 +53,7 @@ public class ProductController {
     public String GetProductDetail(@RequestParam("id") Long id, Model model) {
         ProductEntity product = productService.GetProduct(id);
         model.addAttribute("product", product);
+        model.addAttribute("addToCart", new AddToCartDto());
         return "product-detail";
     }
     

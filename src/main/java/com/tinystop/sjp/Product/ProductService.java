@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.tinystop.sjp.Exception.CustomException;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ProductService {
@@ -22,7 +24,10 @@ public class ProductService {
         if (productName != "" && productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND,"product-list");
         }
-
+        for (ProductEntity product : productList) {
+            System.out.println("Product: " + product.getName());
+            System.out.println("ImagePaths: " + product.getImagePaths());
+        }
         return productList;
     }
 

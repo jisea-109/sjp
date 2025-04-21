@@ -10,11 +10,11 @@ function SendSecurityCode() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ email })
     })
-    .then(res => res.text())
-    .then(msg => {
+    .then(res => res.json()) 
+    .then(data => {
         document.getElementById("emailNotification").style.color = "green";
-        document.getElementById("emailNotification").innerText = "이메일로 인증번호가 전송되었습니다.";
-        document.getElementById("verifyCodeBtn").disabled = false;
+        document.getElementById("emailNotification").innerText = data.message;
+        document.getElementById("verify_code_btn").disabled = false;
         startTimer();
     })
     .catch(err => {
@@ -50,6 +50,7 @@ function VerifySecurityCode() {
     .then(msg => {
         document.getElementById("emailNotification").style.color = "green";
         document.getElementById("emailNotification").innerText = "인증 완료되었습니다.";
+        stopTimer();
     })
     .catch(err => {
         document.getElementById("emailNotification").style.color = "red";

@@ -1,5 +1,8 @@
 package com.tinystop.sjp.Auth;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +10,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +50,8 @@ public class AuthController {
     @PostMapping("signup")
     public String SigUp(@ModelAttribute("signup") @Valid SignUpDto signupRequest, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
+            model.addAttribute("errorMessage", errors);
             model.addAttribute("signup", signupRequest);
             return "signup";
         }
@@ -62,6 +68,8 @@ public class AuthController {
     @PostMapping("signin")
     public String SignIn(@ModelAttribute("signin") @Valid SigninDto signinRequest, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
+            model.addAttribute("errorMessage", errors);
             model.addAttribute("signin", signinRequest);
             return "signin";
         }
