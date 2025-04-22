@@ -26,10 +26,8 @@
                 <tbody>
                     <tr th:each="review : ${reviewList}">
                         <td id="product_table_content">
-                            <div th:if="${review.imagePaths != null}">
-                                <img th:each="path : ${review.imagePaths}" 
-                                     th:src="@{${path}}" 
-                                     style="width: 200px; height: auto; margin: 5px;" />
+                            <div th:if="${review.imagePaths != null and #lists.size(review.imagePaths) > 0}">
+                                <img th:each="path : ${review.imagePaths[0]}" th:src="@{${path}}" style="width: 300px; height: 200px;" />
                             </div>
                         </td>
                         <td id="product_table_content" th:text="${review.product.name}"></td>

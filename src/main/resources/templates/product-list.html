@@ -6,75 +6,59 @@
         <title>Product List</title>
         <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="/font.css">
+        <link rel="stylesheet" href="/product.css">
     </head>
     <body>
     <div th:replace="~{base-layout :: layout}"></div>
         <div id="product_container">
             <div id="container">
-                <table id="product_table">
-                    <thead>
-                        <tr>
-                            <th id="product_table_content"></th>
-                            <th id="product_table_content">NAME</th>
-                            <th id="product_table_content">COMPONENT</th>
-                            <th id="product_table_content">SOCKET</th>
-                            <th id="product_table_content">PRICE</th>
-                            <th id="product_table_content">RATING</th>
-                            <th id="product_table_content"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="product : ${products}">
-                            <td id="product_table_content">
-                                <div th:if="${product.imagePaths != null and #lists.size(product.imagePaths) > 0}">
-                                    <img th:src="@{${product.imagePaths[0]}}" style="width: 300px; height: 200px;">
-                                </div>
-                            </td>
-                            <td id="product_table_content">
-                                <form method="GET" action="/product/detail">
-                                    <input type="hidden" name="id" th:value="${product.id}">
-                                    <button type="submit" th:text="${product.name}" style="border:none; background:none; cursor:pointer;"></button>
-                                </form>
-                            </td>
-                            <td id="product_table_content" th:text="${product.component}"></td>
-                            <td id="product_table_content" th:text="${product.socket}"></td>
-                            <td id="product_table_content">
-                                <span th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')}"></span>
-                                <span> 원</span>
-                            </td>
-                            <td id="product_table_content">
-                                <span th:if="${productRatings[product.id] != 0}" th:text="${#numbers.formatDecimal(productRatings[product.id], 1, 1)}"></span>
-                                <span th:if="${productRatings[product.id] == 0}">리뷰 X</span>
-                            </td>
-                            <td id="product_table_content">
-                                <form method="GET" action="/admin/update-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
-                                    <input type="hidden" name="id" th:value="${product.id}">
-                                    <button type="submit">변경하기</button>
-                                </form>
-                                <form method="POST" action="/admin/remove-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
-                                    <input type="hidden" name="id" th:value="${product.id}">
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                    <button type="submit">삭제하기</button>
-                                </form>
-                                <form method="GET" action="/product/detail">
-                                    <input type="hidden" name="id" th:value="${product.id}">
-                                    <button type="submit" th:disabled="${product.quantity < 0}">상품 보러가기</button>
-                                </form>
-                                <form method="GET" action="/review/productReview">
-                                    <input type="hidden" name="id" th:value="${product.id}">
-                                    <button type="submit" th:disabled="${productRatings[product.id] == 0}">리뷰보러 가기</button>
-                                </form>
-                                <form method="POST" th:action="@{/cart/add}" th:object="${addToCart}" sec:authorize="hasAuthority('ROLE_USER')">
-                                    <input type="hidden" name="productId" th:value="${product.id}">
-                                    <input type="number" th:field="*{quantity}" value="1" min="1">
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                    <button type="submit" th:if="${product.quantity > 0}">장바구니 담기</button>
-                                    <span th:unless="${product.quantity > 0}">품절</span>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div id="product-card" th:each="product : ${products}">
+                    <div id="product_image" th:if="${product.imagePaths != null and #lists.size(product.imagePaths) > 0}">
+                        <a th:href="@{/product/detail(id=${product.id})}">
+                            <img class="product_image" th:src="@{${product.imagePaths[0]}}">
+                        </a>
+                    </div>
+                    <div class="product-info">
+                        <a th:href="@{/product/detail(id=${product.id})}">
+                            <h2 th:text="${product.name}"></h2>
+                        </a>
+                        <p><strong>소켓:</strong> <span th:text="${product.socket}"></span></p>
+                        <p><strong>부품: </strong><span th:text="${product.component}"></span></p>
+                        <p>
+                            <strong><span th:if="${productRatings[product.id] != 0}" th:text="${#numbers.formatDecimal(productRatings[product.id], 1, 1)}"></span></strong>
+                            <span th:if="${productRatings[product.id] == 0}">리뷰 X</span>
+                        </p>
+                    </div>
+                    <div class="product-actions">
+                        <div id="product-price">
+                            <span th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')}"></span> 원</p>
+                        </div>
+                        <div class="product-buttons">
+                            <form method="POST" th:action="@{/cart/add}" th:object="${addToCart}" sec:authorize="hasAuthority('ROLE_USER')">
+                                <input type="hidden" name="productId" th:value="${product.id}">
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" th:if="${product.quantity > 0}" class="cart-button">장바구니 담기</button>
+                                <span th:unless="${product.quantity > 0}">품절</span>
+                            </form>
+                            <form method="GET" action="/review/productReview">
+                                <input type="hidden" name="id" th:value="${product.id}">
+                                <button type="submit" th:disabled="${productRatings[product.id] == 0}" class="review-button">
+                                    리뷰 보러가기
+                                </button>
+                            </form>
+                            <form method="GET" action="/admin/update-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                <input type="hidden" name="id" th:value="${product.id}">
+                                <button type="submit">변경하기</button>
+                            </form>
+                            <form method="POST" action="/admin/remove-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                <input type="hidden" name="id" th:value="${product.id}">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit">삭제하기</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
