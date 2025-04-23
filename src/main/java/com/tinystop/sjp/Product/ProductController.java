@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.tinystop.sjp.Cart.AddToCartDto;
 import com.tinystop.sjp.Exception.CustomException;
+import com.tinystop.sjp.Review.ReviewEntity;
 import com.tinystop.sjp.Review.ReviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -50,10 +51,14 @@ public class ProductController {
     }
     
     @GetMapping("product/detail")
-    public String GetProductDetail(@RequestParam("id") Long id, Model model) {
-        ProductEntity product = productService.GetProduct(id);
+    public String GetProductDetail(@RequestParam("id") Long productId, Model model) {
+        ProductEntity product = productService.GetProduct(productId);
+        List<ReviewEntity> reviewList = reviewService.productReviewList(productId);
+
         model.addAttribute("product", product);
         model.addAttribute("addToCart", new AddToCartDto());
+        model.addAttribute("reviewList", reviewList);
+        
         return "product-detail";
     }
     

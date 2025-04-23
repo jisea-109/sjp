@@ -31,7 +31,9 @@ public class SecurityConfig {
         "deleteAccountPage",
         "/review/productReview",
         "/product/detail",
+        "/reviews/**",
         "/ProductPhoto/**"
+
     };
     String[] PermittedPOST = { // POST methods list
         "/signin",

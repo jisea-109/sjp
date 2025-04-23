@@ -204,9 +204,9 @@ public class ReviewService {
         ProductEntity product = this.productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list"));
         List<ReviewEntity> reviews = this.reviewRepository.findByProduct(product);
 
-        if (reviews.isEmpty()) {
-            throw new CustomException(REVIEW_NOT_FOUND, "product-list");
-        }
+        // if (reviews.isEmpty()) { product-detail.html에 들어갔을 때 리뷰 없는데 throw exception 하면 들어가질 못해서 오류 없이 작동하게끔 주석처리함
+        //     throw new CustomException(REVIEW_NOT_FOUND, "product-list");
+        // }
 
         return reviews;
     }

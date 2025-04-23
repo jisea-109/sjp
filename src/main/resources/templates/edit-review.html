@@ -14,7 +14,9 @@
             <form method="POST" th:action="@{/review/edit}" th:object="${editReview}" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}">
                 <input type="text" th:field="*{reviewTitle}" id="review_header" placeholder="HEADER" required>
-                <input type="text" th:field="*{reviewText}" id="review_text" placeholder="TEXT" required>
+                <div class="textarea-wrapper">
+                    <textarea th:field="*{reviewText}" id="review_text" rows="5" cols="40" placeholder="TEXT" required></textarea>
+                </div>
                 <input type="number" th:field="*{rating}" id="review_rating" placeholder="RATING" required>
                 <div th:if="${editReview.imagePaths != null}">
                     <label>등록된 이미지</label>

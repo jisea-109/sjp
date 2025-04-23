@@ -41,12 +41,6 @@
                                 <button type="submit" th:if="${product.quantity > 0}" class="cart-button">장바구니 담기</button>
                                 <span th:unless="${product.quantity > 0}">품절</span>
                             </form>
-                            <form method="GET" action="/review/productReview">
-                                <input type="hidden" name="id" th:value="${product.id}">
-                                <button type="submit" th:disabled="${productRatings[product.id] == 0}" class="review-button">
-                                    리뷰 보러가기
-                                </button>
-                            </form>
                             <form method="GET" action="/admin/update-product" sec:authorize="hasAuthority('ROLE_ADMIN')">
                                 <input type="hidden" name="id" th:value="${product.id}">
                                 <button type="submit">변경하기</button>
