@@ -41,14 +41,22 @@
                 <div id="no_reviews" th:if="${#lists.size(reviewList) < 1}">
                     <p>등록된 리뷰가 없습니다.</p>
                 </div>
-                <div id="review-card" th:each="review : ${reviewList}">
+                <div id="review_card" th:each="review : ${reviewList}">
                     <div th:if="${review.imagePaths != null and #lists.size(review.imagePaths) > 0}">
-                        <img th:src="@{${review.imagePaths[0]}}" alt="리뷰 이미지" />
+                        <img th:each="path : ${review.imagePaths}" th:src="@{${path}}"/>
                     </div>
                     <div class="review-text">
-                        <p th:text="'평점: ' + ${review.rating}" class="review-rating"></p>
-                        <p th:text="${review.reviewTitle}" class="review-title"></p>
-                        <p th:text="${review.reviewText}" class="review-body"></p>
+                        <div class="review_date_and_rating">
+                            <p th:text="'평점: ' + ${review.rating}" class="review_rating"></p>
+                            <div th:if="${review.createdAt != review.modifiedAt}">
+                                <p th:text="${#temporals.format(review.modifiedAt, 'yy년 MM월 dd일 HH:mm 수정됨')}" class="review_date"></p>
+                            </div>
+                            <div th:unless="${review.createdAt != review.modifiedAt}">
+                                <p th:text="${#temporals.format(review.createdAt, 'yy년 MM월 dd일 HH:mm 작성됨')}" class="review_date"></p>
+                            </div>
+                        </div>
+                        <p th:text="${review.reviewTitle}" class="review_title"></p>
+                        <p th:text="${review.reviewText}" class="review_body"></p>
                     </div>
                 </div>
             </div>

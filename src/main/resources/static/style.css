@@ -139,7 +139,7 @@
   text-indent: 10px;
 }
 #password, #email, #new_password, #confirm_password, #product_component,
-#product_socket, #product_price, #product_quantity, 
+#product_socket, #product_quantity, 
 #product_component, #product_socket, #product_price, #product_quantity {
   margin-top: 30px;
   border-style: solid;
