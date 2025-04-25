@@ -6,11 +6,12 @@
         <title>Edit Review</title>
         <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="/font.css">
+        <link rel="stylesheet" href="/review.css">
     </head>
     <body>
     <div th:replace="~{base-layout-user :: layout}"></div>
-    <div id="product_container">
-        <div id="container">
+    <div id="review_container">
+        <div id="review_edit_container">
             <form method="POST" th:action="@{/review/edit}" th:object="${editReview}" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}">
                 <input type="text" th:field="*{reviewTitle}" id="review_header" placeholder="HEADER" required>
@@ -19,13 +20,14 @@
                 </div>
                 <input type="number" th:field="*{rating}" id="review_rating" placeholder="RATING" min="1" max="10" required>
                 <div th:if="${editReview.imagePaths != null}">
-                    <label>등록된 이미지</label>
-                    <div th:each="path : ${editReview.imagePaths}">
-                        <img th:src="@{${path}}" style="width: 200px; height: auto; margin: 5px;" />
-                        <label>
-                            <input type="checkbox" th:name="deleteImagePaths" th:value="${path}" />
-                            삭제
-                        </label>
+                    <div id="review_added_photos">
+                        <div th:each="path : ${editReview.imagePaths}">
+                            <img id="review_added_photo" th:src="@{${path}}"/>
+                            <label>
+                                <input type="checkbox" th:name="deleteImagePaths" th:value="${path}" />
+                                삭제
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <input type="file" name="uploadImages" multiple /><br/>

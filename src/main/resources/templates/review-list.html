@@ -12,40 +12,39 @@
     <div th:replace="~{base-layout-user :: layout}"></div>
     <div id="review_container">
         <div id="review_list_container">
-                <div class="review_card" th:each="review : ${reviewList}">
-                    <div th:if="${review.imagePaths != null and #lists.size(review.imagePaths) > 0}">
-                        <a th:href="@{/product/detail(id=${review.product.id})}">
-                            <img th:src="${review.imagePaths[0]}"/>
-                        </a>
-                    </div>
-                    <div class="review_info">
-                        <a th:href="@{/product/detail(id=${review.product.id})}">
-                            <h2 th:text="${review.product.name}"></h2>
-                        </a>
-                        <p th:text="'리뷰 제목: ' + ${review.reviewTitle}"></p>
-                        <div id="review_date">
-                            <p th:text="'작성 날짜: ' + ${#temporals.format(review.createdAt, 'yy년 MM월 dd일 HH:mm')}"></p>
-                            <div th:if="${review.createdAt != review.modifiedAt}">
-                                <p th:text="'수정 날짜: ' + ${#temporals.format(review.modifiedAt, 'yy년 MM월 dd일 HH:mm')}"></p>
-                            </div>
+            <div class="review_card" th:each="review : ${reviewList}">
+                <div th:if="${review.imagePaths != null and #lists.size(review.imagePaths) > 0}">
+                    <a th:href="@{/product/detail(id=${review.product.id})}">
+                        <img th:src="${review.imagePaths[0]}"/>
+                    </a>
+                </div>
+                <div class="review_info">
+                    <a th:href="@{/product/detail(id=${review.product.id})}">
+                        <h2 th:text="${review.product.name}"></h2>
+                    </a>
+                    <p th:text="'제목: ' + ${review.reviewTitle}"></p>
+                    <div id="review_date">
+                        <p th:text="'작성 날짜: ' + ${#temporals.format(review.createdAt, 'yy년 MM월 dd일 HH:mm')}"></p>
+                        <div th:if="${review.createdAt != review.modifiedAt}">
+                            <p th:text="'수정 날짜: ' + ${#temporals.format(review.modifiedAt, 'yy년 MM월 dd일 HH:mm')}"></p>
                         </div>
                     </div>
-                    <div id="review_card_rightside">
-                        <div id="product-price">
-                            <p th:text="${#numbers.formatInteger(review.product.price, 3, 'COMMA') + '원'}"></p>
-                        </div>
-                        <div id="review_btn">
-                            <form method="GET" action="/review/edit">
-                                <input type="hidden" name="id" th:value="${review.id}">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <button type="submit">수정하기</button>
-                            </form>
-                            <form method="POST" th:action="@{/review/remove}" th:object="${removeReview}">
-                                <input type="hidden" name="id" th:value="${review.id}">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <button type="submit">삭제하기</button>
-                            </form>
-                        </div>
+                </div>
+                <div id="review_card_rightside">
+                    <div id="product-price">
+                        <p th:text="${#numbers.formatInteger(review.product.price, 3, 'COMMA') + '원'}"></p>
+                    </div>
+                    <div id="review_btn">
+                        <form method="GET" action="/review/edit">
+                            <input type="hidden" name="id" th:value="${review.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <button type="submit">수정하기</button>
+                        </form>
+                        <form method="POST" th:action="@{/review/remove}" th:object="${removeReview}">
+                            <input type="hidden" name="id" th:value="${review.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <button type="submit">삭제하기</button>
+                        </form>
                     </div>
                 </div>
             </div>

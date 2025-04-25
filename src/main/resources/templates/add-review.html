@@ -6,11 +6,12 @@
         <title>Add Review</title>
         <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="/font.css">
+        <link rel="stylesheet" href="/review.css">
     </head>
     <body>
     <div th:replace="~{base-layout-user :: layout}"></div>
-    <div id="product_container">
-        <div id="container">
+    <div id="review_container">
+        <div id="review_edit_container">
             <form method="POST" th:action="@{/review/add}" th:object="${addReview}" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{productId}">
                 <input type="text" th:field="*{reviewTitle}" id="review_header" placeholder="HEADER" required>

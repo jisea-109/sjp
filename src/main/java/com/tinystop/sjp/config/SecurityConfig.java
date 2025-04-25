@@ -22,6 +22,8 @@ public class SecurityConfig {
         "/product.css",
         "/product-detail.css",
         "/review.css",
+        "/order.css",
+        "/cart.css",
         "/js/signup.js",
         "/signinPage",
         "/debug/session",
