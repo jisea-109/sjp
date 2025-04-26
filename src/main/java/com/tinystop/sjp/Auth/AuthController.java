@@ -36,11 +36,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("")
-    public String home() {
-        return "index";
-    }
-
     @GetMapping("signupPage") // signup page 
     public String SignupPage(Model model) {
         model.addAttribute("signup", new SignUpDto());

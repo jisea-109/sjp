@@ -1,6 +1,7 @@
 package com.tinystop.sjp.Product;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.tinystop.sjp.Cart.AddToCartDto;
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Review.ReviewEntity;
 import com.tinystop.sjp.Review.ReviewService;
+import com.tinystop.sjp.Type.ProductCategory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,13 @@ public class ProductController {
 
     private final ProductService productService;
     private final ReviewService reviewService;
+
+    @GetMapping("")
+    public String home(Model model) {
+        List<ProductCategory> productCategories = Arrays.asList(ProductCategory.values());
+        model.addAttribute("productCategories", productCategories);
+        return "main";
+    }
 
     @GetMapping("find-product")
     public String GetProducts(@RequestParam(name = "search", required = false, defaultValue = "") String name, Model model) {
@@ -60,6 +69,27 @@ public class ProductController {
         model.addAttribute("reviewList", reviewList);
         
         return "product-detail";
+    }
+    
+    @GetMapping("find-product/component")
+    public String GetProductsByComponent(@RequestParam("category") String component, Model model) {
+        List<ProductEntity> products;
+        products = productService.GetProductsByComponent(component);
+
+        Map<Long, BigDecimal> productRatings = new HashMap<>();
+        for (ProductEntity product : products) {
+            try {
+                BigDecimal rating = reviewService.getReviewAverage(product.getId());
+                productRatings.put(product.getId(), rating);
+            } catch (CustomException error) {
+                productRatings.put(product.getId(), BigDecimal.ZERO);
+            }
+        }
+
+        model.addAttribute("products", products);
+        model.addAttribute("productRatings", productRatings);
+        model.addAttribute("addToCart", new AddToCartDto());
+        return "product-list";
     }
     
 }

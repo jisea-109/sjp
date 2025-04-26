@@ -53,7 +53,6 @@ public class AdminController {
             adminservice.addProduct(addProductRequest, uploadImages);
         } catch(CustomException error) {
             model.addAttribute("addProduct", addProductRequest);
-            System.out.println(error.getMessage());
             model.addAttribute("errorMessage", error.getMessage());
             return "admin";
         }

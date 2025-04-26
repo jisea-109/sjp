@@ -11,7 +11,7 @@
     <body>
         <div th:fragment="layout">
             <div id="header">
-                <a class="nav" href="/" id="home">HOME</a>
+                <a class="nav" href="/" id="home">TINYSTOP</a>
                 <th:block sec:authorize="isAuthenticated()">
                     <div class="dropdown">
                         <a class="nav" th:text="${#authentication.name}"></a>

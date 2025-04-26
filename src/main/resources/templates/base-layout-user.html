@@ -12,14 +12,13 @@
     <body>
         <div th:fragment="layout">
             <div id="header">
-                <a class="nav" href="/" id="home">HOME</a>
+                <a class="nav" href="/" id="home">TINYSTOP</a>
                 <th:block sec:authorize="!isAuthenticated()">
                     <a class="nav" href="/signinPage">SIGN-IN</a>
                 </th:block>
                 <th:block sec:authorize="isAuthenticated()">
                     <a class="nav" href="/cart/list" sec:authorize="hasAuthority('ROLE_USER')">CART</a>
                     <a class="nav" href="/order/list" sec:authorize="hasAuthority('ROLE_USER')">ORDER</a>
-                    <!-- <a class="nav" sec:authorize="hasAuthority('ROLE_USER')">WISHLIST</a> -->
                     <div class="dropdown">
                         <a class="nav" th:text="${#authentication.name}"></a>
                         <div class="dropdown-content">

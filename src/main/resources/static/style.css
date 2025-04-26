@@ -114,15 +114,6 @@
   width: 410px;
   height: auto;
 }
-/* #product_detail_container {
-  display:flex;
-  flex-direction: column;
-  margin: -40px auto 0px auto;
-  width: 800px;
-  height: 850px;
-  border-right: 1px solid #ececec;
-  border-left: 1px solid #ececec;
-} */
 #admin_inner_container input,
 #admin_inner_container select {
   width: 100%;

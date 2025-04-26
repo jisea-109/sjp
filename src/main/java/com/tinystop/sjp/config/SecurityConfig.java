@@ -24,6 +24,7 @@ public class SecurityConfig {
         "/review.css",
         "/order.css",
         "/cart.css",
+        "/main.css",
         "/js/signup.js",
         "/signinPage",
         "/debug/session",
@@ -35,8 +36,8 @@ public class SecurityConfig {
         "/review/productReview",
         "/product/detail",
         "/reviews/**",
-        "/ProductPhoto/**"
-
+        "/ProductPhoto/**",
+        "/find-product/component"
     };
     String[] PermittedPOST = { // POST methods list
         "/signin",
