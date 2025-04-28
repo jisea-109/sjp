@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 
     private final ProductRepository productRepository;
-
+    
     public List<ProductEntity> GetProducts(String productName) {
         List<ProductEntity> productList = productRepository.findAllByNameContaining(productName);
 
