@@ -54,6 +54,20 @@ public class ProductService {
     public Page<ProductEntity> GetProductsByComponent(String component, Pageable pageable) {
 
         ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
+        Page<ProductEntity> productList = productRepository.findAllByComponent(category, pageable);
+
+        for (ProductEntity product : productList) {
+            product.getImagePaths().size(); // Hibernate Lazy 방지
+        }
+        
+        if (productList.isEmpty()) {
+            throw new CustomException(PRODUCT_NOT_FOUND,"main");
+        }
+        return productList;
+    }
+
+    public Page<ProductEntity> GetProductsByComponentOrderByDate(String component, Pageable pageable) {
+        ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
         Page<ProductEntity> productList = productRepository.findProductsByComponentOrderByModifiedAtDesc(category, pageable);
 
         for (ProductEntity product : productList) {

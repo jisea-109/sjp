@@ -70,7 +70,7 @@ public class ProductController {
         boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
     
         if (isCategory) {
-            products = productService.GetProductsByComponent(searchValue, pageable);
+            products = productService.GetProductsByComponentOrderByDate(searchValue, pageable);
         } else {
             products = productService.GetProductsByNameOrderByDate(searchValue, pageable);
         }
