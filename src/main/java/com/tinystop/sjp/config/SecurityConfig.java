@@ -29,6 +29,7 @@ public class SecurityConfig {
         "/signinPage",
         "/debug/session",
         "/find-product",
+        "/find-product/date",
         "/check-username",
         "/check-email",
         "/change-info",
