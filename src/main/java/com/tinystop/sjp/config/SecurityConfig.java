@@ -30,6 +30,8 @@ public class SecurityConfig {
         "/debug/session",
         "/find-product",
         "/find-product/date",
+        "/find-product/component",
+        "/find-product/sales",
         "/check-username",
         "/check-email",
         "/change-info",
@@ -38,7 +40,6 @@ public class SecurityConfig {
         "/product/detail",
         "/reviews/**",
         "/ProductPhoto/**",
-        "/find-product/component"
     };
     String[] PermittedPOST = { // POST methods list
         "/signin",

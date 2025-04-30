@@ -42,7 +42,7 @@ public class ProductController {
     public String GetProducts(@RequestParam(name = "search", required = false, defaultValue = "") String name, 
                                             @PageableDefault(size = 10) Pageable pageable,
                                             Model model) {
-        Page<ProductEntity> products = productService.GetProductsByName(name, pageable);
+        Page<ProductEntity> products = productService.getProductsByName(name, pageable);
 
         Map<Long, BigDecimal> productRatings = new HashMap<>();
         for (ProductEntity product : products) {
@@ -53,6 +53,7 @@ public class ProductController {
                 productRatings.put(product.getId(), BigDecimal.ZERO);
             }
         }
+        
         model.addAttribute("products", products);
         model.addAttribute("searchValue", name);
         model.addAttribute("productRatings", productRatings);
@@ -70,20 +71,21 @@ public class ProductController {
         boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
     
         if (isCategory) {
-            products = productService.GetProductsByComponentOrderByDate(searchValue, pageable);
+            products = productService.getProductsByComponentOrderByDate(searchValue, pageable);
         } else {
-            products = productService.GetProductsByNameOrderByDate(searchValue, pageable);
+            products = productService.getProductsByNameOrderByDate(searchValue, pageable);
         }
 
         Map<Long, BigDecimal> productRatings = new HashMap<>();
         for (ProductEntity product : products) {
-        try {
+            try {
                 BigDecimal rating = reviewService.getReviewAverage(product.getId());
                 productRatings.put(product.getId(), rating);
             } catch (CustomException error) {
                 productRatings.put(product.getId(), BigDecimal.ZERO);
             }
         }
+
         model.addAttribute("products", products);
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("productRatings", productRatings); 
@@ -93,12 +95,37 @@ public class ProductController {
         return "product-list";
     }
     
+    @GetMapping("find-product/sales")
+    public String GetProductsOrderBySales(@RequestParam("searchValue") String searchValue,
+                                          @PageableDefault(size = 10) Pageable pageable,
+                                          Model model) {
+
+        Page<ProductEntity> products;
+        products = productService.getProductsByNameOrderBySales(searchValue, pageable);
+
+        Map<Long, BigDecimal> productRatings = new HashMap<>();
+        for (ProductEntity product : products) {
+            try {
+                BigDecimal rating = reviewService.getReviewAverage(product.getId());
+                productRatings.put(product.getId(), rating);
+            } catch (CustomException error) {
+                productRatings.put(product.getId(), BigDecimal.ZERO);
+            }
+        }
+        
+        model.addAttribute("products", products);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("productRatings", productRatings); 
+        model.addAttribute("addToCart", new AddToCartDto());
+        model.addAttribute("currentUrl", "/find-product/sales");
+        
+        return "product-list";
+    }
     @GetMapping("find-product/component")
     public String GetProductsByComponent(@RequestParam("category") String component, 
                                          @PageableDefault(size = 10) Pageable pageable,
                                          Model model) {
-        Page<ProductEntity> products = productService.GetProductsByComponent(component, pageable);
-
+        Page<ProductEntity> products = productService.getProductsByComponent(component, pageable);
         Map<Long, BigDecimal> productRatings = new HashMap<>();
         for (ProductEntity product : products) {
             try {
@@ -119,7 +146,7 @@ public class ProductController {
 
     @GetMapping("product/detail")
     public String GetProductDetail(@RequestParam("id") Long productId, Model model) {
-        ProductEntity product = productService.GetProduct(productId);
+        ProductEntity product = productService.getProduct(productId);
         List<ReviewEntity> reviewList = reviewService.productReviewList(productId);
 
         model.addAttribute("product", product);

@@ -12,7 +12,15 @@
     <div th:replace="~{base-layout :: layout}"></div>
         <div id="product_container">
             <div id="container">
-                <div id="product-card" th:each="product : ${products}">
+                <form method="GET" th:action="@{/find-product/date}">
+                    <input type="hidden" name="searchValue" th:value="${searchValue}">
+                    <button type="submit">최신 순</button>
+                </form>
+                <form method="GET" th:action="@{/find-product/sales}">
+                    <input type="hidden" name="searchValue" th:value="${searchValue}">
+                    <button type="submit">판매량 순</button>
+                </form>
+                <div id="product-card" th:each="product : ${products.content}">
                     <div id="product_image" th:if="${product.imagePaths != null and #lists.size(product.imagePaths) > 0}">
                         <a th:href="@{/product/detail(id=${product.id})}">
                             <img class="product_image" th:src="@{${product.imagePaths[0]}}">
@@ -51,6 +59,23 @@
                                 <button type="submit">삭제하기</button>
                             </form>
                         </div>
+                    </div>
+                </div>
+                <div id="pagination">
+                    <div th:if="${products.totalPages > 1}">
+                        <a th:if="${products.hasPrevious()}" th:href="@{${currentUrl}(page=${products.number - 1}, searchValue=${searchValue})}">이전</a>
+
+                        <span th:each="pageNum : ${#numbers.sequence(0, products.totalPages - 1)}">
+                            <a th:if="${pageNum != products.number}" 
+                            th:href="@{${currentUrl}(page=${pageNum}, searchValue=${searchValue})}" 
+                            th:text="${pageNum + 1}">1</a>
+                            <span th:if="${pageNum == products.number}" th:text="${pageNum + 1}" style="font-weight: bold;"></span>
+                        </span>
+
+                        <a th:if="${products.hasNext()}" th:href="@{${currentUrl}(page=${products.number + 1}, searchValue=${searchValue})}">다음</a>
+
+                
+                        <a th:if="${products.hasNext()}" th:href="@{/find-product/date(page=${products.number + 1}, searchValue=${searchValue})}">다음</a>
                     </div>
                 </div>
             </div>

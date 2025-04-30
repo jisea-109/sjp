@@ -4,7 +4,9 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.tinystop.sjp.Order.QOrderEntity;
 import com.tinystop.sjp.Type.ProductCategory;
 
 import lombok.RequiredArgsConstructor;
@@ -12,14 +14,15 @@ import lombok.RequiredArgsConstructor;
 import static com.tinystop.sjp.Product.QProductEntity.productEntity;
 
 @RequiredArgsConstructor
-public class ProductCustomRepositoryimpl implements ProductCustomRepository {
+public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override // SELECT * FROM product_table WHERE name LIKE '%name%' LIMIT getPageSize() offset getOffset() 
-    public Page<ProductEntity> findByNameContainingOrderByModifiedAtDesc(String name, Pageable pageable) { // product 생성(수정) 날짜순대로 나열
+    public Page<ProductEntity> findProductsByNameSortedByModifiedAtDesc(String name, Pageable pageable) { // product 생성(수정) 날짜순대로 나열
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(productEntity)
+                .leftJoin(productEntity.imagePaths).fetchJoin()
                 .where(productEntity.name.containsIgnoreCase(name))
                 .orderBy(productEntity.modifiedAt.desc())
                 .offset(pageable.getOffset())
@@ -35,10 +38,10 @@ public class ProductCustomRepositoryimpl implements ProductCustomRepository {
     }
 
     @Override
-    public Page<ProductEntity> findProductsByComponentOrderByModifiedAtDesc(ProductCategory category, Pageable pageable) {
-        List<ProductEntity> content = jpaQueryFactory
+    public Page<ProductEntity> findProductsByComponentSortedByModifiedAtDesc(ProductCategory component, Pageable pageable) {
+        List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(productEntity)
-                .where(productEntity.component.eq(category))
+                .where(productEntity.component.eq(component))
                 .orderBy(productEntity.modifiedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -47,9 +50,37 @@ public class ProductCustomRepositoryimpl implements ProductCustomRepository {
         Long total = jpaQueryFactory
                 .select(productEntity.count())
                 .from(productEntity)
-                .where(productEntity.component.eq(category))
+                .where(productEntity.component.eq(component))
                 .fetchOne();
 
-        return new PageImpl<>(content, pageable, total);
+        return new PageImpl<>(products, pageable, total);
     }
+
+    @Override
+    public Page<ProductEntity> searchProductsSortedBySales(String name, Pageable pageable) {
+
+        QOrderEntity order = QOrderEntity.orderEntity;
+        QProductEntity product = QProductEntity.productEntity;
+
+        List<ProductEntity> products = jpaQueryFactory
+                .select(product)
+                .from(order)
+                .join(order.product, product) // inner join
+                .where(product.name.containsIgnoreCase(name))
+                .groupBy(product.id)
+                .orderBy(order.quantity.sum().desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = jpaQueryFactory
+                .select(product.countDistinct())
+                .from(order)
+                .join(order.product, product)
+                .where(product.name.containsIgnoreCase(name))
+                .fetchOne();
+
+        return new PageImpl<>(products, pageable, total);
+    }
+
 }
