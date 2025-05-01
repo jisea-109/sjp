@@ -15,4 +15,10 @@ public interface ProductCustomRepository {
     
     @EntityGraph(attributePaths = "imagePaths")
     Page<ProductEntity> searchProductsSortedBySales(String name, Pageable pageable);
+
+    @EntityGraph(attributePaths = "imagePaths")
+    Page<ProductEntity> searchProductComponentsSortedBySales(ProductCategory component, Pageable pageable);
+
+    @EntityGraph(attributePaths = "imagePaths")
+    Page<ProductEntity> searchProductSortedByReviews(String name, Pageable pageable);
 }

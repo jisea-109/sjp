@@ -12,14 +12,20 @@
     <div th:replace="~{base-layout :: layout}"></div>
         <div id="product_container">
             <div id="container">
-                <form method="GET" th:action="@{/find-product/date}">
-                    <input type="hidden" name="searchValue" th:value="${searchValue}">
-                    <button type="submit">최신 순</button>
-                </form>
-                <form method="GET" th:action="@{/find-product/sales}">
-                    <input type="hidden" name="searchValue" th:value="${searchValue}">
-                    <button type="submit">판매량 순</button>
-                </form>
+                <div id="product_order_btn">
+                    <form method="GET" th:action="@{/find-product/date}">
+                        <input type="hidden" name="searchValue" th:value="${searchValue}">
+                        <button type="submit">최신 순</button>
+                    </form>
+                    <form method="GET" th:action="@{/find-product/sales}">
+                        <input type="hidden" name="searchValue" th:value="${searchValue}">
+                        <button type="submit">판매량 순</button>
+                    </form>
+                    <form method="GET" th:action="@{/find-product/reviews}">
+                        <input type="hidden" name="searchValue" th:value="${searchValue}">
+                        <button type="submit">리뷰 많은 순</button>
+                    </form>
+                </div>
                 <div id="product-card" th:each="product : ${products.content}">
                     <div id="product_image" th:if="${product.imagePaths != null and #lists.size(product.imagePaths) > 0}">
                         <a th:href="@{/product/detail(id=${product.id})}">

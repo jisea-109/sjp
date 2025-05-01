@@ -313,3 +313,7 @@
 .dropdown:hover .dropdown-content {
   display: block;
 }
+#product_order_btn {
+  display:flex;
+  flex-direction: row;
+}

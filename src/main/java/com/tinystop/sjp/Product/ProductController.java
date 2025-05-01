@@ -101,7 +101,13 @@ public class ProductController {
                                           Model model) {
 
         Page<ProductEntity> products;
-        products = productService.getProductsByNameOrderBySales(searchValue, pageable);
+        boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
+    
+        if (isCategory) {
+            products = productService.getProductsByComponentOrderBySales(searchValue, pageable);
+        } else {
+            products = productService.getProductsByNameOrderByDate(searchValue, pageable);
+        }
 
         Map<Long, BigDecimal> productRatings = new HashMap<>();
         for (ProductEntity product : products) {
@@ -121,6 +127,7 @@ public class ProductController {
         
         return "product-list";
     }
+    
     @GetMapping("find-product/component")
     public String GetProductsByComponent(@RequestParam("category") String component, 
                                          @PageableDefault(size = 10) Pageable pageable,
@@ -141,6 +148,31 @@ public class ProductController {
         model.addAttribute("productRatings", productRatings);
         model.addAttribute("addToCart", new AddToCartDto());
         model.addAttribute("currentUrl", "/find-product/component");
+        return "product-list";
+    }
+
+    @GetMapping("find-product/reviews")
+    public String GetProductsOrderByReviewCount(@RequestParam("searchValue") String searchValue,
+                                                @PageableDefault(size = 10) Pageable pageable,
+                                                Model model) {
+        Page<ProductEntity> products = productService.getProductsByNameOrderByReviews(searchValue, pageable);
+
+        Map<Long, BigDecimal> productRatings = new HashMap<>();
+        for (ProductEntity product : products) {
+            try {
+                BigDecimal rating = reviewService.getReviewAverage(product.getId());
+                productRatings.put(product.getId(), rating);
+            } catch (CustomException error) {
+                productRatings.put(product.getId(), BigDecimal.ZERO);
+            }
+        }
+
+        model.addAttribute("products", products);
+        model.addAttribute("searchValue", "");
+        model.addAttribute("productRatings", productRatings);
+        model.addAttribute("addToCart", new AddToCartDto());
+        model.addAttribute("currentUrl", "/find-product/reviews");
+
         return "product-list";
     }
 

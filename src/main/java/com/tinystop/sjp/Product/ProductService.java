@@ -69,6 +69,34 @@ public class ProductService {
         return productList;
     }
 
+    public Page<ProductEntity> getProductsByComponentOrderBySales(String component, Pageable pageable) {
+        ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
+        Page<ProductEntity> productList = productRepository.searchProductComponentsSortedBySales(category, pageable);
+        
+        if (productList.isEmpty()) {
+            throw new CustomException(PRODUCT_NOT_FOUND,"main");
+        }
+
+        for (ProductEntity product : productList) {
+            product.getImagePaths().size();  // Hibernate Lazy 방지
+        }
+
+        return productList;
+    }
+
+    public Page<ProductEntity> getProductsByNameOrderByReviews(String name, Pageable pageable) {
+        Page<ProductEntity> productList = productRepository.searchProductSortedByReviews(name, pageable);
+
+        if (productList.isEmpty()) {
+            throw new CustomException(PRODUCT_NOT_FOUND, "main");
+        }
+        for (ProductEntity product : productList) {
+            product.getImagePaths().size();  // Hibernate Lazy 방지
+        }
+
+        return productList;
+    }
+
     public ProductEntity getProduct(Long productId) {
         ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"main"));
         return product;

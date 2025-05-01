@@ -32,6 +32,7 @@ public class SecurityConfig {
         "/find-product/date",
         "/find-product/component",
         "/find-product/sales",
+        "/find-product/reviews",
         "/check-username",
         "/check-email",
         "/change-info",
