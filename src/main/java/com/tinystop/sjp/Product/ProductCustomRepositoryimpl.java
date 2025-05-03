@@ -23,9 +23,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     public Page<ProductEntity> findProductsByNameSortedByModifiedAtDesc(String name, Pageable pageable) { // product 생성(수정) 날짜순대로 나열
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(productEntity)
-                .leftJoin(productEntity.imagePaths).fetchJoin()
                 .where(productEntity.name.containsIgnoreCase(name))
-                .orderBy(productEntity.modifiedAt.desc())
+                .orderBy(productEntity.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch(); // Query List 가져오기 
@@ -42,9 +41,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     public Page<ProductEntity> findProductsByComponentSortedByModifiedAtDesc(ProductCategory component, Pageable pageable) {
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(productEntity)
-                .leftJoin(productEntity.imagePaths).fetchJoin()
                 .where(productEntity.component.eq(component))
-                .orderBy(productEntity.modifiedAt.desc())
+                .orderBy(productEntity.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -68,7 +66,6 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 .select(product)
                 .from(order)
                 .join(order.product, product) // inner join
-                .leftJoin(productEntity.imagePaths).fetchJoin()
                 .where(product.name.containsIgnoreCase(name))
                 .groupBy(product.id)
                 .orderBy(order.quantity.sum().desc())
@@ -134,6 +131,33 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 .from(review)
                 .join(review.product, product)
                 .where(productEntity.name.containsIgnoreCase(name))
+                .fetchOne();
+
+        return new PageImpl<>(products, pageable, total);
+    }
+
+    @Override
+    public Page<ProductEntity> searchProductComponentsSortedByReviews(ProductCategory component, Pageable pageable) {
+
+        QReviewEntity review = QReviewEntity.reviewEntity;
+        QProductEntity product = QProductEntity.productEntity;
+
+        List<ProductEntity> products = jpaQueryFactory
+            .select(product)
+            .from(product)
+            .leftJoin(review).on(review.product.eq(product))
+            .where(product.component.eq(component))
+            .groupBy(product.id)
+            .orderBy(review.count().desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        Long total = jpaQueryFactory
+                .select(product.countDistinct())
+                .from(review)
+                .join(review.product, product)
+                .where(product.component.eq(component))
                 .fetchOne();
 
         return new PageImpl<>(products, pageable, total);

@@ -18,27 +18,27 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     
-    public Page<ProductEntity> getProductsByName(String productName, Pageable pageable) {
+    public Page<LoadProductDto> getProductsByName(String productName, Pageable pageable) {
         Page<ProductEntity> productList = productRepository.findAllByNameContaining(productName, pageable);
 
         if (productName == "" || productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
         
-        return productList;
+        return productList.map(LoadProductDto::new);
     }
 
-    public Page<ProductEntity> getProductsByNameOrderByDate(String name, Pageable pageable) {
+    public Page<LoadProductDto> getProductsByNameOrderByDate(String name, Pageable pageable) {
         Page<ProductEntity> productList = productRepository.findProductsByNameSortedByModifiedAtDesc(name, pageable);
 
         if (productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND, "main");
         }
 
-        return productList;
+        return productList.map(LoadProductDto::new);
     }
 
-    public Page<ProductEntity> getProductsByComponent(String component, Pageable pageable) {
+    public Page<LoadProductDto> getProductsByComponent(String component, Pageable pageable) {
 
         ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
         Page<ProductEntity> productList = productRepository.findAllByComponent(category, pageable);
@@ -46,30 +46,30 @@ public class ProductService {
         if (productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
-        return productList;
+        return productList.map(LoadProductDto::new);
     }
 
-    public Page<ProductEntity> getProductsByComponentOrderByDate(String component, Pageable pageable) {
+    public Page<LoadProductDto> getProductsByComponentOrderByDate(String component, Pageable pageable) {
         ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
         Page<ProductEntity> productList = productRepository.findProductsByComponentSortedByModifiedAtDesc(category, pageable);
         
         if (productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
-        return productList;
+        return productList.map(LoadProductDto::new);
     }
 
-    public Page<ProductEntity> getProductsByNameOrderBySales(String name, Pageable pageable) {
+    public Page<LoadProductDto> getProductsByNameOrderBySales(String name, Pageable pageable) {
         Page<ProductEntity> productList = productRepository.searchProductsSortedBySales(name, pageable);
 
         if (productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND, "main");
         }
 
-        return productList;
+        return productList.map(LoadProductDto::new);
     }
 
-    public Page<ProductEntity> getProductsByComponentOrderBySales(String component, Pageable pageable) {
+    public Page<LoadProductDto> getProductsByComponentOrderBySales(String component, Pageable pageable) {
         ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
         Page<ProductEntity> productList = productRepository.searchProductComponentsSortedBySales(category, pageable);
         
@@ -77,24 +77,28 @@ public class ProductService {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
 
-        for (ProductEntity product : productList) {
-            product.getImagePaths().size();  // Hibernate Lazy 방지
-        }
-
-        return productList;
+        return productList.map(LoadProductDto::new);
     }
 
-    public Page<ProductEntity> getProductsByNameOrderByReviews(String name, Pageable pageable) {
+    public Page<LoadProductDto> getProductsByNameOrderByReviews(String name, Pageable pageable) {
         Page<ProductEntity> productList = productRepository.searchProductSortedByReviews(name, pageable);
 
         if (productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND, "main");
         }
-        for (ProductEntity product : productList) {
-            product.getImagePaths().size();  // Hibernate Lazy 방지
+
+        return productList.map(LoadProductDto::new);
+    }
+
+    public Page<LoadProductDto> getProductsByComponentOrderByReviews(String component, Pageable pageable) {
+        ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
+        Page<ProductEntity> productList = productRepository.searchProductComponentsSortedByReviews(category, pageable);
+        
+        if (productList.isEmpty()) {
+            throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
 
-        return productList;
+        return productList.map(LoadProductDto::new);
     }
 
     public ProductEntity getProduct(Long productId) {

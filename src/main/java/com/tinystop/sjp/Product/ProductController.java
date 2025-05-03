@@ -42,10 +42,10 @@ public class ProductController {
     public String GetProducts(@RequestParam(name = "search", required = false, defaultValue = "") String name, 
                                             @PageableDefault(size = 10) Pageable pageable,
                                             Model model) {
-        Page<ProductEntity> products = productService.getProductsByName(name, pageable);
+        Page<LoadProductDto> products = productService.getProductsByName(name, pageable);
 
         Map<Long, BigDecimal> productRatings = new HashMap<>();
-        for (ProductEntity product : products) {
+        for (LoadProductDto product : products) {
             try {
                 BigDecimal rating = reviewService.getReviewAverage(product.getId());
                 productRatings.put(product.getId(), rating);
@@ -66,7 +66,7 @@ public class ProductController {
     public String GetProductsOrderByDate(@RequestParam("searchValue") String searchValue,
                                          @PageableDefault(size = 10) Pageable pageable,
                                          Model model) {
-        Page<ProductEntity> products;
+        Page<LoadProductDto> products;
 
         boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
     
@@ -77,7 +77,7 @@ public class ProductController {
         }
 
         Map<Long, BigDecimal> productRatings = new HashMap<>();
-        for (ProductEntity product : products) {
+        for (LoadProductDto product : products) {
             try {
                 BigDecimal rating = reviewService.getReviewAverage(product.getId());
                 productRatings.put(product.getId(), rating);
@@ -100,7 +100,7 @@ public class ProductController {
                                           @PageableDefault(size = 10) Pageable pageable,
                                           Model model) {
 
-        Page<ProductEntity> products;
+        Page<LoadProductDto> products;
         boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
     
         if (isCategory) {
@@ -110,7 +110,7 @@ public class ProductController {
         }
 
         Map<Long, BigDecimal> productRatings = new HashMap<>();
-        for (ProductEntity product : products) {
+        for (LoadProductDto product : products) {
             try {
                 BigDecimal rating = reviewService.getReviewAverage(product.getId());
                 productRatings.put(product.getId(), rating);
@@ -132,9 +132,10 @@ public class ProductController {
     public String GetProductsByComponent(@RequestParam("category") String component, 
                                          @PageableDefault(size = 10) Pageable pageable,
                                          Model model) {
-        Page<ProductEntity> products = productService.getProductsByComponent(component, pageable);
+        Page<LoadProductDto> products = productService.getProductsByComponent(component, pageable);
+
         Map<Long, BigDecimal> productRatings = new HashMap<>();
-        for (ProductEntity product : products) {
+        for (LoadProductDto product : products) {
             try {
                 BigDecimal rating = reviewService.getReviewAverage(product.getId());
                 productRatings.put(product.getId(), rating);
@@ -152,13 +153,21 @@ public class ProductController {
     }
 
     @GetMapping("find-product/reviews")
-    public String GetProductsOrderByReviewCount(@RequestParam("searchValue") String searchValue,
-                                                @PageableDefault(size = 10) Pageable pageable,
-                                                Model model) {
-        Page<ProductEntity> products = productService.getProductsByNameOrderByReviews(searchValue, pageable);
+    public String GetProductsOrderByReviews(@RequestParam("searchValue") String searchValue,
+                                            @PageableDefault(size = 10) Pageable pageable,
+                                            Model model) {
+        Page<LoadProductDto> products;
+
+        boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
+    
+        if (isCategory) {
+            products = productService.getProductsByComponentOrderByReviews(searchValue, pageable);
+        } else {
+            products = productService.getProductsByNameOrderByReviews(searchValue, pageable);
+        }
 
         Map<Long, BigDecimal> productRatings = new HashMap<>();
-        for (ProductEntity product : products) {
+        for (LoadProductDto product : products) {
             try {
                 BigDecimal rating = reviewService.getReviewAverage(product.getId());
                 productRatings.put(product.getId(), rating);
@@ -168,7 +177,7 @@ public class ProductController {
         }
 
         model.addAttribute("products", products);
-        model.addAttribute("searchValue", "");
+        model.addAttribute("searchValue", searchValue);
         model.addAttribute("productRatings", productRatings);
         model.addAttribute("addToCart", new AddToCartDto());
         model.addAttribute("currentUrl", "/find-product/reviews");
