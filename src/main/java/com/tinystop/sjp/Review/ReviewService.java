@@ -156,7 +156,7 @@ public class ReviewService {
         return reviewRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
     }
 
-    public BigDecimal getReviewAverage(Long productId) { // product-list.html에서 리뷰값 평균값 내기 위한 함수 (product id) 
+    public BigDecimal getReviewAverage(Long productId) { // 리뷰값 평균값 내기 위한 함수 (product id) 
         ProductEntity product = this.productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list"));
         List<ReviewEntity> reviews = this.reviewRepository.findByProduct(product);
         
