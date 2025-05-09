@@ -69,7 +69,7 @@ public class ProductController {
     }
 
     /**
-     * 검색 또는 선택한 Component에 포함되는 product들을 최신 등록 순으로 나열하는 함수. 
+     * 검색 또는 선택한 Component에 포함되는 product들을 최신 등록 순으로 나열. 
      * searchValue가 ProductCategory에 있는 Component 변수들 중 이름이 같을 경우 그 Component에 포함되는 product들 나열.
      * @param searchValue 검색값
      * @param pageable 페이지 번호, 크기, 정보 담은 객체
@@ -103,7 +103,7 @@ public class ProductController {
         return "product-list";
     }
     
-    /** 검색 또는 선택한 Component에 포함되는 product들을 판매량에 따라서 제일 판매량이 높은 순서대로 나열하는 함수.
+    /** 검색 또는 선택한 Component에 포함되는 product들을 판매량에 따라서 제일 판매량이 높은 순서대로 나열.
      * searchValue가 ProductCategory에 있는 Component 변수들 중 이름이 같을 경우 그 Component에 포함되는 product들 나열.
      * @param searchValue 검색값
      * @param pageable 페이지 번호, 크기, 정보 담은 객체
@@ -137,7 +137,7 @@ public class ProductController {
     }
     
     /**
-     * main.html에서 나열되있는 Component들 중 고른 Component에 해당하는 product들을 나열하는 함수
+     * main.html에서 나열되있는 Component들 중 고른 Component에 해당하는 product들을 나열
      * @param component 선택한 Component
      * @param pageable 페이지 번호, 크기, 정보 담은 객체
      * @param model 클라이언트에 전달할 데이터를 담은 객체
@@ -161,7 +161,7 @@ public class ProductController {
         return "product-list";
     }
 
-    /** 검색 또는 선택한 Component에 포함되는 product들을 리뷰랑에 따라서 제일 리뷰량이 높은대로 나열하는 함수.
+    /** 검색 또는 선택한 Component에 포함되는 product들을 리뷰랑에 따라서 제일 리뷰량이 높은대로 나열.
      * searchValue가 ProductCategory에 있는 Component 변수들 중 이름이 같을 경우 그 Component에 포함되는 product들 나열.
      * @param searchValue 검색값
      * @param pageable 페이지 번호, 크기, 정보 담은 객체

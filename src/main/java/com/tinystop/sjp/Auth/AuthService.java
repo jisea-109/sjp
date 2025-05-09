@@ -38,10 +38,15 @@ import java.util.Collections;
 public class AuthService {
     
     private final AccountRepository accountRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder; // 블로피시 암호화
     private final EmailVerificationRepository emailVerificationRepository;
     
-    public AccountEntity signUp(SignUpDto user, HttpSession session) { // 회원가입
+    /**
+     * 회원가입 함수
+     * - 중복 유저 및 이메일 확인, 이메일 인증 확인 체크 후 비밀번호 암호화해서 account entity save
+     * @param user 회원가입에 필요한 username, password, email 이 담긴 유저 정보 dto
+     */
+    public void signUp(SignUpDto user) {
 
         if (this.accountRepository.existsByUsername(user.getUsername())) { // 중복 유저 확인
             throw new CustomException(ALREADY_EXIST_USER,"signup");
@@ -56,19 +61,24 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(user.getPassword()); // 비밀번호 암호화
         emailVerificationRepository.deleteByEmail(user.getEmail()); // EmailVerificationEntity에 있는 데이터 삭제
         
-        return accountRepository.save(user.toEntity(encodedPassword)); // 저장
+        accountRepository.save(user.toEntity(encodedPassword)); // 저장
     }
     
-    public AccountEntity signIn(SigninDto user, HttpSession session) { // 로그인
+    /**
+     * 로그인 함수
+     * @param user username, password 이 담긴 유저 정보 dto
+     * @param session 로그인 했을 때 session에 저장
+     */
+    public void signIn(SigninDto user, HttpSession session) {
 
-        AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"signin")); // 유저 있는지 확인
+        AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"signin")); // 유저 있는지 확인, 없으면 throw
 
         if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) { // 비밀번호 확인
             throw new CustomException(INCORRECT_PASSWORD,"signin");
         }
 
         String roleName = "ROLE_" + accountEntity.getRole().name().replace("ROLE_", ""); // ROLE_ 를 추가해야 USER로 인식함
-        UserDetails userDetails = new User(
+        UserDetails userDetails = new User( // Spring Security에 저장 + user 역할 부여
         accountEntity.getUsername(),
         accountEntity.getPassword(),
         Collections.singletonList(new SimpleGrantedAuthority(roleName))
@@ -84,28 +94,37 @@ public class AuthService {
         securityContext.setAuthentication(authentication); // 로그인한 사용자의 인증 정보 SecurityContextHolder에 저장
 
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext); // SecurityContext를 세션에 저장
-        return accountEntity;
     }
     
+    /**
+     * 비밀번호 변경 함수
+     * @param toChangePassword 기존 비밀번호와 새로 변경할 비밀번호 정보가 담긴 dto
+     * @param username 비밀번호 바꿀 유저 이름
+     */
     public void changePassword(ChangePasswordDto toChangePassword, String username) {
-        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-info"));
+        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-info")); // 유저 있는지 확인, 없으면 exception throw
 
-        if (!passwordEncoder.matches(toChangePassword.getCurrentPassword(), accountEntity.getPassword())) { // 비밀번호 확인
+        if (!passwordEncoder.matches(toChangePassword.getCurrentPassword(), accountEntity.getPassword())) { // 비밀번호 확인, 틀리면 exception throw
             throw new CustomException(INCORRECT_PASSWORD,"change-info");
         }
 
-        String encodedPassword = passwordEncoder.encode(toChangePassword.getNewPassword());
-        accountEntity.setPassword(encodedPassword);
-        this.accountRepository.save(accountEntity);
+        String encodedPassword = passwordEncoder.encode(toChangePassword.getNewPassword()); // 비밀번호 encode
+        accountEntity.setPassword(encodedPassword); // encode 한 비밀번호로 변경
+        this.accountRepository.save(accountEntity); // account entity 저장
     }
 
+    /**
+     * 계정 삭제 함수
+     * @param toDeleteAccount 현재재 비밀번호와 재확인을 위해 다시 입력한 비밀번호 정보가 담긴 dto
+     * @param username 비밀번호 바꿀 유저 이름
+     */
     public void deleteAccount(DeleteAccountDto toDeleteAccount, String username) {
-        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-info"));
+        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-info")); // 유저 있는지 확인, 없으면 exception throw
 
-        if (!passwordEncoder.matches(toDeleteAccount.getCurrentPassword(), accountEntity.getPassword())) { // 비밀번호 맞는지 확인
+        if (!passwordEncoder.matches(toDeleteAccount.getCurrentPassword(), accountEntity.getPassword())) { // 비밀번호 확인, 틀리면 exception throw
             throw new CustomException(INCORRECT_PASSWORD,"deleteAccountPage");
         }
-        if (!toDeleteAccount.getCurrentPassword().equals(toDeleteAccount.getConfirmPassword())) { // 비밀번호와 재확인 비밀번호가 맞는지 확인
+        if (!toDeleteAccount.getCurrentPassword().equals(toDeleteAccount.getConfirmPassword())) { // 비밀번호와 재확인 비밀번호가 맞는지 확인, 틀리면 exception throw
             throw new CustomException(PASSWORD_DOES_NOT_MATCH,"deleteAccountPage");
         }
 

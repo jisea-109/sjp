@@ -18,6 +18,9 @@ public class EmailController {
     
     private final EmailService emailService;
 
+    /** 이메일 보안 인증코드 전송
+     * @param email 유저가 입력한 이메일
+     */
     @PostMapping("send-code")
     public ResponseEntity<Map<String, String>> SendSecurityCode(@RequestParam("email") String email) {
     emailService.SendSecurityCode(email);
@@ -25,7 +28,11 @@ public class EmailController {
     response.put("message", "이메일로 인증번호 전송");
     return ResponseEntity.ok(response);
 }
-
+    /**
+     * 이메일 보안 인증코드 확인
+     * @param email 유저가 입력한 이메일
+     * @param code 유저가 입력한 보안코드
+     */
     @PostMapping("verify-code")
     public ResponseEntity<String> VerifySecurityCode(@RequestParam("email") String email, @RequestParam("code") String code) {
         boolean verified = emailService.VerifySecurityCode(email, code);
