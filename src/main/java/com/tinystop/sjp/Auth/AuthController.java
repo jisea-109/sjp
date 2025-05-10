@@ -57,7 +57,7 @@ public class AuthController {
         if (bindingResult.hasErrors()) { // 입력값에 오류가 있을 경우
             List<String> errors = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList()); // 에러 메세지 리스트
             model.addAttribute("errorMessage", errors); // 에러 메세지 전달
-            model.addAttribute("signup", signupRequest); // 에러나기전 유저가 입력한 데이터 다시 전달용
+            model.addAttribute("signup", signupRequest); // 에러나기전 유저가 입력한 데이터 다시 전달용, 단 패스워드는 제외
             return "signup"; // 원인이 담긴 에러메세지를 signup.html에 띄워서 보여주기
         }
         authService.signUp(signupRequest); // 데이터에 오류가 없을 시 회원가입

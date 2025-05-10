@@ -48,7 +48,7 @@ public class AdminAddProductDto {
 
     private ProductStockStatus stockStatus;
 
-    public ProductEntity toEntity() {
+    public ProductEntity toEntity() { // 업로드할 사진이 없을 때 저장하는 함수
         if (this.quantity > 0) {stockStatus = ProductStockStatus.IN_STOCK;}
         else {stockStatus = ProductStockStatus.SOLD_OUT;}
         return ProductEntity.builder()
@@ -63,7 +63,7 @@ public class AdminAddProductDto {
             .build();
     }
 
-    public ProductEntity toEntity(List<String> imagePaths) {
+    public ProductEntity toEntity(List<String> imagePaths) { // 업로드할 사진이 있을 때 저장하는 함수
         if (this.quantity > 0) {stockStatus = ProductStockStatus.IN_STOCK;}
         else {stockStatus = ProductStockStatus.SOLD_OUT;}
         return ProductEntity.builder()

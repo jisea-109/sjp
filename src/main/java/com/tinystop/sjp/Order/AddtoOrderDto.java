@@ -11,7 +11,6 @@ import lombok.Setter;
 public class AddtoOrderDto {
     private Long id;
     private Long productId;
-    private ProductEntity product;
     private int quantity;
 
      public OrderEntity toEntity(AccountEntity account, ProductEntity product, int quantity) {

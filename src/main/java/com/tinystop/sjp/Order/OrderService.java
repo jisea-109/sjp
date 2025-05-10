@@ -29,11 +29,15 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
 
-    public OrderEntity addToOrder(String username, AddtoOrderDto addToOrderDto) {
+    /** cart에 담긴 product를 주문하기
+     * @param username 주문하는 유저 username
+     * @param addToOrderDto order하기에 필요한 데이터 (Long productId, int quantity)
+     */
+    public void addToOrder(String username, AddtoOrderDto addToOrderDto) {
         AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"product-list"));
         ProductEntity product = productRepository.findById(addToOrderDto.getProductId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
         
-        if(product.getStockStatus() == ProductStockStatus.SOLD_OUT) {
+        if (product.getStockStatus() == ProductStockStatus.SOLD_OUT) {
             throw new CustomException(OUT_OF_STOCK, "product-list");
         }
 
@@ -55,21 +59,31 @@ public class OrderService {
             product.setQuantity(product.getQuantity() - addToOrderDto.getQuantity()); // 재고 - 주문할라는 수량
         }
         
-        return orderRepository.save(addToOrderDto.toEntity(user, product, addToOrderDto.getQuantity())); // order entity 저장
+        orderRepository.save(addToOrderDto.toEntity(user, product, addToOrderDto.getQuantity())); // order entity 저장
     }   
     
+    /** Order 취소하기
+     * @param username 주문했던 유저 username
+     * @param removeOrderRequest 캔슬하기에 필요한 데이터 (Long productId, Long orderId)
+     */
     public void cancelOrder(String username, RemoveOrderDto removeOrderRequest) { 
+        // user 확인, 만약 없을 시 throw error
         AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"product-list"));
+        // product 확인, 만약 없을 시 throw error
         ProductEntity product = productRepository.findById(removeOrderRequest.getProductId()).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
-
+        // orderId랑 user, product를 통해서 order 확인
         OrderEntity order = orderRepository.findByIdAndAccountAndProduct(removeOrderRequest.getOrderId(),user,product).orElseThrow(() -> new CustomException(ORDER_NOT_FOUND,"product-list"));
-        if (product.getStockStatus() == ProductStockStatus.SOLD_OUT) { // 주문 취소했을 때 product 재고 다시 채우기
+        if (product.getStockStatus() == ProductStockStatus.SOLD_OUT) { // 주문 취소했을 때 만약 product의 재고 상태가 SOLD_OUT 상태였으면 product 재고 상태를 IN_STOCK로 바꾸기
             product.setStockStatus(ProductStockStatus.IN_STOCK);
         }
-        product.setQuantity(product.getQuantity() + order.getQuantity());
-        orderRepository.delete(order);
+        product.setQuantity(product.getQuantity() + order.getQuantity()); // 캔슬한 product 만큼 quantity 다시 추가
+        orderRepository.delete(order); // order 삭제
     }
 
+    /** 특정 유저의 order를 모아둔 list return
+     * @param username 주문했던 유저 username
+     * @return List<OrderEntity> orderList (order 목록)
+     */
     public List<OrderEntity> orderList(String username) {
         AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "order-list"));
         List<OrderEntity> orderList = orderRepository.findAllByAccount(user);

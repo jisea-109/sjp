@@ -12,7 +12,6 @@ import lombok.Setter;
 public class AddToCartDto {
     private Long id;
     private Long productId;
-    private ProductEntity product;
     private int quantity;
 
     public CartEntity toEntity(AccountEntity account, ProductEntity product, int quantity) {
