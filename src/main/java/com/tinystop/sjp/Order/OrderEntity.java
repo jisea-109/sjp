@@ -44,6 +44,7 @@ public class OrderEntity extends BaseEntity{
     private AccountEntity account;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="PRODUCT_ID", nullable = false)
     private ProductEntity product;
 
