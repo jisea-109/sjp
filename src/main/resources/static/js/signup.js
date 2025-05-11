@@ -1,5 +1,8 @@
 function SendSecurityCode() {
     const email = document.getElementById("email").value;
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
     if (!email || email == null) {
         document.getElementById("emailNotification").style.color = "red";
         document.getElementById("emailNotification").innerText = "이메일을 입력해주세요.";
@@ -7,7 +10,10 @@ function SendSecurityCode() {
     }
     fetch("/email/send-code", {
         method: "POST",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            [csrfHeader]: csrfToken
+        },
         body: new URLSearchParams({ email })
     })
     .then(res => res.json()) 
@@ -26,6 +32,8 @@ function SendSecurityCode() {
 function VerifySecurityCode() {
     const email = document.getElementById("email").value;
     const code = document.getElementById("emailCode").value;
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     if (!code || code == null) {
         document.getElementById("emailNotification").style.color = "red";
         document.getElementById("emailNotification").innerText = "인증번호를 입력해주세요.";
@@ -38,7 +46,10 @@ function VerifySecurityCode() {
     }
     fetch("/email/verify-code", {
         method: "POST",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            [csrfHeader]: csrfToken
+        },
         body: new URLSearchParams({ email, code })
     })
     .then(res => {

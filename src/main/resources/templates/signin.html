@@ -12,6 +12,7 @@
     <div id="login_container">
         <div id="login_inner_container">
             <form method="POST" th:object="${signin}" th:action="@{/signin}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="text" th:field="*{username}" placeholder="ID" id="id" required>
                 <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
 

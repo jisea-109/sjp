@@ -3,6 +3,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8">
+        <meta name="_csrf" th:content="${_csrf.token}">
+        <meta name="_csrf_header" th:content="${_csrf.headerName}">
         <title>Sign Up</title>
         <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="/font.css">
@@ -12,6 +14,7 @@
     <div id="signup_container">
         <div id="singup_inner_container">
             <form method="POST" th:object="${signup}" th:action="@{/signup}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="text" th:field="*{username}" placeholder="ID" id="id" required
                     oninput="CheckUsername()"
                     pattern="^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{7,15}$"
@@ -26,9 +29,7 @@
                 <p id="check_password_noti"></p>
                 <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" id="message-in-password"></div>
 
-                <input type="email" th:field="*{email}" placeholder="EMAIL" id="email" required
-                oninput="CheckEmail()"
-                title="이메일을 작성해주세요.">
+                <input type="email" th:field="*{email}" placeholder="EMAIL" id="email" required oninput="CheckEmail()" title="이메일을 작성해주세요.">
                 <p id="checkEmailNoti"></p>
                 <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" id="message-in-email"></div>
 

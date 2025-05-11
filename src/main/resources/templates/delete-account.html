@@ -13,6 +13,7 @@
     <div id="change_info_container">
         <div id="change_info_inner_container">
             <form method="POST" th:object="${deleteAccount}" th:action="@{/deleteAccount}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="password" th:field="*{currentPassword}" placeholder="CURRENT PASSWORD" id="current_password" autocomplete="off" required>
                 <input type="password" th:field="*{confirmPassword}" placeholder="CONFIRM PASSWORD" id="confirm_password" autocomplete="off" required>
                 <button type="submit" id="btnlogin">아이디 삭제</button>

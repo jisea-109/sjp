@@ -13,6 +13,7 @@
     <div id="review_container">
         <div id="review_edit_container">
             <form method="POST" th:action="@{/review/edit}" th:object="${editReview}" enctype="multipart/form-data">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="hidden" th:field="*{id}">
                 <input type="text" th:field="*{reviewTitle}" id="review_header" placeholder="HEADER" required>
                 <div class="textarea-wrapper">

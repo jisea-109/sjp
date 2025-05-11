@@ -27,6 +27,7 @@
                 <p class="cart_price" th:text="${#numbers.formatInteger(cartlist.product.price, 3, 'COMMA')} + ' 원'"></p>
                 <div class="cart_btn">
                     <form method="POST" action="/order/add" sec:authorize="hasAuthority('ROLE_USER')">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <input type="hidden" name="productId" th:value="${cartlist.product.id}">
                         <input class="cart_quantity" type="number" name="quantity" th:value="${cartlist.quantity}">
                         <button type="submit"
@@ -35,6 +36,7 @@
                         </button>
                     </form>
                     <form method="POST" action="/cart/remove" sec:authorize="hasAuthority('ROLE_USER')">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <input type="hidden" name="productId" th:value="${cartlist.product.id}">
                         <button type="submit">삭제하기</button>
                     </form>

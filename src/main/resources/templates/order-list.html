@@ -29,6 +29,7 @@
                 <p th:text="${#numbers.formatInteger(orderlist.quantity * orderlist.product.price, 3, 'COMMA')} + ' 원'"></p>
                 <div class="order_btn">
                     <form method="POST" th:action="@{/order/remove}" th:object="${removeOrder}" sec:authorize="hasAuthority('ROLE_USER')">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <input type="hidden" name="productId" th:value="${orderlist.product.id}">
                         <input type="hidden" name="orderId" th:value="${orderlist.id}">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

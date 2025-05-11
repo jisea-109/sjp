@@ -57,7 +57,7 @@ public class ReviewService {
         if (reviewRepository.existsByAccountAndProduct(account, product)) { // 이미 유저가 리뷰 작성했는지 체크
             throw new CustomException(ALREADY_EXIST_REVIEW, ""); // throw error하고 메인 홈페이지로 이동
         }
-        if (uploadImages != null) { // 리뷰에 이미지 올리는게 선택이기에 만약 이미지가 있으면 이미지 체크 후 업로드, 없을 시 넘기기
+        if (uploadImages != null && Arrays.stream(uploadImages).anyMatch(file -> !file.isEmpty())) { // 리뷰에 이미지 올리는게 선택이기에 만약 이미지가 있으면 이미지 체크 후 업로드, 없을 시 넘기기
             if (uploadImages.length > maxAllowedImages) { // 6개 이상 올리는지 체크
                 throw new CustomException(TOO_MANY_IMAGES_TO_UPLOAD, "add-review");
             }
