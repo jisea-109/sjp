@@ -40,6 +40,7 @@ public class CartEntity {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name= "ACCOUNT", nullable = false)
     private AccountEntity account;
 

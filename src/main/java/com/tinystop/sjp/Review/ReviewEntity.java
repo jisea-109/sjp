@@ -3,6 +3,8 @@ package com.tinystop.sjp.Review;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.tinystop.sjp.BaseEntity;
@@ -64,6 +66,7 @@ public class ReviewEntity extends BaseEntity{
     private ProductEntity product;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name= "ACCOUNT", nullable = false)
     private AccountEntity account;
 
