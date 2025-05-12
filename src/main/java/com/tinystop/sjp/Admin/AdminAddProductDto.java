@@ -44,6 +44,7 @@ public class AdminAddProductDto {
 
     @NotNull(message = "수량을 입력해주세요.")
     @Min(value = 0, message = "수량은 음수가 될 수 없습니다.")
+    @Max(value = 1000000, message = "수량은 100만개 이하만 가능합니다.")
     private int quantity;
 
     private ProductStockStatus stockStatus;

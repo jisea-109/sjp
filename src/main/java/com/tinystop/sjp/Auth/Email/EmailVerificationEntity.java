@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "EMAIL_VERIFICATION_TABLE")
+@Table(name = "emailVerificationTable")
 public class EmailVerificationEntity { // 인증 이메일 임시 저장 entity
 
     @Id

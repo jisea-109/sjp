@@ -35,31 +35,31 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class) // createdAt modifiedAt 자동 업데이트
-@Table(name="ACCOUNT_TABLE") 
+@Table(name="accountTable") 
 public class AccountEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ACCOUNT_ID")
+    @Column(name = "accountId")
     private Long userID;
 
-    @Column(name = "USERNAME", nullable = false, unique = true, length = 15) // not null, varchar(15)
+    @Column(name = "username", nullable = false, unique = true, length = 15) // not null, varchar(15)
     private String username;
 
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(name = "password", nullable = false, length = 60) // Bcrypt로 암호화하는데 암호화 길이는 항상 60자임.
     private String password;
 
-    @Column(name = "EMAIL", nullable = false, unique = true, length = 30)
+    @Column(name = "email", nullable = false, unique = true, length = 30)
     private String email;
 
     @Enumerated(EnumType.STRING) 
-    @Column(name = "ROLE", nullable = false)
+    @Column(name = "role", nullable = false)
     private Role role = Role.USER;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviews;
 
-    @OneToMany
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEntity> orders;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -31,28 +31,28 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "CART_TABLE")
+@Table(name = "cartTable")
 public class CartEntity {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "CART_ID")
+    @Column(name = "cartId")
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name= "ACCOUNT", nullable = false)
+    @JoinColumn(name= "account", nullable = false)
     private AccountEntity account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name= "PRODUCT", nullable = false)
+    @JoinColumn(name= "product", nullable = false)
     private ProductEntity product;
 
-    @Column(name = "Quantity", nullable = false)
+    @Column(name = "quantity", nullable = false)
     private int quantity;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "STOCK", nullable = false)
+    @Column(name = "stockStatus", nullable = false)
     private OrderableStatus status;
 }

@@ -37,37 +37,37 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class) // createdAt modifiedAt 자동 업데이트
-@Table(name = "REVIEW_TABLE")
+@Table(name = "reviewTable")
 public class ReviewEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "REVIEW_ID")
+    @Column(name = "reviewId")
     private long id;
 
-    @Column(name = "REVIEW_TITLE", nullable = false, length = 50)
+    @Column(name = "reviewTitle", nullable = false, length = 50)
     private String reviewTitle;
 
-    @Column(name = "REVIEW_TEXT", nullable = false, length = 300)
+    @Column(name = "reviewText", nullable = false, length = 300)
     private String reviewText;
 
-    @Column(name = "RATING", nullable = false)
+    @Column(name = "rating", nullable = false)
     @Min(1)
     @Max(10)
     private int rating;
 
     @ElementCollection
-    @CollectionTable(name = "REVIEW_IMAGES", joinColumns = @JoinColumn(name = "REVIEW_ID"))
-    @Column(name = "IMAGE_PATH")
+    @CollectionTable(name = "reviewImages", joinColumns = @JoinColumn(name = "reviewId"))
+    @Column(name = "imagePath")
     private List<String> imagePaths = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "PRODUCT", nullable = false)
+    @JoinColumn(name= "product", nullable = false)
     private ProductEntity product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name= "ACCOUNT", nullable = false)
+    @JoinColumn(name= "account", nullable = false)
     private AccountEntity account;
 
     public void setReviewTitle(String reviewTitle) {

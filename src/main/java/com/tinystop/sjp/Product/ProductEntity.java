@@ -39,43 +39,43 @@ import com.tinystop.sjp.Type.ProductStockStatus;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name="PRODUCT_TABLE")
+@Table(name="productTable")
 public class ProductEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "PRODUCT_ID")
+    @Column(name = "productId")
     private Long id;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "name", nullable = false, length = 30)
     private String name;
 
-    @Column(name= "DESCRIPTION", nullable = false)
+    @Column(name= "description", nullable = false, length = 300)
     private String description;
     
-    @Column(name = "PRICE", nullable = false)
+    @Column(name = "price", nullable = false)
     private int price;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "COMPONENT", nullable = false)
+    @Column(name = "component", nullable = false)
     private ProductCategory component;
 
-    @Column(name = "SOCKET")
+    @Column(name = "socket")
     private String socket;
 
-    @Column(name = "Quantity", nullable = false)
+    @Column(name = "quantity", nullable = false)
     private int quantity;
 
     @ElementCollection
-    @CollectionTable(name = "PRODUCT_IMAGES", joinColumns = @JoinColumn(name = "PRODUCT_ID"))
-    @Column(name = "IMAGE_PATH")
+    @CollectionTable(name = "productImages", joinColumns = @JoinColumn(name = "productId"))
+    @Column(name = "imagePath")
     private List<String> imagePaths = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviews;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "STOCK", nullable = false)
+    @Column(name = "stock", nullable = false)
     private ProductStockStatus stockStatus;
 
 }
