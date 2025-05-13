@@ -1,7 +1,9 @@
 package com.tinystop.sjp.Admin;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,28 +14,33 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
+import com.tinystop.sjp.Product.Category.ProductCategoryService;
 import com.tinystop.sjp.Type.ProductCategory;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService adminservice;
+    private final ProductCategoryService productCategoryService;
 
     /** admin.html로 이동 (Product 추가 기능 구현된 html)
      */
-    @GetMapping("/admin")
-     public String AdminPage(Model model) {
-        List<ProductCategory> productCategories = Arrays.asList(ProductCategory.values());
-        model.addAttribute("productCategories", productCategories);
+    @GetMapping("")
+    public String AdminPage(Model model) {
+        Set<String> allCategoryNames = productCategoryService.getAllProductCategoryList();
+        model.addAttribute("productCategories", allCategoryNames);
         model.addAttribute("addProduct", new AdminAddProductDto());
         return "admin";
     }
@@ -45,7 +52,7 @@ public class AdminController {
      * @param model 클라이언트에 전달할 데이터를 담은 객체, 이 함수에서는 error message를 클라이언트에 전달
      * @return
      */
-    @PostMapping("/admin/add-product")
+    @PostMapping("/add-product")
     public String AddProducts(@ModelAttribute("addProduct") @Valid AdminAddProductDto addProductRequest, 
                               BindingResult bindingResult,
                               @RequestParam("uploadImages") MultipartFile[] uploadImages,
@@ -55,7 +62,7 @@ public class AdminController {
 
             model.addAttribute("errorMessage", errors); // 에러 메세지 전달
             model.addAttribute("addProduct", addProductRequest); // 에러나기전 admin이 입력한 데이터 다시 전달용
-            model.addAttribute("productCategories", Arrays.asList(ProductCategory.values())); // Product Category 리스트들 다시 전달
+            model.addAttribute("productCategories", productCategoryService.getAllProductCategoryList()); // Product Category 리스트들 다시 전달
             return "admin"; // admin으로 return
         }
         try {
@@ -63,6 +70,7 @@ public class AdminController {
         } catch(CustomException error) {
             model.addAttribute("addProduct", addProductRequest); // 에러나기전 admin이 입력한 데이터 다시 전달용
             model.addAttribute("errorMessage", error.getMessage()); // 에러 메세지 전달
+            model.addAttribute("productCategories", productCategoryService.getAllProductCategoryList());
             return "admin"; // admin으로 return
         }
         return "redirect:/admin"; // admin으로 redirect
@@ -72,7 +80,7 @@ public class AdminController {
      * @param productId 제거할 product ID
      * @return find-product.html에서 이루어질 PostMapping이기에 다시 find-product.html로 redirect
      */
-    @PostMapping("/admin/remove-product")
+    @PostMapping("/remove-product")
     public String RemoveProduct(@RequestParam("id") Long productId) {
         adminservice.removeProduct(productId);
         return "redirect:/find-product";
@@ -83,13 +91,13 @@ public class AdminController {
      * @param model Product Category와 EditProductDto 데이터를 전달
      * @return update-product-detail로 이동
      */
-    @GetMapping("/admin/update-product")
+    @GetMapping("/update-product")
     public String UpdateProductPage(@RequestParam("id") Long productId, Model model) {
         ProductEntity product = adminservice.getProductById(productId);
         AdminEditProductDto editProductDto = AdminEditProductDto.from(product);
         
         model.addAttribute("editProduct", editProductDto);
-        model.addAttribute("productCategories", Arrays.asList(ProductCategory.values()));
+        model.addAttribute("productCategories", productCategoryService.getAllProductCategoryList());
         return "update-product-detail";
     }
 
@@ -100,7 +108,7 @@ public class AdminController {
      * @param model EditProductDto 데이터를 전달, 에러났을 시 에러와 Product Category도 전달
      * @return find-product로 redirect, 실패시 다시 update-product-detail.html로 return
      */
-    @PostMapping("/admin/update-product-detail")
+    @PostMapping("/update-product-detail")
     public String UpdateProductDetailPage(@ModelAttribute("editProduct") @Valid AdminEditProductDto editProductRequest,
                                           BindingResult bindingResult,
                                           @RequestParam("uploadImages") MultipartFile[] uploadImages,
@@ -110,7 +118,7 @@ public class AdminController {
 
             model.addAttribute("errorMessage", errors); // 에러 메세지 전달
             model.addAttribute("update-product-detail", editProductRequest); // 에러나기전 admin이 입력한 또는 기존 product 데이터로 다시 돌리기 위해 전달
-            model.addAttribute("productCategories", Arrays.asList(ProductCategory.values())); // Product Category 리스트들 다시 전달
+            model.addAttribute("productCategories", productCategoryService.getAllProductCategoryList()); // Product Category 리스트들 다시 전달
             return "update-product-detail"; // update-product-detail로 이동
         }
         try {

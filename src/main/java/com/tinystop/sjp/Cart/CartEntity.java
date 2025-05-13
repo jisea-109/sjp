@@ -31,12 +31,12 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "cartTable")
+@Table(name = "cart_table")
 public class CartEntity {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "cartId")
+    @Column(name = "cart_id")
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

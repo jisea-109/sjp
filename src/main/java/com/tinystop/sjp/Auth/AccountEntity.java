@@ -35,12 +35,12 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class) // createdAt modifiedAt 자동 업데이트
-@Table(name="accountTable") 
+@Table(name="account_table") 
 public class AccountEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "accountId")
+    @Column(name = "account_id")
     private Long userID;
 
     @Column(name = "username", nullable = false, unique = true, length = 15) // not null, varchar(15)

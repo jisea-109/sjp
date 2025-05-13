@@ -37,18 +37,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class) // createdAt modifiedAt 자동 업데이트
-@Table(name = "reviewTable")
+@Table(name = "review_table")
 public class ReviewEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "reviewId")
+    @Column(name = "review_id")
     private long id;
 
-    @Column(name = "reviewTitle", nullable = false, length = 50)
+    @Column(name = "review_title", nullable = false, length = 50)
     private String reviewTitle;
 
-    @Column(name = "reviewText", nullable = false, length = 300)
+    @Column(name = "review_text", nullable = false, length = 300)
     private String reviewText;
 
     @Column(name = "rating", nullable = false)
@@ -57,8 +57,8 @@ public class ReviewEntity extends BaseEntity{
     private int rating;
 
     @ElementCollection
-    @CollectionTable(name = "reviewImages", joinColumns = @JoinColumn(name = "reviewId"))
-    @Column(name = "imagePath")
+    @CollectionTable(name = "review_images", joinColumns = @JoinColumn(name = "review_id"))
+    @Column(name = "image_path")
     private List<String> imagePaths = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -31,21 +31,21 @@ import com.tinystop.sjp.Product.ProductEntity;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name="orderTable")
+@Table(name="order_table")
 public class OrderEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "orderId")
+    @Column(name = "order_id")
     private Long id;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name="accountId", nullable = false)
+    @JoinColumn(name="account_id", nullable = false)
     private AccountEntity account;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name="productId", nullable = false)
+    @JoinColumn(name="product_id", nullable = false)
     private ProductEntity product;
 
     @Column(name = "quantity", nullable = false)

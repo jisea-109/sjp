@@ -39,12 +39,12 @@ import com.tinystop.sjp.Type.ProductStockStatus;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name="productTable")
+@Table(name="product_table")
 public class ProductEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "productId")
+    @Column(name = "product_id")
     private Long id;
 
     @Column(name = "name", nullable = false, length = 30)
@@ -68,7 +68,7 @@ public class ProductEntity extends BaseEntity{
 
     @ElementCollection
     @CollectionTable(name = "productImages", joinColumns = @JoinColumn(name = "productId"))
-    @Column(name = "imagePath")
+    @Column(name = "image_path")
     private List<String> imagePaths = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
