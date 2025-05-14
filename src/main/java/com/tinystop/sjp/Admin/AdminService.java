@@ -22,7 +22,10 @@ import lombok.RequiredArgsConstructor;
 
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
+import com.tinystop.sjp.Product.Category.ProductCategoryRepository;
 import com.tinystop.sjp.Type.ProductStockStatus;
+import static com.tinystop.sjp.Type.ErrorCode.CATEGORY_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Transactional
@@ -30,6 +33,7 @@ import com.tinystop.sjp.Type.ProductStockStatus;
 public class AdminService {
     
     private final AdminRepository adminRepository;
+    private final ProductCategoryRepository productCategoryRepository;
 
     private static final List<String> allowedImageTypes= List.of("image/jpeg", "image/png", "image/webp", "image/gif"); // 허용되는 이미지 확장자 목록
     private static final List<String> executableFileTypes =List.of(".jsp",".html",".php", ".java"); // 파일 업로드 했을 때 문제될 수 있는 파일들 목록
@@ -46,17 +50,18 @@ public class AdminService {
         if (exists) { 
             throw new CustomException(ALREADY_EXIST_PRODUCT,"admin");
         }
-        if (uploadImages != null) { // product에 이미지 올리는게 거의 필수지만 만약 이미지가 있으면 이미지 체크 후 업로드, 없을 시 넘기기
+        ProductCategoryEntity component = productCategoryRepository.findById(addProductRequest.getCategoryId()).orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND, "admin"));
+        if (uploadImages != null && Arrays.stream(uploadImages).anyMatch(file -> !file.isEmpty())) { // product에 이미지 올리는게 거의 필수지만 만약 이미지가 있으면 이미지 체크 후 업로드, 없을 시 넘기기
             if (uploadImages.length > maxAllowedImages) { // 20개 이상 올리는지 체크 (어드민이 업로드 하는거지만 혹시 모를 대비)
                 throw new CustomException(TOO_MANY_IMAGES_TO_UPLOAD, "admin");
             }
             checkImages(uploadImages, "admin"); // 이미지 형태 체크
             List<String> imagePaths = new ArrayList<>();
             imagePaths = uploadImages(uploadImages, "admin"); // 이미지 업로드
-            adminRepository.save(addProductRequest.toEntity(imagePaths)); // 업로드 후 review entity에 저장
+            adminRepository.save(addProductRequest.toEntity(imagePaths, component)); // 업로드 후 review entity에 저장
             return;
         }
-        adminRepository.save(addProductRequest.toEntity());
+        adminRepository.save(addProductRequest.toEntity(component));
     }
 
     /** Product 정보 가져오는 함수, update-product-detail.html 에 product를 가져오는데 쓰임
@@ -98,10 +103,11 @@ public class AdminService {
         }
 
         // product 모든 정보 update
+        ProductCategoryEntity component = productCategoryRepository.findById(editProductRequest.getCategoryId()).orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND, "product-list"));
         toUpdateProduct.setName(editProductRequest.getName());
         toUpdateProduct.setDescription(editProductRequest.getDescription());
         toUpdateProduct.setPrice(editProductRequest.getPrice());
-        toUpdateProduct.setComponent(editProductRequest.getComponent());
+        toUpdateProduct.setComponent(component);
         toUpdateProduct.setSocket(editProductRequest.getSocket());
         toUpdateProduct.setQuantity(editProductRequest.getQuantity());
         if(editProductRequest.getQuantity() > 0) { // 물량이 1보다 많을 시 재고 있다고 표시

@@ -17,9 +17,16 @@
                 <div class="textarea-wrapper">
                     <textarea th:field="*{description}" placeholder="DESCRIPTION" rows="5" cols="40" id="product_description" required></textarea>
                 </div>
-                <select name="component" id="product_component" required>
-                    <option value="" disabled selected>Select Component</option>
-                    <option th:each="category : ${productCategories}" th:value="${category}" th:text="${category}"></option>
+                <select name="categoryId" id="product_component" required>
+                    <option value="0" disabled 
+                            th:selected="${addProduct.categoryId == null or addProduct.categoryId == 0}">
+                        카테고리를 선택해주세요
+                    </option>
+                    <option th:each="category : ${productCategories}" 
+                            th:value="${category.id}" 
+                            th:text="${category.name}" 
+                            th:selected="${addProduct.categoryId == category.id}">
+                    </option>
                 </select>
                 <input type="text" th:field="*{socket}" placeholder="SOCKET" id="product_socket" required>
                 <input type="number" th:field="*{price}" placeholder="PRICE" id="product_price" required>

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tinystop.sjp.Product.ProductEntity;
-import com.tinystop.sjp.Type.ProductCategory;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -36,7 +36,7 @@ public class AdminEditProductDto {
     private int price;
 
     @NotNull(message = "카테고리를 선택해주세요.")
-    private ProductCategory component;
+    private Long categoryId;
 
     @NotBlank(message = "소켓을 입력해주세요.")
     @Size(max = 20, message = "소켓 정보는 20자 이하로 입력해주세요.")
@@ -55,7 +55,7 @@ public class AdminEditProductDto {
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setPrice(product.getPrice());
-        dto.setComponent(product.getComponent());
+        dto.setCategoryId(product.getComponent().getId());
         dto.setImagePaths(product.getImagePaths());
         dto.setSocket(product.getSocket());
         dto.setQuantity(product.getQuantity());

@@ -1,7 +1,6 @@
 package com.tinystop.sjp.Product;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +17,10 @@ import org.springframework.data.web.PageableDefault;
 import lombok.RequiredArgsConstructor;
 
 import com.tinystop.sjp.Cart.AddToCartDto;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
+import com.tinystop.sjp.Product.Category.ProductCategoryService;
 import com.tinystop.sjp.Review.ReviewEntity;
 import com.tinystop.sjp.Review.ReviewService;
-import com.tinystop.sjp.Type.ProductCategory;
 
 @RequiredArgsConstructor
 @RequestMapping("/")
@@ -30,6 +30,7 @@ public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
     private final ProductRatingService productRatingService;
+    private final ProductCategoryService productCategoryService;
 
     /**
      * 메인 홈페이지
@@ -38,7 +39,7 @@ public class ProductController {
      */
     @GetMapping("")
     public String home(Model model) {
-        List<ProductCategory> productCategories = Arrays.asList(ProductCategory.values());
+        List<ProductCategoryEntity> productCategories = productCategoryService.getProductCategoryList();
         model.addAttribute("productCategories", productCategories);
         return "main";
     }
@@ -83,7 +84,7 @@ public class ProductController {
 
         Page<LoadProductDto> products;
 
-        boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
+        boolean isCategory = productCategoryService.checkProductCategory(searchValue);
     
         if (isCategory) {
             products = productService.getProductsByComponentOrderByDate(searchValue, pageable);
@@ -116,7 +117,7 @@ public class ProductController {
                                           Model model) {
 
         Page<LoadProductDto> products;
-        boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
+        boolean isCategory = productCategoryService.checkProductCategory(searchValue);
     
         if (isCategory) {
             products = productService.getProductsByComponentOrderBySales(searchValue, pageable);
@@ -175,7 +176,7 @@ public class ProductController {
 
         Page<LoadProductDto> products;
 
-        boolean isCategory = Arrays.stream(ProductCategory.values()).anyMatch(category -> category.name().equalsIgnoreCase(searchValue));
+        boolean isCategory = productCategoryService.checkProductCategory(searchValue);
     
         if (isCategory) {
             products = productService.getProductsByComponentOrderByReviews(searchValue, pageable);

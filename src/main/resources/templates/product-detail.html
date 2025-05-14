@@ -15,7 +15,7 @@
                 <a class="product_title" th:text="${product.name}">상품 이름</a>
                 <div class="product_meta">
                     <p th:text="${product.description}">설명</p>
-                    <p th:text="'부품: ' + ${product.component}">부품</p>
+                    <p th:text="'부품: ' + ${product.component.name}">부품</p>
                     <p th:text="'소켓: ' + ${product.socket}">소켓</p>
                 </div>
                 <hr id="product_detail_hr">

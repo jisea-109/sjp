@@ -3,7 +3,7 @@ package com.tinystop.sjp.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.tinystop.sjp.Type.ProductCategory;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 
 public interface ProductCustomRepository {
 
@@ -34,7 +34,7 @@ public interface ProductCustomRepository {
      * @param pageable 페이지 번호, 크기, 정보 담은 객체
      * @return 기준에 맞는 ProductEntity Page return
      */
-    Page<ProductEntity> searchProductsByComponentSortedByCreatedAtDesc(ProductCategory category, Pageable pageable);
+    Page<ProductEntity> searchProductsByComponentSortedByCreatedAtDesc(ProductCategoryEntity category, Pageable pageable);
 
     /**
      * 검색해서 나온 Product 중에서 판매량이 제일 많은 순으로 정렬하는 함수 (User가 제일 많이 Order한 Product) 
@@ -50,7 +50,7 @@ public interface ProductCustomRepository {
      * @param pageable 페이지 번호, 크기, 정보 담은 객체
      * @return 기준에 맞는 ProductEntity Page return
      */
-    Page<ProductEntity> searchProductComponentsSortedBySales(ProductCategory component, Pageable pageable);
+    Page<ProductEntity> searchProductComponentsSortedBySales(ProductCategoryEntity component, Pageable pageable);
 
     /**
      * 검색해서 나온 Product 중에서 User 리뷰량이 제일 많은 순으로 정렬하는 함수
@@ -66,5 +66,5 @@ public interface ProductCustomRepository {
      * @param pageable 페이지 번호, 크기, 정보 담은 객체
      * @return 기준에 맞는 ProductEntity Page return
      */
-    Page<ProductEntity> searchProductComponentsSortedByReviews(ProductCategory component, Pageable pageable);
+    Page<ProductEntity> searchProductComponentsSortedByReviews(ProductCategoryEntity component, Pageable pageable);
 }

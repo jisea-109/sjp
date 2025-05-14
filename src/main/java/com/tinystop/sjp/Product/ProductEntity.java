@@ -20,16 +20,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import com.tinystop.sjp.BaseEntity;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 import com.tinystop.sjp.Review.ReviewEntity;
-import com.tinystop.sjp.Type.ProductCategory;
 import com.tinystop.sjp.Type.ProductStockStatus;
 
 @Getter
@@ -56,9 +58,9 @@ public class ProductEntity extends BaseEntity{
     @Column(name = "price", nullable = false)
     private int price;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "component", nullable = false)
-    private ProductCategory component;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private ProductCategoryEntity component;
 
     @Column(name = "socket")
     private String socket;

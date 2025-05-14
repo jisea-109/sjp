@@ -37,7 +37,7 @@
                             <h2 th:text="${product.name}"></h2>
                         </a>
                         <p><strong>소켓:</strong> <span th:text="${product.socket}"></span></p>
-                        <p><strong>부품: </strong><span th:text="${product.component}"></span></p>
+                        <p><strong>부품: </strong><span th:text="${product.component.name}"></span></p>
                         <p>
                             <strong><span th:if="${productRatings[product.id] != 0}" th:text="${#numbers.formatDecimal(productRatings[product.id], 1, 1)}"></span></strong>
                             <span th:if="${productRatings[product.id] == 0}">리뷰 X</span>

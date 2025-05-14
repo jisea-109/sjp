@@ -47,8 +47,8 @@
             <div id="main_categories">
                 <div th:each="category : ${productCategories}">
                     <form method="GET" action="/find-product/component">
-                        <input type="hidden" name="category" th:value="${category}">
-                        <button type="submit" id="main_category_btn" th:text="${category}"></button>
+                        <input type="hidden" name="category" th:value="${category.name}">
+                        <button type="submit" id="main_category_btn" th:text="${category.name}"></button>
                     </form>
                 </div>
             </div>

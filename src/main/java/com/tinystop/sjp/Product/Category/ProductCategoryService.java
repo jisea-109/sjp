@@ -1,15 +1,11 @@
 package com.tinystop.sjp.Product.Category;
 
 import org.springframework.stereotype.Service;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.tinystop.sjp.Exception.CustomException;
-import com.tinystop.sjp.Type.ProductCategory;
 import static com.tinystop.sjp.Type.ErrorCode.CATEGORY_ALREADY_EXIST;
 import static com.tinystop.sjp.Type.ErrorCode.CATEGORY_NOT_FOUND;
 
@@ -21,21 +17,14 @@ public class ProductCategoryService {
     
     private final ProductCategoryRepository productCategoryRepository;
 
+    /** Admin이 직접 추가한 ProductCategoryEntity에 있는 Category를 return하는 함수
+     * @return  List<ProductCategoryEntity> categories
+     */
     public List<ProductCategoryEntity> getProductCategoryList() {
         List<ProductCategoryEntity> categories = productCategoryRepository.findAll();
         return categories;
     }
-
-    public Set<String> getAllProductCategoryList() {
-        List<String> enumNames = Arrays.stream(ProductCategory.values()).map(Enum::name).toList();
-        List<String> entityNames = getProductCategoryList().stream().map(ProductCategoryEntity::getName).toList();
-        
-        Set<String> allCategoryNames = new LinkedHashSet<>();
-        allCategoryNames.addAll(enumNames);
-        allCategoryNames.addAll(entityNames);
-
-        return allCategoryNames;
-    }
+    
     /** Product Category 추가하는 함수
      * @param addProductCategoryDto admin이 작성한 product category 데이터 (String name)
      */
@@ -55,5 +44,9 @@ public class ProductCategoryService {
         ProductCategoryEntity category = productCategoryRepository.findById(productCategoryId).orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND, "admin-product-category"));
 
         productCategoryRepository.delete(category);
+    }
+
+    public boolean checkProductCategory(String categoryName) {
+        return productCategoryRepository.existsByName(categoryName);
     }
 }

@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.tinystop.sjp.Type.ProductCategory;
 import com.tinystop.sjp.Exception.CustomException;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
+import com.tinystop.sjp.Product.Category.ProductCategoryRepository;
 
 import static com.tinystop.sjp.Type.ErrorCode.PRODUCT_NOT_FOUND;
 
@@ -17,7 +18,7 @@ import static com.tinystop.sjp.Type.ErrorCode.PRODUCT_NOT_FOUND;
 public class ProductService {
 
     private final ProductRepository productRepository;
-
+    private final ProductCategoryRepository productCategoryRepository;
     /**
      * 클라이언트에서 product를 검색할 때 제일 최우선으로 사용되는 함수, 대소문자 구분 없이 검색함.
      * @param name 검색할 product 이름
@@ -41,7 +42,7 @@ public class ProductService {
      */
     public Page<LoadProductDto> getProductsByComponent(String component, Pageable pageable) {
 
-        ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
+        ProductCategoryEntity category = productCategoryRepository.findByName(component);
         Page<ProductEntity> productList = productRepository.findAllByComponent(category, pageable);
         
         if (productList.isEmpty()) {
@@ -73,7 +74,7 @@ public class ProductService {
      * @return DB에서 찾은 product entity -> LoadProductDto으로 return (imagePaths의 Hibernate Lazy 로딩 방지)
      */
     public Page<LoadProductDto> getProductsByComponentOrderByDate(String component, Pageable pageable) {
-        ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
+        ProductCategoryEntity category = productCategoryRepository.findByName(component);
         Page<ProductEntity> productList = productRepository.searchProductsByComponentSortedByCreatedAtDesc(category, pageable);
         
         if (productList.isEmpty()) {
@@ -105,7 +106,7 @@ public class ProductService {
      * @return DB에서 찾은 product entity -> LoadProductDto으로 return (imagePaths의 Hibernate Lazy 로딩 방지)
      */
     public Page<LoadProductDto> getProductsByComponentOrderBySales(String component, Pageable pageable) {
-        ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
+        ProductCategoryEntity category = productCategoryRepository.findByName(component);
         Page<ProductEntity> productList = productRepository.searchProductComponentsSortedBySales(category, pageable);
         
         if (productList.isEmpty()) {
@@ -138,7 +139,7 @@ public class ProductService {
      * @return DB에서 찾은 product entity -> LoadProductDto으로 return (imagePaths의 Hibernate Lazy 로딩 방지)
      */
     public Page<LoadProductDto> getProductsByComponentOrderByReviews(String component, Pageable pageable) {
-        ProductCategory category = ProductCategory.valueOf(component.toUpperCase());
+        ProductCategoryEntity category = productCategoryRepository.findByName(component);
         Page<ProductEntity> productList = productRepository.searchProductComponentsSortedByReviews(category, pageable);
         
         if (productList.isEmpty()) {

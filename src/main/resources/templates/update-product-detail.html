@@ -19,10 +19,10 @@
                     <textarea th:field="*{description}" placeholder="DESCRIPTION" rows="5" cols="40" id="product_description" required></textarea>
                 </div>
             
-                <select name="component" id="product_component" required>
+                <select th:field="*{categoryId}" id="product_component" required>
                     <option th:each="category : ${productCategories}" 
-                            th:value="${category}" 
-                            th:text="${category}">
+                            th:value="${category.id}" 
+                            th:text="${category.name}">
                     </option>
                 </select>
             

@@ -5,11 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tinystop.sjp.Order.QOrderEntity;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
+import com.tinystop.sjp.Product.Category.QProductCategoryEntity;
 import com.tinystop.sjp.Review.QReviewEntity;
-import com.tinystop.sjp.Type.ProductCategory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,17 +24,27 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     private final QProductEntity product = QProductEntity.productEntity;
     private final QOrderEntity order = QOrderEntity.orderEntity;
     private final QReviewEntity review = QReviewEntity.reviewEntity;
+    private final QProductCategoryEntity component = QProductCategoryEntity.productCategoryEntity;
 
     @Override
     public Page<ProductEntity> searchProductByNameContaining(String name, Pageable pageable) {  // product 검색했을 때 나열
+        String[] keywords = name.trim().split("\\s+");
+        BooleanBuilder builder = new BooleanBuilder(); 
+        for (String keyword : keywords) { // where 조건 build
+                builder.and(product.name.containsIgnoreCase(keyword)
+                        .or(component.name.containsIgnoreCase(keyword)));
+        }
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(product)
-                .where(product.name.containsIgnoreCase(name))
+                .leftJoin(product.component, component).fetchJoin()
+                .where(builder)
                 .orderBy(new CaseBuilder() // SQL CASE, WHEN, THEN 
-                        .when(product.name.equalsIgnoreCase(name)).then(3)
+                        .when(product.name.equalsIgnoreCase(name)).then(4)
+                        .when(component.name.containsIgnoreCase(name)).then(3)
                         .when(product.name.startsWithIgnoreCase(name)).then(2)
                         .when(product.name.containsIgnoreCase(name)).then(1)
-                        .otherwise(0).desc(), product.name.asc()) // 동일 점수 내에서는 이름 순 정렬
+                        .otherwise(0).desc(),
+                        product.name.asc()) // 동일 점수 내에서는 이름 순 정렬
                 .offset(pageable.getOffset()) // 건너뛸 데이터 행 수(?), 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
                 .limit(pageable.getPageSize()) // 가져올 데이터 수 (한 페이지당 몇개), 예를 들어서 limit(10)이면 10개 가져옴. ProductController에서는 10이 기본 지정
                 .fetch();
@@ -40,7 +52,9 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         long total = jpaQueryFactory // 데이터 전체 결과 개수
                 .select(product.count())
                 .from(product)
-                .where(product.name.containsIgnoreCase(name))
+                .leftJoin(product.component, component)
+                .where(product.name.containsIgnoreCase(name)
+                        .or(component.name.containsIgnoreCase(name)))
                 .fetchOne();
 
         return new PageImpl<>(products, pageable, total); // PageImpl<>은 PageImpl(List+Pageable) -> Page, (필터링된 데이터 (Products), 페이징 정보, 데이터 총 개수)
@@ -65,7 +79,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     }
 
     @Override
-    public Page<ProductEntity> searchProductsByComponentSortedByCreatedAtDesc(ProductCategory component, Pageable pageable) { // 선택한 component 날짜별로 나열
+    public Page<ProductEntity> searchProductsByComponentSortedByCreatedAtDesc(ProductCategoryEntity component, Pageable pageable) { // 선택한 component 날짜별로 나열
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(productEntity)
                 .where(productEntity.component.eq(component))
@@ -107,7 +121,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     }
 
     @Override
-    public Page<ProductEntity> searchProductComponentsSortedBySales(ProductCategory component, Pageable pageable) { // 선택한 component 판매량 순으로 나열
+    public Page<ProductEntity> searchProductComponentsSortedBySales(ProductCategoryEntity component, Pageable pageable) { // 선택한 component 판매량 순으로 나열
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(product)
                 .leftJoin(order).on(order.product.eq(product)) 
@@ -150,7 +164,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     }
 
     @Override
-    public Page<ProductEntity> searchProductComponentsSortedByReviews(ProductCategory component, Pageable pageable) { // 선택한 component 리뷰순으로 나열
+    public Page<ProductEntity> searchProductComponentsSortedByReviews(ProductCategoryEntity component, Pageable pageable) { // 선택한 component 리뷰순으로 나열
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(product)
                 .leftJoin(review).on(review.product.eq(product))

@@ -1,9 +1,6 @@
 package com.tinystop.sjp.Admin;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +19,6 @@ import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 import com.tinystop.sjp.Product.Category.ProductCategoryService;
-import com.tinystop.sjp.Type.ProductCategory;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +35,7 @@ public class AdminController {
      */
     @GetMapping("")
     public String AdminPage(Model model) {
-        Set<String> allCategoryNames = productCategoryService.getAllProductCategoryList();
+        List<ProductCategoryEntity> allCategoryNames = productCategoryService.getProductCategoryList();
         model.addAttribute("productCategories", allCategoryNames);
         model.addAttribute("addProduct", new AdminAddProductDto());
         return "admin";
@@ -62,15 +58,13 @@ public class AdminController {
 
             model.addAttribute("errorMessage", errors); // 에러 메세지 전달
             model.addAttribute("addProduct", addProductRequest); // 에러나기전 admin이 입력한 데이터 다시 전달용
-            model.addAttribute("productCategories", productCategoryService.getAllProductCategoryList()); // Product Category 리스트들 다시 전달
             return "admin"; // admin으로 return
         }
         try {
             adminservice.addProduct(addProductRequest, uploadImages); // product 추가, 성공했을 시 메세지 넣어서 안헷갈리게 하는게 좋을듯?
-        } catch(CustomException error) {
+        } catch(CustomException error) { 
             model.addAttribute("addProduct", addProductRequest); // 에러나기전 admin이 입력한 데이터 다시 전달용
             model.addAttribute("errorMessage", error.getMessage()); // 에러 메세지 전달
-            model.addAttribute("productCategories", productCategoryService.getAllProductCategoryList());
             return "admin"; // admin으로 return
         }
         return "redirect:/admin"; // admin으로 redirect
@@ -97,7 +91,7 @@ public class AdminController {
         AdminEditProductDto editProductDto = AdminEditProductDto.from(product);
         
         model.addAttribute("editProduct", editProductDto);
-        model.addAttribute("productCategories", productCategoryService.getAllProductCategoryList());
+        model.addAttribute("productCategories", productCategoryService.getProductCategoryList());
         return "update-product-detail";
     }
 
@@ -118,7 +112,6 @@ public class AdminController {
 
             model.addAttribute("errorMessage", errors); // 에러 메세지 전달
             model.addAttribute("update-product-detail", editProductRequest); // 에러나기전 admin이 입력한 또는 기존 product 데이터로 다시 돌리기 위해 전달
-            model.addAttribute("productCategories", productCategoryService.getAllProductCategoryList()); // Product Category 리스트들 다시 전달
             return "update-product-detail"; // update-product-detail로 이동
         }
         try {

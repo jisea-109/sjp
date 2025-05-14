@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.tinystop.sjp.Type.ProductCategory;
+import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 import com.tinystop.sjp.Type.ProductStockStatus;
 
 @Getter
@@ -17,7 +17,7 @@ public class LoadProductDto {
     private String name;
     private String description;
     private int price;
-    private ProductCategory component;
+    private ProductCategoryEntity component;
     private String socket;
     private int quantity;
     private List<String> imagePaths;
