@@ -16,6 +16,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 public class SecurityConfig {
     String[] PermittedGET = { // GET methods list
         "/",
+        "main.html",
         "/signupPage",
         "/font.css",
         "/style.css",

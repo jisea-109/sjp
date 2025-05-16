@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tinystop.sjp.Product.ProductEntity;
-import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
