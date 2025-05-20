@@ -18,9 +18,13 @@
 | **백엔드**: SpringBoot, JPA, Querydsl, Mysql | 
 | **Deploy**: Gradle, AWS, Docker |
 
+<<<<<<< HEAD
 JPA, QueryDsl, SpringBoot를 사용하여 ~~를 구현하여 백엔드 서버를 구축함.
 
 Spring MVC 특성상 JWT 대신 Session을 사용함.
+=======
+JPA, QueryDsl, SpringBoot를 사용하여 ~~를 구현하여 백엔드 서버를 구축함. Spring MVC 특성상 JWT 대신 Session을 사용함.
+>>>>>>> 74cd1deda2efac423a72c5fb9cea40e999c02aff
 
 상품 검색 결과 정확도를 높히기 위해 Querydsl을 사용.
 
