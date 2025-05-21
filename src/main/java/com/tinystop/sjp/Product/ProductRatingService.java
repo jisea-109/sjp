@@ -7,13 +7,13 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Review.ReviewEntity;
 import com.tinystop.sjp.Review.ReviewRepository;
-import com.tinystop.sjp.Type.ErrorCode;
+import static com.tinystop.sjp.Type.ErrorCode.PRODUCT_NOT_FOUND;
+import static com.tinystop.sjp.Type.ErrorCode.REVIEW_NOT_FOUND;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,14 +32,14 @@ public class ProductRatingService {
      * @param productId 평균을 계산할 상품 ID
      * @return 평점 평균 (소수점 1자리 반올림)
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @Transactional
     public BigDecimal getReviewAverage(Long productId) {
-        ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND, "main"));
+        ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "main"));
 
         List<ReviewEntity> reviews = reviewRepository.findByProduct(product);
 
         if (reviews.isEmpty()) {
-            throw new CustomException(ErrorCode.REVIEW_NOT_FOUND, "main");
+            throw new CustomException(REVIEW_NOT_FOUND, "main");
         }
 
         int sum = 0;

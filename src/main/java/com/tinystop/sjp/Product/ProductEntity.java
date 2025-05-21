@@ -69,7 +69,7 @@ public class ProductEntity extends BaseEntity{
     private int quantity;
 
     @ElementCollection
-    @CollectionTable(name = "productImages", joinColumns = @JoinColumn(name = "productId"))
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_path")
     private List<String> imagePaths = new ArrayList<>();
 
