@@ -2,8 +2,7 @@
 1. 프로그램 소개
 2. ERD
 3. 세부 구성도
-4. 구현 내용
-5. UI 모음
+4. 구현 내용 + UI 모음
 6. 프로젝트 세부 주제
 # 프로젝트 소개
 컴퓨터 부품들을 검색하고 주문할 수 있는 온라인 쇼핑몰 개인 프로젝트입니다.
@@ -30,7 +29,7 @@ JPA, QueryDsl, SpringBoot를 사용하여 ~~를 구현하여 백엔드 서버를
 # 세부 구성도
 
 
-# 구현 내용
+# 구현 내용 + UI 모음
 1. 검색 기능 + 페이징 기능
 2. 로그인 기능
  - 이메일 인증
@@ -40,8 +39,6 @@ JPA, QueryDsl, SpringBoot를 사용하여 ~~를 구현하여 백엔드 서버를
  - 비밀번호 변경 기능
  - 카트에 담은 상품, 주문했던 상품, 리뷰 리스트 확인 기능
 4. 리뷰, 상품, 카트, 주문 CRUD 기능
-
-# UI 모음
 
 # 프로젝트 세부 주제
 
@@ -102,41 +99,43 @@ Transaction에는 4가지 특징이 있다.
 **즉, getReviewAverage을 실행시키는 리뷰 평점 평균 구하기의 최초의 트랜잭션인 getAverageRating 함수는 <u>내부 Transaction 의 rollback 상태</u>로 인해 더이상 commit으로 처리를 못하게 된다**.
 
 알아본 해결책은 이렇게 있다.
-1. **개별적인 Transaction을 실행하기** 
+#### 1. 개별적인 Transaction을 실행하기
 
-        @Transactional(propagation = Propagation.REQUIRES_NEW) 
+    @Transactional(propagation = Propagation.REQUIRES_NEW) 
 
-    Child 함수인 getReviewAverage에 설정을 하여 별도의 Transaction으로 실행할 수 있게 설정. 하지만 이 설정도 결국 동일한 스레드에서 트렌젝션을 진행하기 때문에 REQUIRES_NEW에서 발생한 예외는 
-    
-    이를 호출한 트랜젝션에 전파되기 때문에 완벽하게 독립적인 트랜젝션이 아니다. 결국 똑같은 오류가 발생하게 되면서 rollback이 된다.
+Child 함수인 getReviewAverage에 설정을 하여 별도의 Transaction으로 실행할 수 있게 설정. 하지만 이 설정도 결국 동일한 스레드에서 트렌젝션을 진행하기 때문에 REQUIRES_NEW에서 발생한 예외는 
 
-2. **Transaction에서 예외가 나와도 rollback 방지** 
+이를 호출한 트랜잭션에 전파되기 때문에 완벽하게 독립적인 트랜잭션이 아니다. 결국 똑같은 오류가 발생하게 되면서 rollback이 된다.
+
+#### 2. Transaction에서 예외가 나와도 rollback 방지
             
-        @Transactional(noRollbackFor = CustomException.class) 
-    
-    예외가 나와도 원자성을 예외처리 해주는 설정. 하지만 예외는 바깥으로 전달되게 해야 rollback 여부를 판단할 수가 있는데 try catch문이 있으면 예외가 바깥으로 전달되질 못해서 rollback이 안된다.
-    
-    Parent 함수인 getAverageRating 함수는 try catch문이 있다. try catch문을 리팩토링 하기 위해서는 Child 함수 getReviewAverage를 Optional로 변경하면 해결이 된다.
+    @Transactional(noRollbackFor = CustomException.class) 
 
-        public Map<Long, BigDecimal> getAverageRating(Map<Long, BigDecimal> productRatings, Page<LoadProductDto> products) {
-            for (LoadProductDto product : products) {
-                BigDecimal rating = getReviewAverage(product.getId()).orElse(BigDecimal.ZERO);
-                productRatings.put(product.getId(), rating);
-            }
-            return productRatings;
+예외가 나와도 원자성을 예외처리 해주는 설정. 하지만 예외는 바깥으로 전달되게 해야 rollback 여부를 판단할 수가 있는데 try catch문이 있으면 예외가 바깥으로 전달되질 못해서 rollback이 안된다.
+
+Parent 함수인 getAverageRating 함수는 try catch문이 있다. try catch문을 리팩토링 하기 위해서는 Child 함수 getReviewAverage를 Optional로 변경하면 해결이 된다.
+
+    public Map<Long, BigDecimal> getAverageRating(Map<Long, BigDecimal> productRatings, Page<LoadProductDto> products) {
+        for (LoadProductDto product : products) {
+            BigDecimal rating = getReviewAverage(product.getId()).orElse(BigDecimal.ZERO);
+            productRatings.put(product.getId(), rating);
         }
+        return productRatings;
+    }
 
-    getReviewAverage를 Optional로 바꾸게 되면 Controller에서도 코드를 리팩토링 하는건 오래 걸리진 않는다.
-    
-    하지만 결국 rollback을 방지한다고 해서 정확한 원인을 해결한건지 궁금해서 더 알아보았다.
+getReviewAverage를 Optional로 바꾸게 되면 Controller에서도 코드를 리팩토링 하는건 오래 걸리진 않는다.
 
-3. **Transactional annotation 제거**
+하지만 결국 rollback을 방지한다고 해서 정확한 원인을 해결한건지 궁금해서 더 알아보았다.
 
-    **Transaction은 <u>데이터베이스의 상태를 변경시키는 작업의 단위</u>이다.**  getAverageRating 함수는 상품 목록에 있는 상품들에 대한 평균 평점 맵을 생성하는데, 결국 데이터베이스와는 직결되지 않는다.
-    
-    이 함수는 transactional annotation을 선언해서 처리할 이유가 없었기에 제거하였더니 정상적으로 작동한다. 이 프로젝트에서는 모든 Service 파일에 Transactional annotation을 포함한게 원인이었다.
+#### 3. Transactional annotation 제거
 
-    이후에 따로 Service 파일을 만들어서 Child 함수(getReviewAverage)는 DB에 접근하니 Transactional annotation을 붙이고 Parent 함수(getAverageRating)에는 제거해서 정리하였다.
+**Transaction은 <u>데이터베이스의 상태를 변경시키는 작업의 단위</u>이다.**  getAverageRating 함수는 상품 목록에 있는 상품들에 대한 평균 평점 맵을 생성하는데, 결국 데이터베이스와는 직결되지 않는다.
+
+이 함수는 transactional annotation을 선언해서 처리할 이유가 없었기에 제거하였더니 정상적으로 작동한다. 이 프로젝트에서는 모든 Service 파일에 Transactional annotation을 포함한게 원인이었다.
+
+이후에 따로 Service 파일을 만들어서 Child 함수(getReviewAverage)는 DB에 접근하니 Transactional annotation을 붙이고 Parent 함수(getAverageRating)에는 제거해서 정리하였다.
+
+<hr>
 
 ### 2. 이미지를 가져올 때 트렌젝션 이후 product.getImagePaths를 하면 LazyInitializationException 오류 해결
 
@@ -163,35 +162,152 @@ JPA에는 **OSIV(Open Session In View)** 이라는 방법으로 영속성 컨텍
 
 오류를 알고 나서 생각해본 해결방법은 다음과 같다.
 
-1. FetchType을 Lazy -> Eager로 수정
+#### 1. FetchType을 Lazy -> Eager로 수정
 
         @ElementCollection(fetch = FetchType.EAGER)
 
-    이렇게 바꾸면 Lazy Loading이 아닌 Eager Loading이 되는데, Eager Loading은 연관된 모든 객체의 데이터까지 한번에 불러오기에 성능에 영향을 줄 수가 있다. 장기적으로 봤을 땐 좋지 않은 선택이기에 다른 해결방법을 알아보았다.
-2. Service 레벨에서 Hibernate Lazy 초기화
+이렇게 바꾸면 Lazy Loading이 아닌 Eager Loading이 되는데, Eager Loading은 연관된 모든 객체의 데이터까지 한번에 불러오기에 성능에 영향을 줄 수가 있다. 장기적으로 봤을 땐 좋지 않은 선택이기에 다른 해결방법을 알아보았다.
+#### 2. Service 레벨에서 Hibernate Lazy 초기화
 
         for (ProductEntity product : productList) {
             product.getImagePaths().size();  // 강제 초기화
         }
-    Service에서 상품이나 리뷰를 조회할 때 imagePaths를 미리 강제 접근해서 세션 안에서 로딩되게 하는 방법이지만, 조회할 때 쓰이는 모든 함수에 코드를 추가해야 하기에 유지 보수면에서는 물론 가독성면에서도 좋진 않다.
+Service에서 상품이나 리뷰를 조회할 때 imagePaths를 미리 강제 접근해서 세션 안에서 로딩되게 하는 방법이지만, 조회할 때 쓰이는 모든 함수에 코드를 추가해야 하기에 유지 보수면에서는 물론 가독성면에서도 좋진 않다. 임시 방편으로 함수가 작동하는지만 테스트할 때 잠깐 쓰고 바로 삭제하였다.
 
-3. Querydsl에서 fetchJoin 사용
+#### 3. Querydsl에서 @EntityGraph 또는 fetchJoin 사용
 
-4. DTO로 변환
+Lazy Loading로 설정되어 있는 Entity의 설정을 바꾸지 않고 데이터를 조회 후 실제 데이터를 즉시 가져오도록 Eager Loading 처리할 수 있는 설정이다.
+EntityGraph를 추가하게 되면 fetchJoin을 추가하게 되면 연관된 엔티티나 컬렉션을 한 번에 같이 조회할 수 있게 된다.
 
-    Dto로 변환을 해서 사용하면 Hibernate 세션이 닫히기 전에 필요한 정보만 안전하게 가져올 수 있다.
+    @EntityGraph(attributePaths = "imagePaths")
+    Page<ProductEntity> findProductsByNameSortedByModifiedAtDesc(String name, Pageable pageable);
 
-        @Getter
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public class LoadProductDto { // 원본엔 다른 product 정보들 포함되있음
-            private List<String> imagePaths;
-            public LoadProductDto(ProductEntity product) {
-                this.imagePaths = List.copyOf(product.getImagePaths()); // Lazy 초기화
-            }
+Jpa Repository 매소드위에 추가하게 되면서 메소드를 통해 조회할 때 imagePaths는 Eager로 동작한다.
+
+하지만 Spring Data JPA의 메소드 명 기반 쿼리에서는 EntityGraph가 효과가 있지만 이 프로젝트에서는 imagePaths를 가져올 때 QueryDsl을 쓰고 있어서 EntityGrpah가 무시된다. 
+
+대신 Query에 직접 fetchJoin을 추가해야만 제대로 작동한다.
+
+    public Page<ProductEntity> findProductsByComponentSortedByModifiedAtDesc(ProductCategory component, Pageable pageable) {
+        List<ProductEntity> products = jpaQueryFactory
+        .selectFrom(productEntity)
+        .distinct()
+        .leftJoin(productEntity.imagePaths).fetchJoin()
+        ~~~
+        .fetch();
+    }
+
+.leftJoin(productEntity.imagePaths).fetchJoin() 이 문장을 통해서 ProductEntity와 imagePaths 컬렉션을 한 번에 조회를 하게 되면서 Hibernate Lazy 방지를 하며 image를 가져올 수 있다.
+
+이렇게 해결은 될 수 있지만 fetchJoin는 sql에서 inner join와 같은 역할을 하게 되어 중복 데이터가 발생할 수 있어서 'distinct'를 넣어서 중복 데이터를 없애줘야 한다.
+
+그리고 2번과 같은 이유로 다른 Query를 만들 때 매번 추가를 해야 하고 가독성도 떨어져서 일단 보류하고 다른 방법을 찾아보았다.
+    
+#### 4. DTO로 변환
+
+그 전까지는 Entity를 Lazy Loading 필드에 그대로 가지고 왔었기에 LazyInitializationException이 발생을 하였다.
+
+    클라이언트에서 product를 검색할 때 제일 최우선으로 사용되는 함수
+    public Page<ProductEntity> getProductsByName(String productName, Pageable pageable) {
+        Page<ProductEntity> productList = productRepository.findAllByNameContaining(productName, pageable); 
+
+        if (productName == "" || productList.isEmpty()) {
+            throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
-    이렇게 하여서
+
+        return productList; // -> entity 그대로 리턴
+    }
+
+하지만 Dto로 변환을 해서 사용하면 Hibernate 세션이 닫히기 전에 필요한 정보만 추출해서 가져올 수 있기에 LazyInitializationException을 예방할 수 있다.
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class LoadProductDto {
+        private List<String> imagePaths;
+        public LoadProductDto(ProductEntity product) {
+            this.imagePaths = List.copyOf(product.getImagePaths()); // Lazy 초기화
+        }
+    }
+    
+DTO로 다른 필요한 정보들까지 같이 포함해서 Hibeernate Lazy Loading 문제를 피하며 프론트에 넘기게 된다.
+
+    public Page<LoadProductDto> getProductsByName(String name, Pageable pageable) { // Page<ProductEntity> -> Page<LoadProductDto> 로 변경
+    Page<ProductEntity> productList = productRepository.searchProductByNameContaining(name, pageable);
+
+    if (name == "" || productList.isEmpty()) {
+        throw new CustomException(PRODUCT_NOT_FOUND,"main");
+    }
+    
+    return productList.map(LoadProductDto::new); // LoadProductDto을 리턴
+}
+
+Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity들을 가져오고 productList.map(LoadProductDto::new) 이 부분이 미리 가져온 필요한 데이터들을 DTO로 반환하였다.
+
+이렇게 해서 트랜잭션이 종료되기 전 필요한 데이터를 DTO로 변환해서 이미지를 오류 없이 다 가져오게끔 하였다.
+
+<hr>
+
 ### 3. Querydsl searchProductByNameContaining 정확도에 고려한 요소들
+
+상품을 검색할 때 이름만 검색해서 상품을 찾기에는 등록된 상품의 개수에 따라서 정확도를 더 고려해야 유저가 원하는 결과를 가져올 수 있다.
+
+다음은 상품을 검색할 때 쓰이는 함수 searchProductByNameContaining의 일부분이다.
+
+    public Page<ProductEntity> searchProductByNameContaining(String name, Pageable pageable) {  // product 검색했을 때 나열
+        String[] keywords = name.trim().split("\\s+");
+        BooleanBuilder builder = new BooleanBuilder(); 
+        for (String keyword : keywords) { // where 조건 build
+                builder.and(product.name.containsIgnoreCase(keyword)
+                        .or(component.name.containsIgnoreCase(keyword)));
+        }
+        List<ProductEntity> products = jpaQueryFactory
+                .selectFrom(product)
+                .leftJoin(product.component, component).fetchJoin()
+                .where(builder)
+                .orderBy(new CaseBuilder() // SQL CASE, WHEN, THEN 
+                        .when(product.name.equalsIgnoreCase(name)).then(4)
+                        .when(component.name.containsIgnoreCase(name)).then(3)
+                        .when(product.name.startsWithIgnoreCase(name)).then(2)
+                        .when(product.name.containsIgnoreCase(name)).then(1)
+                        .otherwise(0).desc(),
+                        product.name.asc()) // 동일 점수 내에서는 이름 순 정렬
+                ~~
+    }
+
+정확도를 위해 먼저 단어를 공백 단위로 쪼개서 키워드 배열을 생성했다. e.g. i5 9600 cpu-> ["i5", "9600", "cpu"]
+
+    String[] keywords = name.trim().split("\\s+");
+
+그리고 각 키워드가 어디 entity에 포함되는지를 조건으로 추가하는데, 이 프로젝트에서는 **<u>상품 이름(Product.name), 부품 이름(ProductCategoryEntity component.name)</u>** 이다
+
+    BooleanBuilder builder = new BooleanBuilder(); 
+            for (String keyword : keywords) { // where 조건 build
+                    builder.and(product.name.containsIgnoreCase(keyword) // 상품 이름
+                            .or(component.name.containsIgnoreCase(keyword))); // 부품 이름 (e.g. CPU, GPU, RAM 등)
+            }
+키워드 조건을 추가하고 이제 ProductEntity를 기준으로 select를 시작하는데, ProductEntity의 component와 left join을 해서 component도 가져온 다음, 전에 BooleanBuilder로 만든 키워드 조건을 where 에 적용한다.
+
+    List<ProductEntity> products = jpaQueryFactory
+                    .selectFrom(product)
+                    .leftJoin(product.component, component).fetchJoin()
+                    .where(builder)
+
+마지막으로 우선순위 정렬을 설정했다. 우선순위를 점수로 매겨서 다음과 같이 설정했다.
+
+**정확히 일치하는 경우 > component 포함 > 시작일치 > 일부 포함** 순으로 점수 주고, 점수 높은 순으로 정렬. 점수가 같으면 이름에 따라 오름차순으로 설정.
+
+    .orderBy(new CaseBuilder() // SQL CASE, WHEN, THEN 
+        .when(product.name.equalsIgnoreCase(name)).then(4)
+        .when(component.name.containsIgnoreCase(name)).then(3)
+        .when(product.name.startsWithIgnoreCase(name)).then(2)
+        .when(product.name.containsIgnoreCase(name)).then(1)
+        .otherwise(0).desc(),
+        product.name.asc()) 
+
+어떤 상품들은 소켓을 포함하는 것도 있기에 키워드에 소켓도 포함이 될 시 적용해 보는 것도 검토를 해봐야겠다도 생각한다.
+
+<hr>
 
 4. 배포 과정
  - 도메인
