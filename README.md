@@ -7,17 +7,19 @@
 # 프로젝트 소개
 컴퓨터 부품들을 검색하고 주문할 수 있는 온라인 쇼핑몰 개인 프로젝트입니다.
 
-백엔드 서버 구축부터 시작해서 배포까지 함으로써 공부를 위해 백엔드에 집중한 Spring MVC 웹 어플리케이션 프로젝트이며, 프론트엔드 또한 백엔드의 기능이 구현됨을 확인하기 위해 최소한의 기능이 구현되어 있습니다.
+백엔드 서버 구축부터 시작해서 배포까지 함으로써 공부를 위해 백엔드에 집중한 Spring MVC 웹 어플리케이션 프로젝트이며, 프론트엔드 또한 백엔드의 기능이 구현됨을 보여주기 위해 최소한의 기능이 구현되어 있습니다.
 
 개발기간: 25년 03/09 ~ 05/16
 
-| **기술 스택** ||
-| ----- | ----- |
-| **프론트**: HTML, CSS, Javascript |
+| **기술 스택** |
+| ----- |
+| **프론트**: HTML, CSS, Javascript, Thymeleaf |
 | **백엔드**: SpringBoot, JPA, Querydsl, Mysql | 
 | **Deploy**: Gradle, AWS, Docker |
 
-JPA, QueryDsl, SpringBoot를 사용하여 ~~를 구현하여 백엔드 서버를 구축함. Spring MVC 특성상 JWT 대신 Session을 사용함.
+JPA, QueryDsl, SpringBoot를 사용하여 백엔드 서버를 구축하였고 Docker, AWS 등을 이용해 서버를 배포.
+
+Spring MVC을 사용하고 있기에 Session 기반 인증을 사용함.
 
 상품 검색 결과 정확도를 높히기 위해 Querydsl을 사용.
 
@@ -31,6 +33,11 @@ JPA, QueryDsl, SpringBoot를 사용하여 ~~를 구현하여 백엔드 서버를
 
 # 구현 내용 + UI 모음
 1. 검색 기능 + 페이징 기능
+
+![Image](https://github.com/user-attachments/assets/2988c87e-57ff-465a-969d-bbb467134cb2)
+
+메인 페이지에서 상품을 검색할 수 있는 기능, 그리고 검색창 밑에 있는 component를 클릭하면 그 component 에 맞는 상품들이 나열됩니다.
+
 2. 로그인 기능
  - 이메일 인증
  - Spring Security
@@ -261,6 +268,12 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
                 builder.and(product.name.containsIgnoreCase(keyword)
                         .or(component.name.containsIgnoreCase(keyword)));
         }
+
+        Expression<Long> orderCount = JPAExpressions
+                .select(order.count())
+                .from(order)
+                .where(order.product.eq(product));
+        
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(product)
                 .leftJoin(product.component, component).fetchJoin()
@@ -270,7 +283,9 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
                         .when(component.name.containsIgnoreCase(name)).then(3)
                         .when(product.name.startsWithIgnoreCase(name)).then(2)
                         .when(product.name.containsIgnoreCase(name)).then(1)
-                        .otherwise(0).desc(),
+                        .otherwise(0)
+                        .add(orderCount)
+                        .desc(),
                         product.name.asc()) // 동일 점수 내에서는 이름 순 정렬
                 ~~
     }
@@ -286,26 +301,41 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
                     builder.and(product.name.containsIgnoreCase(keyword) // 상품 이름
                             .or(component.name.containsIgnoreCase(keyword))); // 부품 이름 (e.g. CPU, GPU, RAM 등)
             }
-키워드 조건을 추가하고 이제 ProductEntity를 기준으로 select를 시작하는데, ProductEntity의 component와 left join을 해서 component도 가져온 다음, 전에 BooleanBuilder로 만든 키워드 조건을 where 에 적용한다.
+키워드 조건을 추가하고 이제 ProductEntity를 기준으로 select를 시작하는데, ProductEntity의 component와 left join을 해서 component도 가져오고, 전에 BooleanBuilder로 만든 키워드 조건을 where 에 적용한다.
 
     List<ProductEntity> products = jpaQueryFactory
-                    .selectFrom(product)
-                    .leftJoin(product.component, component).fetchJoin()
-                    .where(builder)
+            .selectFrom(product)
+            .leftJoin(product.component, component).fetchJoin()
+            .leftJoin(product.orderList, order)
+            .where(builder)
+            .groupBy(product)
+
+판매량도 고려대상에 포함되기에 서브쿼리를 만들어서 각 상품마다 관련된 판매량의 개수를 셀 수 있게끔 하였다.
+
+    Expression<Long> orderCount = JPAExpressions
+        .select(order.count())
+        .from(order)
+        .where(order.product.eq(product));
 
 마지막으로 우선순위 정렬을 설정했다. 우선순위를 점수로 매겨서 다음과 같이 설정했다.
 
-**정확히 일치하는 경우 > component 포함 > 시작일치 > 일부 포함** 순으로 점수 주고, 점수 높은 순으로 정렬. 점수가 같으면 이름에 따라 오름차순으로 설정.
+**단어가 정확히 일치하는 경우 > component에 이름이 포함 > 단어가 시작부분이랑 일치 > 문자열에 일부 포함** 순으로 점수 주고, 점수 높은 순으로 정렬.
+
+점수가 동일한 경우에는, 서브쿼리로 계산된 판매량을 기준으로 정렬하여 판매량이 높은 상품을 우선적으로 나열. 판매량과 점수도 같으면 이름에 따라 오름차순으로 설정.
 
     .orderBy(new CaseBuilder() // SQL CASE, WHEN, THEN 
-        .when(product.name.equalsIgnoreCase(name)).then(4)
-        .when(component.name.containsIgnoreCase(name)).then(3)
-        .when(product.name.startsWithIgnoreCase(name)).then(2)
-        .when(product.name.containsIgnoreCase(name)).then(1)
-        .otherwise(0).desc(),
-        product.name.asc()) 
+            .when(product.name.equalsIgnoreCase(name)).then(4)
+            .when(component.name.containsIgnoreCase(name)).then(3)
+            .when(product.name.startsWithIgnoreCase(name)).then(2)
+            .when(product.name.containsIgnoreCase(name)).then(1)
+            .otherwise(0)
+            .add(orderCount)
+            .desc(),
+            product.name.asc())
 
-어떤 상품들은 소켓을 포함하는 것도 있기에 키워드에 소켓도 포함이 될 시 적용해 보는 것도 검토를 해봐야겠다도 생각한다.
+전부 대소문자 구분 없이 찾게끔 했다.
+
+어떤 상품들은 소켓을 보유한 상품도 있기에 키워드에 소켓도 포함이 될 시 적용해 보는 것도 검토를 해봐야겠다도 생각한다.
 
 <hr>
 

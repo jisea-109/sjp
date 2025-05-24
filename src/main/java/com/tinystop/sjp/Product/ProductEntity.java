@@ -30,6 +30,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import com.tinystop.sjp.BaseEntity;
+import com.tinystop.sjp.Order.OrderEntity;
 import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 import com.tinystop.sjp.Review.ReviewEntity;
 import com.tinystop.sjp.Type.ProductStockStatus;
@@ -75,6 +76,9 @@ public class ProductEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviews;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderEntity> orderList;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "stock", nullable = false)

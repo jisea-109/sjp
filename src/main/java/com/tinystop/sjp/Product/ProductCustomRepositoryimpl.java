@@ -7,7 +7,9 @@ import org.springframework.data.domain.Pageable;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.core.types.Expression;
 import com.tinystop.sjp.Order.QOrderEntity;
 import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 import com.tinystop.sjp.Product.Category.QProductCategoryEntity;
@@ -34,6 +36,12 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 builder.and(product.name.containsIgnoreCase(keyword)
                         .or(component.name.containsIgnoreCase(keyword)));
         }
+
+        Expression<Long> orderCount = JPAExpressions
+                .select(order.count())
+                .from(order)
+                .where(order.product.eq(product));
+        
         List<ProductEntity> products = jpaQueryFactory
                 .selectFrom(product)
                 .leftJoin(product.component, component).fetchJoin()
@@ -43,9 +51,11 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                         .when(component.name.containsIgnoreCase(name)).then(3)
                         .when(product.name.startsWithIgnoreCase(name)).then(2)
                         .when(product.name.containsIgnoreCase(name)).then(1)
-                        .otherwise(0).desc(),
+                        .otherwise(0)
+                        .add(orderCount)
+                        .desc(),
                         product.name.asc()) // 동일 점수 내에서는 이름 순 정렬
-                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수(?), 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
+                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수, 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
                 .limit(pageable.getPageSize()) // 가져올 데이터 수 (한 페이지당 몇개), 예를 들어서 limit(10)이면 10개 가져옴. ProductController에서는 10이 기본 지정
                 .fetch();
 
@@ -66,7 +76,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 .selectFrom(productEntity)
                 .where(productEntity.name.containsIgnoreCase(name))
                 .orderBy(productEntity.createdAt.desc())
-                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수(?), 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
+                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수, 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
                 .limit(pageable.getPageSize()) // 가져올 데이터 수 (한 페이지당 몇개), 예를 들어서 limit(10)이면 10개 가져옴. ProductController에서는 10이 기본 지정
                 .fetch(); // Query List 가져오기 
 
@@ -106,7 +116,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 .where(product.name.containsIgnoreCase(name))
                 .groupBy(product.id)
                 .orderBy(order.quantity.sum().desc())
-                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수(?), 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
+                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수, 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
                 .limit(pageable.getPageSize()) // 가져올 데이터 수 (한 페이지당 몇개), 예를 들어서 limit(10)이면 10개 가져옴. ProductController에서는 10이 기본 지정
                 .fetch();
 
@@ -128,7 +138,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 .where(product.component.eq(component))
                 .groupBy(product.id)
                 .orderBy(order.quantity.sum().desc())
-                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수(?), 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
+                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수, 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
                 .limit(pageable.getPageSize()) // 가져올 데이터 수 (한 페이지당 몇개), 예를 들어서 limit(10)이면 10개 가져옴. ProductController에서는 10이 기본 지정
                 .fetch();
 
@@ -149,7 +159,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 .leftJoin(review).on(review.product.eq(product))
                 .groupBy(product.id)
                 .orderBy(review.count().desc())
-                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수(?), 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
+                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수, 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
                 .limit(pageable.getPageSize()) // 가져올 데이터 수 (한 페이지당 몇개), 예를 들어서 limit(10)이면 10개 가져옴. ProductController에서는 10이 기본 지정
                 .fetch();
 
@@ -171,7 +181,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 .where(product.component.eq(component))
                 .groupBy(product.id)
                 .orderBy(review.count().desc())
-                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수(?), 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
+                .offset(pageable.getOffset()) // 건너뛸 데이터 행 수, 예를 들어서 Offset(20)이면 20번째 데이터까지 스킵하고 21번째 데이터부터 시작하게 지정
                 .limit(pageable.getPageSize()) // 가져올 데이터 수 (한 페이지당 몇개), 예를 들어서 limit(10)이면 10개 가져옴. ProductController에서는 10이 기본 지정
                 .fetch();
 
