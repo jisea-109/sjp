@@ -98,13 +98,13 @@ public class SecurityConfig {
             )
             .formLogin(form -> form // 로그인
                 .loginPage("/signinPage") 
-                .defaultSuccessUrl("/index.html", true)   
+                .defaultSuccessUrl("/main.html", true)   
                 .failureUrl("/signinPage?error=true") 
             .permitAll()
             )
             .logout(logout -> logout // 로그아웃
                 .logoutUrl("/signout")
-                .logoutSuccessUrl("/index.html")
+                .logoutSuccessUrl("/main.html")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID") // 로그아웃 후 세션 삭제
             );

@@ -43,7 +43,7 @@ public class ProductService {
     public Page<LoadProductDto> getProductsByComponent(String component, Pageable pageable) {
 
         ProductCategoryEntity category = productCategoryRepository.findByName(component);
-        Page<ProductEntity> productList = productRepository.findAllByComponent(category, pageable);
+        Page<ProductEntity> productList = productRepository.searchProductByComponent(category, pageable);
         
         if (productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");

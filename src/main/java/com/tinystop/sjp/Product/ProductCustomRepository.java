@@ -20,7 +20,15 @@ public interface ProductCustomRepository {
      */
     Page<ProductEntity> searchProductByNameContaining(String name, Pageable pageable);
 
-     /**
+    /**
+     *  특정 Component에 해당하는 Product 검색해서 판매량과 리뷰량을 계산한 인기순으로 정렬하는 함수 
+     * @param category Component 이름 (ProductCategory에 있는 Component 변수랑 똑같이 일치해야함)
+     * @param pageable 페이지 번호, 크기, 정보 담은 객체
+     * @return 기준에 맞는 ProductEntity Page return
+     */
+    Page<ProductEntity> searchProductByComponent(ProductCategoryEntity component, Pageable pageable);
+
+    /**
      * 검색해서 나온 Product 중에서 최신 등록순으로 정렬하는 함수 (CreatedAt 시간 기준) 
      * @param name 검색할 product 이름
      * @param pageable 페이지 번호, 크기, 정보 담은 객체
@@ -34,7 +42,7 @@ public interface ProductCustomRepository {
      * @param pageable 페이지 번호, 크기, 정보 담은 객체
      * @return 기준에 맞는 ProductEntity Page return
      */
-    Page<ProductEntity> searchProductsByComponentSortedByCreatedAtDesc(ProductCategoryEntity category, Pageable pageable);
+    Page<ProductEntity> searchProductsByComponentSortedByCreatedAtDesc(ProductCategoryEntity component, Pageable pageable);
 
     /**
      * 검색해서 나온 Product 중에서 판매량이 제일 많은 순으로 정렬하는 함수 (User가 제일 많이 Order한 Product) 

@@ -32,20 +32,78 @@ Spring MVC을 사용하고 있기에 Session 기반 인증을 사용함.
 
 
 # 구현 내용 + UI 모음
-1. 검색 기능 + 페이징 기능
+### 1. 검색 기능 + 페이징 기능
 
 ![Image](https://github.com/user-attachments/assets/2988c87e-57ff-465a-969d-bbb467134cb2)
 
 메인 페이지에서 상품을 검색할 수 있는 기능, 그리고 검색창 밑에 있는 component를 클릭하면 그 component 에 맞는 상품들이 나열됩니다.
 
-2. 로그인 기능
- - 이메일 인증
+상품을 검색할 때 또는 Component를 클릭할 때는 여러가지 요소들을 감안해서 적합한 결과를 내게끔 했다. [링크](#3-querydsl-searchproductbynamecontaining-정확도에-고려한-요소들)
+
+### 2. 로그인 기능
+
+ - 회원가입 + 이메일 인증
+
+    ![Image](https://github.com/user-attachments/assets/bca4b1b1-9022-4ea7-b8ea-b5c7128977ea)
+
+    양식에 맞는 아이디, 비밀번호, 그리고 이메일까지 입력하면 이메일 인증을 받아야 한다. 
+
+    ![Image](https://github.com/user-attachments/assets/a0d32826-031d-4a65-a9fd-957dbf8f79f1)
+
+    인증번호 전송을 누르면 이메일에 이렇게 6개의 알파벳과 숫자가 섞인 인증번호가 도착하게 되는데, 이 코드를 입력해주면 성공적으로 회원가입이 된다.
+
  - Spring Security
+
+            SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_THREADLOCAL); // SecurityContext가 현재 실행 중인 스레드에만 저장 (기본상태)
+
+            http.authorizeHttpRequests((authorize) -> authorize
+                    .requestMatchers(HttpMethod.GET,PermittedGET).permitAll() // GET method 허용
+                    .requestMatchers(HttpMethod.POST,PermittedPOST).permitAll() // POST method 허용
+                    .requestMatchers(AfterAuthenticatedGET).authenticated() // 로그인 했을 시 GET method 허용
+                    .requestMatchers(AfterAuthenticatedPOST).authenticated() // 로그인 했을 시 POST method 허용
+                    .requestMatchers(BePermittedAdmin).hasRole("ADMIN") // admin 허용
+                    .anyRequest().authenticated() // 나머진 권한 필요
+                )
+    Get, Post 들을 따로 정리해서 비로그인 허용, 로그인 필요, 관리자 전용 변수로 정리를 하였다.
+    
+    기본적으로 인증된 사용자만 접근 가능하도록 설정하였지만 이 프로젝트에 있는 모든 메소드들은 다 추가를 해놓았다.
+
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) //필요한 경우 세션 생성 Always로 할 시 모든 요청마다 세션 생성, STATELESS는 REST API용
+                .sessionFixation(sessionFixation -> sessionFixation.migrateSession()) // 로그인 할 때마다 새로운 세션 ID 발급 (세션 고정 공격 방지)
+                .maximumSessions(1) // 한 유저당 1 세션
+                .maxSessionsPreventsLogin(true) // 1 세션 넘으면 다른 로그인 차단
+                .expiredUrl("/login?expired") // 세션 만료되면 여기 페이지로 다이렉트함. 30분 후 만료
+            )
+    
+    세션은 사용자당 한 개의 세션만 사용하게끔 제한하였고, 로그인 할 때마다 새로운 세션 ID 발급 함으로써 세션 고정 공격 방지를 함.
+
+    30분이 지나면 자동으로 로그인 화면으로 리다이이렉션 되도록 설정함.
+
+            .securityContext(securityContext -> securityContext
+            .securityContextRepository(securityContextRepository) // SecurityContext를 세션에 저장
+            )
+            .formLogin(form -> form // 로그인
+                .loginPage("/signinPage") 
+                .defaultSuccessUrl("/main.html", true)   
+                .failureUrl("/signinPage?error=true") 
+            .permitAll()
+            )
+            .logout(logout -> logout // 로그아웃
+                .logoutUrl("/signout")
+                .logoutSuccessUrl("/main.html")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID") // 로그아웃 후 세션 삭제
+            );
+    인증 정보는 세션 기반으로 저장되며 (SecurityContextRepository) 로그인 성공 여부에 따른 페이지와 로그아웃을 하면서 리다이렉션 하는 페이지 설정과 함께 
+    
+    세션 무효화 및 쿠키 삭제를 하며 완전 로그아웃을 하게끔 한다.
+
  - BCrypt를 통한 비밀번호 암호화
-3. 마이 페이지 기능
+### 3. 마이 페이지 기능
  - 비밀번호 변경 기능
  - 카트에 담은 상품, 주문했던 상품, 리뷰 리스트 확인 기능
-4. 리뷰, 상품, 카트, 주문 CRUD 기능
+### 4. 리뷰, 상품, 카트, 주문 CRUD 기능
 
 # 프로젝트 세부 주제
 
@@ -306,7 +364,6 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
     List<ProductEntity> products = jpaQueryFactory
             .selectFrom(product)
             .leftJoin(product.component, component).fetchJoin()
-            .leftJoin(product.orderList, order)
             .where(builder)
             .groupBy(product)
 
@@ -335,7 +392,7 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
 
 전부 대소문자 구분 없이 찾게끔 했다.
 
-어떤 상품들은 소켓을 보유한 상품도 있기에 키워드에 소켓도 포함이 될 시 적용해 보는 것도 검토를 해봐야겠다도 생각한다.
+어떤 상품들은 소켓을 보유한 상품도 있기에 키워드에 소켓도 포함이 될 시 적용해 보는 것도 검토를 해봐야겠다.
 
 <hr>
 
