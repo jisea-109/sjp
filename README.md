@@ -1,9 +1,13 @@
 ## 목차
-1. 프로그램 소개
-2. ERD
-3. 세부 구성도
-4. 구현 내용 + UI 모음
-6. 프로젝트 세부 주제
+1. [프로그램 소개](#프로젝트-소개)
+2. [ERD](#erd)
+3. [세부 구성도](#세부-구성도)
+4. [구현 내용 + UI 모음](#구현-내용--ui-모음)
+    1. [검색 기능 + 페이징 기능](#1-검색-기능--페이징-기능)
+    2. [회원가입, 로그인, 로그아웃](#2-회원가입-로그인-로그아웃)
+    3. [마이 페이지 기능](#3-마이-페이지-기능)
+5. [프로젝트 세부 주제](#프로젝트-세부-주제)
+
 # 프로젝트 소개
 컴퓨터 부품들을 검색하고 주문할 수 있는 온라인 쇼핑몰 개인 프로젝트입니다.
 
@@ -25,6 +29,7 @@ Spring MVC을 사용하고 있기에 Session 기반 인증을 사용함.
 
 # ERD
 [ERD 링크](https://www.erdcloud.com/d/eE4zwgLhMPij5dE7C)
+
 ![Image](https://github.com/user-attachments/assets/7d70023b-17c0-4564-bc4d-7ebf7c4c2f15)
 
 
@@ -40,69 +45,170 @@ Spring MVC을 사용하고 있기에 Session 기반 인증을 사용함.
 
 상품을 검색할 때 또는 Component를 클릭할 때는 여러가지 요소들을 감안해서 적합한 결과를 내게끔 했다. [링크](#3-querydsl-searchproductbynamecontaining-정확도에-고려한-요소들)
 
-### 2. 로그인 기능
+### 2. 회원가입, 로그인, 로그아웃
 
- - 회원가입 + 이메일 인증
+#### - 회원가입 + 이메일 인증
 
-    ![Image](https://github.com/user-attachments/assets/bca4b1b1-9022-4ea7-b8ea-b5c7128977ea)
+![Image](https://github.com/user-attachments/assets/bca4b1b1-9022-4ea7-b8ea-b5c7128977ea)
 
-    양식에 맞는 아이디, 비밀번호, 그리고 이메일까지 입력하면 이메일 인증을 받아야 한다. 
+양식에 맞는 아이디, 비밀번호, 그리고 이메일까지 입력하면 이메일 인증을 받아야 한다. 
 
-    ![Image](https://github.com/user-attachments/assets/a0d32826-031d-4a65-a9fd-957dbf8f79f1)
+![Image](https://github.com/user-attachments/assets/a0d32826-031d-4a65-a9fd-957dbf8f79f1)
 
-    인증번호 전송을 누르면 이메일에 이렇게 6개의 알파벳과 숫자가 섞인 인증번호가 도착하게 되는데, 이 코드를 입력해주면 성공적으로 회원가입이 된다.
+인증번호 전송을 누르면 이메일에 이렇게 6개의 알파벳과 숫자가 섞인 인증번호가 도착하게 되는데, 이 코드를 입력해주면 인증 확인이 된다.
 
- - Spring Security
+비밀번호를 암호화할 때는 단뱡향 해시 함수인 Bcrypt를 사용하였다.
 
-            SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_THREADLOCAL); // SecurityContext가 현재 실행 중인 스레드에만 저장 (기본상태)
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-            http.authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers(HttpMethod.GET,PermittedGET).permitAll() // GET method 허용
-                    .requestMatchers(HttpMethod.POST,PermittedPOST).permitAll() // POST method 허용
-                    .requestMatchers(AfterAuthenticatedGET).authenticated() // 로그인 했을 시 GET method 허용
-                    .requestMatchers(AfterAuthenticatedPOST).authenticated() // 로그인 했을 시 POST method 허용
-                    .requestMatchers(BePermittedAdmin).hasRole("ADMIN") // admin 허용
-                    .anyRequest().authenticated() // 나머진 권한 필요
-                )
-    Get, Post 들을 따로 정리해서 비로그인 허용, 로그인 필요, 관리자 전용 변수로 정리를 하였다.
+Bean으로 Bcrypt를 등록한 다음 유저가 입력한 비밀번호를 암호화하고 저장한다.
+
+    String encodedPassword = passwordEncoder.encode(user.getPassword()); // 비밀번호 암호화
+    accountRepository.save(user.toEntity(encodedPassword));
+
+#### - Spring Security
     
-    기본적으로 인증된 사용자만 접근 가능하도록 설정하였지만 이 프로젝트에 있는 모든 메소드들은 다 추가를 해놓았다.
+SpringSecurity.java에 적혀 있는 설정이다.
 
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) //필요한 경우 세션 생성 Always로 할 시 모든 요청마다 세션 생성, STATELESS는 REST API용
-                .sessionFixation(sessionFixation -> sessionFixation.migrateSession()) // 로그인 할 때마다 새로운 세션 ID 발급 (세션 고정 공격 방지)
-                .maximumSessions(1) // 한 유저당 1 세션
-                .maxSessionsPreventsLogin(true) // 1 세션 넘으면 다른 로그인 차단
-                .expiredUrl("/login?expired") // 세션 만료되면 여기 페이지로 다이렉트함. 30분 후 만료
-            )
+    SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_THREADLOCAL); // SecurityContext가 현재 실행 중인 스레드에만 저장 (기본상태)
+
+    http.authorizeHttpRequests((authorize) -> authorize
+            .requestMatchers(HttpMethod.GET,PermittedGET).permitAll() // GET method 허용
+            .requestMatchers(HttpMethod.POST,PermittedPOST).permitAll() // POST method 허용
+            .requestMatchers(AfterAuthenticatedGET).authenticated() // 로그인 했을 시 GET method 허용
+            .requestMatchers(AfterAuthenticatedPOST).authenticated() // 로그인 했을 시 POST method 허용
+            .requestMatchers(BePermittedAdmin).hasRole("ADMIN") // admin 허용
+            .anyRequest().authenticated() // 나머진 권한 필요
+        )
+Get, Post 들을 따로 정리해서 비로그인 허용, 로그인 필요, 관리자 전용 변수로 정리를 하였다.
+
+기본적으로 인증된 사용자만 접근 가능하도록 설정하였지만 이 프로젝트에 있는 모든 메소드들은 다 추가를 해놓았다.
+
+    .sessionManagement(session -> session
+        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) //필요한 경우 세션 생성 Always로 할 시 모든 요청마다 세션 생성, STATELESS는 REST API용
+        .sessionFixation(sessionFixation -> sessionFixation.migrateSession()) // 로그인 할 때마다 새로운 세션 ID 발급 (세션 고정 공격 방지)
+        .maximumSessions(1) // 한 유저당 1 세션
+        .maxSessionsPreventsLogin(true) // 1 세션 넘으면 다른 로그인 차단
+        .expiredUrl("/login?expired") // 세션 만료되면 여기 페이지로 다이렉트함. 30분 후 만료
+    )
+
+세션은 사용자당 한 개의 세션만 사용하게끔 제한하였고, 로그인 할 때마다 새로운 세션 ID 발급 함으로써 세션 고정 공격 방지를 함.
+
+30분이 지나면 자동으로 로그인 화면으로 리다이이렉션 되도록 설정함.
+
+    .securityContext(securityContext -> securityContext
+    .securityContextRepository(securityContextRepository) // SecurityContext를 세션에 저장
+    )
+    .formLogin(form -> form // 로그인
+        .loginPage("/signinPage") 
+        .defaultSuccessUrl("/main.html", true)   
+        .failureUrl("/signinPage?error=true") 
+    .permitAll()
+    )
+    .logout(logout -> logout // 로그아웃
+        .logoutUrl("/signout")
+        .logoutSuccessUrl("/main.html")
+        .invalidateHttpSession(true)
+        .deleteCookies("JSESSIONID") // 로그아웃 후 세션 삭제
+    );
+인증 정보는 세션 기반으로 저장되며 (SecurityContextRepository) 로그인 성공 여부에 따른 페이지와 로그아웃을 하면서 리다이렉션 하는 페이지 설정과 함께 
+
+세션 무효화 및 쿠키 삭제를 하며 완전 로그아웃을 하게끔 한다.
+
+#### - 로그인
+
+![Image](https://github.com/user-attachments/assets/65469a3c-62fa-44a4-aa57-dbb5233444ed)
+
+유저가 아이디를 입력한 값을 통해서 아이디를 검색하고 없으면 오류 메세지를 보낸다.
+
+        AccountEntity accountEntity = this.accountRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomException(USER_NOT_FOUND,"signin"));
+
+회원가입시 비밀번호를 Bcrypt를 사용해 암호화하고 하는데, Bcrypt가 **단방향 암호화**이기 때문에 같은 비밀번호라도 다른 결과가 나온다.
+
+그래서 회원가입할 때 암호화된 비밀번호와 유저가 로그인 하기위해 입력한 비밀번호를 확인할라면 **matches()** 메소드를 통해서 비밀번호를 확인해야 한다. 
     
-    세션은 사용자당 한 개의 세션만 사용하게끔 제한하였고, 로그인 할 때마다 새로운 세션 ID 발급 함으로써 세션 고정 공격 방지를 함.
-
-    30분이 지나면 자동으로 로그인 화면으로 리다이이렉션 되도록 설정함.
-
-            .securityContext(securityContext -> securityContext
-            .securityContextRepository(securityContextRepository) // SecurityContext를 세션에 저장
-            )
-            .formLogin(form -> form // 로그인
-                .loginPage("/signinPage") 
-                .defaultSuccessUrl("/main.html", true)   
-                .failureUrl("/signinPage?error=true") 
-            .permitAll()
-            )
-            .logout(logout -> logout // 로그아웃
-                .logoutUrl("/signout")
-                .logoutSuccessUrl("/main.html")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID") // 로그아웃 후 세션 삭제
-            );
-    인증 정보는 세션 기반으로 저장되며 (SecurityContextRepository) 로그인 성공 여부에 따른 페이지와 로그아웃을 하면서 리다이렉션 하는 페이지 설정과 함께 
+비밀번호가 틀리면 오류 메세지를 보낸다.
     
-    세션 무효화 및 쿠키 삭제를 하며 완전 로그아웃을 하게끔 한다.
+    if (!passwordEncoder.matches(user.getPassword(), accountEntity.getPassword())) { // 비밀번호 확인
+        throw new CustomException(INCORRECT_PASSWORD,"signin");
+    }
 
- - BCrypt를 통한 비밀번호 암호화
+아이디 비밀번호를 모두 확인 후, 사용자 인증 객체(Authentication)를 직접 만들어서 Spring Security 컨텍스트에 넣어야 한다.
+Spring Security 내부에 저장될 사용자 정보를 담은 Userdetails를 먼저 만든다.
+
+    UserDetails userDetails = new User(
+            accountEntity.getUsername(), // 사용자 ID (principal)
+            accountEntity.getPassword(), // 비밀번호 (암호화된 상태)
+            Collections.singletonList(new SimpleGrantedAuthority(roleName)) // 사용자의 권한, 보통 ROLE_USER, ROLE_ADMIN 같은 문자열
+        );
+
+그리고 인증 객체(Authentication)를 생성한다.
+
+    new UsernamePasswordAuthenticationToken(
+        userDetails,                // principal 인증완료된 사용자 객체
+        null,                       // credentials 비밀번호(이미 앞에서 객체 등록해서 null 로 지정)
+        userDetails.getAuthorities() // 권한 목록 (ROLE_USER 등)
+    )
+    
+인증 정보들을 SecurityContext에 설정한 뒤, 세션에 저장한다.
+
+    SecurityContext securityContext = SecurityContextHolder.getContext(); // SecurityContextHolder = 현재 로그인한 사용자의 인증 정보를 저장하는 객체
+    securityContext.setAuthentication(authentication); // 로그인한 사용자의 인증 정보 SecurityContextHolder에 저장
+
+    session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext); // SecurityContext를 세션에 저장
+
+#### - 로그아웃
+
+    현재 인증 정보를 SecurityContext에서 제거하고 세션을 무효화한다.
+
+    @PostMapping("signout")
+        public String SignOut(HttpServletRequest request, HttpServletResponse response) { //(클라이언트에서 보낸 HTTP 요청, 서버가 클라이언트에게 응답을 보낼 객체)
+            new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication()); // SecurityContext에서 인증 정보 삭제
+            return "redirect:/"; // 메인페이지로 redirect
+        }
+
 ### 3. 마이 페이지 기능
+
  - 비밀번호 변경 기능
+
+![Image](https://github.com/user-attachments/assets/2677696a-8571-4434-b2c6-2f999bbe4cbc)
+ 
+로그인에 있는 과정이랑 큰 차이점이 없다. 
+
+아이디 찾는것과 비밀번호 확인방법은 [로그인](#--로그인)과 똑같이 아이디를 검색하고 없으면 오류 메세지를 보낸다. 비밀번호를 확인하기위해 **matches()** 메소드를 사용하고 비밀번호가 틀리면 오류 메세지를 보낸다.
+
+    public void changePassword(ChangePasswordDto toChangePassword, String username) {
+        AccountEntity accountEntity = this.accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "change-info")); // 유저 있는지 확인, 없으면 exception throw
+
+        if (!passwordEncoder.matches(toChangePassword.getCurrentPassword(), accountEntity.getPassword())) { // 비밀번호 확인, 틀리면 exception throw
+            throw new CustomException(INCORRECT_PASSWORD,"change-info");
+        }
+
+유저가 입력한 비밀번호도 Bcrypt로 암호화 한 뒤 Setter을 통해 암호화한 비밀번호로 변경 후 저장하면 된다.
+
+        String encodedPassword = passwordEncoder.encode(toChangePassword.getNewPassword()); // 비밀번호 encode
+        accountEntity.setPassword(encodedPassword); // encode 한 비밀번호로 변경
+        this.accountRepository.save(accountEntity); // account entity 저장
+    }
+
+
  - 카트에 담은 상품, 주문했던 상품, 리뷰 리스트 확인 기능
+
+카트에 담긴 상품
+
+ ![Image](https://github.com/user-attachments/assets/1ee4c83c-c270-42db-a155-4c6eb1b42868)
+
+주문했던 상품
+
+![Image](https://github.com/user-attachments/assets/680ae5ba-3625-4428-841c-1a39d25db5bb)
+
+리뷰 리스트
+
+![Image](https://github.com/user-attachments/assets/108a8126-dbcd-472f-b8ad-46ca64142a90)
+
 ### 4. 리뷰, 상품, 카트, 주문 CRUD 기능
 
 # 프로젝트 세부 주제

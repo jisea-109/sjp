@@ -101,7 +101,7 @@ public class AuthController {
     /** 로그아웃 처리
      * - 현재 인증 정보를 SecurityContext에서 제거하고 세션을 무효화한 뒤 메인페이지로 이동
      */
-    @GetMapping("signout")
+    @PostMapping("signout")
     public String SignOut(HttpServletRequest request, HttpServletResponse response) { //(클라이언트에서 보낸 HTTP 요청, 서버가 클라이언트에게 응답을 보낼 객체)
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication()); // SecurityContext에서 인증 정보 삭제
         return "redirect:/"; // 메인페이지로 redirect

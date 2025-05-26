@@ -310,6 +310,19 @@
   transition-duration: 0.2s;
   background-color: #ddd;
 }
+.dropdown-content button {
+  color: black;
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+  background: none;
+  border: none; 
+  cursor: pointer;
+}
+.dropdown-content button:hover {
+  transition-duration: 0.2s;
+  background-color: #ddd;
+}
 .dropdown:hover .dropdown-content {
   display: block;
 }

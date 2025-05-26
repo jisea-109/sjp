@@ -26,7 +26,10 @@
                                 <a href="/admin">ADMIN PAGE</a>
                             </th:block>
                             <a href="/change-info">MANAGE ACCOUNT</a>
-                            <a href="/signout">SIGN OUT</a>
+                            <form th:action="@{/signout}" method="POST">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button type="submit">SIGN OUT</button>
+                            </form>
                         </div>
                     </div>
                 </th:block>

@@ -79,9 +79,9 @@ public class AuthService {
 
         String roleName = "ROLE_" + accountEntity.getRole().name().replace("ROLE_", ""); // ROLE_ 를 추가해야 USER로 인식함
         UserDetails userDetails = new User( // Spring Security에 저장 + user 역할 부여
-        accountEntity.getUsername(),
-        accountEntity.getPassword(),
-        Collections.singletonList(new SimpleGrantedAuthority(roleName))
+            accountEntity.getUsername(), 
+            accountEntity.getPassword(),
+            Collections.singletonList(new SimpleGrantedAuthority(roleName))
         );
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
