@@ -7,8 +7,12 @@
     2. [회원가입, 로그인, 로그아웃](#2-회원가입-로그인-로그아웃)
     3. [마이 페이지 기능](#3-마이-페이지-기능)
 5. [프로젝트 세부 주제](#프로젝트-세부-주제)
+    1. [Transaction rollback 오류 해결](#1-transaction-silently-rolled-back-because-it-has-been-marked-as-rollback-only-오류-해결)
+    2. [이미지를 가져올 때 LazyInitializationException 오류 해결](#2-이미지를-가져올-때-트렌젝션-이후-productgetimagepaths를-하면-lazyinitializationexception-오류-해결)
+    3. [상품 검색할 때 정확도에 고려한 요소들](#3-querydsl-searchproductbynamecontaining-정확도에-고려한-요소들)
 
 # 프로젝트 소개
+
 컴퓨터 부품들을 검색하고 주문할 수 있는 온라인 쇼핑몰 개인 프로젝트입니다.
 
 백엔드 서버 구축부터 시작해서 배포까지 함으로써 공부를 위해 백엔드에 집중한 Spring MVC 웹 어플리케이션 프로젝트이며, 프론트엔드 또한 백엔드의 기능이 구현됨을 보여주기 위해 최소한의 기능이 구현되어 있습니다.
@@ -28,6 +32,7 @@ Spring MVC을 사용하고 있기에 Session 기반 인증을 사용함.
 상품 검색 결과 정확도를 높히기 위해 Querydsl을 사용.
 
 # ERD
+
 [ERD 링크](https://www.erdcloud.com/d/eE4zwgLhMPij5dE7C)
 
 ![Image](https://github.com/user-attachments/assets/7d70023b-17c0-4564-bc4d-7ebf7c4c2f15)
@@ -35,6 +40,7 @@ Spring MVC을 사용하고 있기에 Session 기반 인증을 사용함.
 
 # 세부 구성도
 
+![Image](https://github.com/user-attachments/assets/b8861260-2365-4214-9b38-a5a6a873908a)
 
 # 구현 내용 + UI 모음
 ### 1. 검색 기능 + 페이징 기능
@@ -194,7 +200,6 @@ Spring Security 내부에 저장될 사용자 정보를 담은 Userdetails를 �
         this.accountRepository.save(accountEntity); // account entity 저장
     }
 
-
  - 카트에 담은 상품, 주문했던 상품, 리뷰 리스트 확인 기능
 
 카트에 담긴 상품
@@ -209,11 +214,9 @@ Spring Security 내부에 저장될 사용자 정보를 담은 Userdetails를 �
 
 ![Image](https://github.com/user-attachments/assets/108a8126-dbcd-472f-b8ad-46ca64142a90)
 
-### 4. 리뷰, 상품, 카트, 주문 CRUD 기능
-
 # 프로젝트 세부 주제
 
-### 1. **Transaction silently rolled back because it has been marked as rollback-only** 오류 해결
+### 1. Transaction silently rolled back because it has been marked as rollback-only 오류 해결
 
         @Transactional
         public BigDecimal getReviewAverage(Long productId) { 
