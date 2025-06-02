@@ -42,6 +42,23 @@ Spring MVC을 사용하고 있기에 Session 기반 인증을 사용함.
 
 ![Image](https://github.com/user-attachments/assets/b8861260-2365-4214-9b38-a5a6a873908a)
 
+### 사용한 기술 스택 및 버전
+
+**Backend**
+ - Java: 17
+ - Spring Boot: 3.3.5
+ - Spring Data JPA
+ - Spring Security
+ - Java: 17
+ - Gradle: 8.10.2
+ - QueryDSL: 5.0.0
+ - Mysql
+
+**Deploy**
+ - Docker
+ - Amazon EC2
+ - Amazon S3
+ 
 # 구현 내용 + UI 모음
 ### 1. 검색 기능 + 페이징 기능
 
