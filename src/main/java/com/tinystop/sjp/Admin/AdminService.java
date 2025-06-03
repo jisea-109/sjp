@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
+import com.tinystop.sjp.S3Service;
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.ProductEntity;
 import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
@@ -34,6 +35,7 @@ public class AdminService {
     
     private final AdminRepository adminRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final S3Service s3Service;
 
     private static final List<String> allowedImageTypes= List.of("image/jpeg", "image/png", "image/webp", "image/gif"); // 허용되는 이미지 확장자 목록
     private static final List<String> executableFileTypes =List.of(".jsp",".html",".php", ".java"); // 파일 업로드 했을 때 문제될 수 있는 파일들 목록
@@ -57,7 +59,7 @@ public class AdminService {
             }
             checkImages(uploadImages, "admin"); // 이미지 형태 체크
             List<String> imagePaths = new ArrayList<>();
-            imagePaths = uploadImages(uploadImages, "admin"); // 이미지 업로드
+            imagePaths = s3Service.uploadImages(uploadImages, "products", "admin"); // 이미지 업로드, AWS 버전
             adminRepository.save(addProductRequest.toEntity(imagePaths, component)); // 업로드 후 review entity에 저장
             return;
         }
@@ -84,11 +86,13 @@ public class AdminService {
         List<String> currentImages = toUpdateProduct.getImagePaths(); // 현재 저장되있는 이미지
         if (editProductRequest.getDeleteImagePaths() != null) { // 삭제할 이미지 있는지 체크
             for (String pathToDelete : editProductRequest.getDeleteImagePaths()) {
-                currentImages.remove(pathToDelete); // DB에서 제거
-                File file = new File("src/main/resources/static" + pathToDelete); // 실제 파일 삭제
-                if (file.exists()) { // 파일 삭제
-                    file.delete();
-                }
+                s3Service.deleteFile(pathToDelete);
+                toUpdateProduct.getImagePaths().remove(pathToDelete);
+                // currentImages.remove(pathToDelete); // DB에서 제거
+                // File file = new File("src/main/resources/static" + pathToDelete); // 실제 파일 삭제
+                // if (file.exists()) { // 파일 삭제
+                //     file.delete();
+                // }
             }
         }
 
@@ -98,7 +102,8 @@ public class AdminService {
             }
             checkTheNumberOfImages(currentImages, uploadImages); // 기존에 저장되있던 이미지 수량과 새로 업로드 하는 사진 수량 비교 (삭제되는 사진 개수도 현재 이미지 수량에 포함되있음)
             checkImages(uploadImages, "update-product-detail"); // 이미지 파일 보안 체크
-            List<String> uploaded = uploadImages(uploadImages, "update-product-detail");
+            //List<String> uploaded = uploadImages(uploadImages, "update-product-detail");
+            List<String> uploaded = s3Service.uploadImages(uploadImages, "products", "update-product-detail"); // AWS S3 전용
             toUpdateProduct.getImagePaths().addAll(uploaded); // 이미지 경로 추가
         }
 
@@ -156,7 +161,7 @@ public class AdminService {
         }
     }
 
-    /** 이미지 업로드 (addProduct, editProduct에 사용됨)
+    /** 이미지 업로드 (addProduct, editProduct에 사용됨, 로컬 환경에서 사용되고 AWS S3에선 안씀)
      * @param uploadImages 업로드할 이미지 파일
      * @param page 오류났을 시 return할 페이지 이름
      * @return 이미지 경로 return
@@ -197,10 +202,11 @@ public class AdminService {
 
         if (toRemoveProduct.getImagePaths() != null) {  // product에 사진이 있으면 삭제
             for (String path : toRemoveProduct.getImagePaths()) { // 하나하나 삭제하게끔 for loop 사용
-                File file = new File("src/main/resources/static" + path);
-                if (file.exists()) {
-                    file.delete();
-                }
+                // File file = new File("src/main/resources/static" + path);
+                // if (file.exists()) {
+                //     file.delete();
+                // }
+                s3Service.deleteFile(path);
             }
         }
         adminRepository.delete(toRemoveProduct);

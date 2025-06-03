@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.tinystop.sjp.S3Service;
 import com.tinystop.sjp.Auth.AccountEntity;
 import com.tinystop.sjp.Auth.AccountRepository;
 import com.tinystop.sjp.Exception.CustomException;
@@ -38,6 +39,7 @@ public class ReviewService {
     private final AccountRepository accountRepository; // 유저 repository
     private final ReviewRepository reviewRepository; // 리뷰 repository
     private final ProductRepository productRepository; // 물건 repository
+    private final S3Service s3Service;
 
     private static final List<String> allowedImageTypes= List.of("image/jpeg", "image/png", "image/webp", "image/gif"); // 허용되는 이미지 확장자 목록
     private static final List<String> executableFileTypes =List.of(".jsp",".html",".php", ".java"); // 파일 업로드 했을 때 문제될 수 있는 파일들 목록
@@ -63,7 +65,8 @@ public class ReviewService {
             }
             checkImages(uploadImages, "add-review"); // 이미지 형태 체크
             List<String> imagePaths = new ArrayList<>();
-            imagePaths = uploadImages(uploadImages, "add-review"); // 이미지 업로드
+            //imagePaths = uploadImages(uploadImages, "add-review"); // 이미지 업로드
+            imagePaths = s3Service.uploadImages(uploadImages, "reviews", "add-review"); // AWS S3 전용
             reviewRepository.save(addReviewRequest.toEntity(account, product, imagePaths)); // 이미지 업로드 후 review entity에 저장
             return;
         }
@@ -87,18 +90,20 @@ public class ReviewService {
         List<String> currentImages = review.getImagePaths(); // 현재 저장되있는 이미지
         if (editReviewRequest.getDeleteImagePaths() != null) { // 삭제할 이미지 있는지 체크
             for (String pathToDelete : editReviewRequest.getDeleteImagePaths()) {
-                currentImages.remove(pathToDelete); // DB에서 제거
-                File file = new File("src/main/resources/static" + pathToDelete); // 실제 파일 삭제
-                if (file.exists()) { // 파일 삭제
-                    file.delete();
-                }
+                // currentImages.remove(pathToDelete); // DB에서 제거
+                // File file = new File("src/main/resources/static" + pathToDelete); // 실제 파일 삭제
+                // if (file.exists()) { // 파일 삭제
+                //     file.delete();
+                // }
+                s3Service.deleteFile(pathToDelete); // AWS S3 전용
+                review.getImagePaths().remove(pathToDelete); // AWS S3 전용
             }
         }
 
         if (Arrays.stream(uploadImages).anyMatch(file -> !file.isEmpty())) {
             checkTheNumberOfImages(currentImages, uploadImages); // 기존에 저장되있던 이미지 수량과 새로 업로드 하는 사진 수량 비교 (삭제되는 사진 개수도 현재 이미지 수량에 포함되있음)
             checkImages(uploadImages, "edit-review" ); // 이미지 파일 보안 체크
-            List<String> uploaded = uploadImages(uploadImages, "edit-review");
+            List<String> uploaded = s3Service.uploadImages(uploadImages, "reviews", "edit-review");
             review.getImagePaths().addAll(uploaded); // 이미지 경로 추가
         }
         
