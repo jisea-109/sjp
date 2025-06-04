@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tinystop.sjp.S3Service;
 import com.tinystop.sjp.Auth.AccountEntity;
 import com.tinystop.sjp.Auth.AccountRepository;
 import com.tinystop.sjp.Exception.CustomException;
@@ -27,6 +28,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
+    private final S3Service s3Service;
 
     /** 특정 product를 cart에 담기
      * @param username 현재 로그인한 유저 username
@@ -84,6 +86,11 @@ public class CartService {
     public List<CartEntity> cartList(String username) {
         AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "cart-list"));
         List<CartEntity> carts = checkCartList(cartRepository.findAllByAccount(user)); // cart의 quantity 체크
+
+        carts.forEach(cart -> {
+            ProductEntity product = cart.getProduct();
+            product.setImagePaths(s3Service.getFileUrls(product.getImagePaths()));
+        });
         return carts;
     }
 

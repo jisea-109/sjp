@@ -71,7 +71,7 @@ public class ProductEntity extends BaseEntity{
 
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_path")
+    @Column(name = "image_path", length = 1024)
     private List<String> imagePaths = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

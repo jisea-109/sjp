@@ -30,8 +30,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -58,7 +60,7 @@ public class ReviewEntity extends BaseEntity{
 
     @ElementCollection
     @CollectionTable(name = "review_images", joinColumns = @JoinColumn(name = "review_id"))
-    @Column(name = "image_path")
+    @Column(name = "image_path", length = 1024)
     private List<String> imagePaths = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -69,14 +71,4 @@ public class ReviewEntity extends BaseEntity{
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name= "account", nullable = false)
     private AccountEntity account;
-
-    public void setReviewTitle(String reviewTitle) {
-        this.reviewTitle = reviewTitle;
-    }
-    public void setReviewText(String reviewText) {
-        this.reviewText = reviewText;
-    }
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
+import com.tinystop.sjp.S3Service;
 import com.tinystop.sjp.Auth.AccountEntity;
 import com.tinystop.sjp.Auth.AccountRepository;
 import com.tinystop.sjp.Cart.CartEntity;
@@ -28,7 +29,7 @@ public class OrderService {
     private final AccountRepository accountRepository;
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
-
+    private final S3Service s3Service;
     /** cart에 담긴 product를 주문하기
      * @param username 주문하는 유저 username
      * @param addToOrderDto order하기에 필요한 데이터 (Long productId, int quantity)
@@ -87,6 +88,11 @@ public class OrderService {
     public List<OrderEntity> orderList(String username) {
         AccountEntity user = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "order-list"));
         List<OrderEntity> orderList = orderRepository.findAllByAccount(user);
+
+        orderList.forEach(order -> {
+            ProductEntity product = order.getProduct();
+            product.setImagePaths(s3Service.getFileUrls(product.getImagePaths()));
+        });
 
         return orderList;
     }

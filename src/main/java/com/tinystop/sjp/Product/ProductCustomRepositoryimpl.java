@@ -29,7 +29,6 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     private final QOrderEntity order = QOrderEntity.orderEntity;
     private final QReviewEntity review = QReviewEntity.reviewEntity;
     private final QProductCategoryEntity component = QProductCategoryEntity.productCategoryEntity;
-    
 
     @Override
     public Page<ProductEntity> searchProductByNameContaining(String name, Pageable pageable) {  // product 검색했을 때 나열

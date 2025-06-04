@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import static com.tinystop.sjp.Type.ErrorCode.FAILED_TO_UPLOAD_IMAGE;
 
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,13 +68,17 @@ public class S3Service {
                 }
             }
         }
-
         return uploadedFileNames;
     }
 
-    public List<String> getFileUrls(List<String> s3Keys) {
-        return s3Keys.stream()
-                .map(this::getFileUrl)
+    public List<String> getFileUrls(List<String> fileNames) {
+        return fileNames.stream()
+                .map(fileName -> {
+                    if (fileName.startsWith("http")) {
+                        return fileName;
+                    }
+                    return getFileUrl(fileName);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -84,7 +91,34 @@ public class S3Service {
                 .toExternalForm();
     }
 
-    public void deleteFile(String s3Key) {
-        s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(s3Key).build());
+    public void deleteFile(String fileName) {
+        try {
+            String key = extractKeyFromUrl(fileName);
+            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+
+            s3Client.deleteObject(deleteRequest);
+        } catch (S3Exception e) { // S3 삭제 실패
+            System.err.println("S3 오류 코드: " + e.statusCode());
+            System.err.println("S3 오류 메시지: " + e.awsErrorDetails().errorMessage());
+        } catch (Exception e) { // S3 삭제 실패
+            System.err.println("S3 오류 메세지: " + e.getMessage());
+        }
+    }
+
+    private String extractKeyFromUrl(String urlOrKey) {
+            if (urlOrKey.startsWith("http")) {
+            try {
+                URL url = new URL(urlOrKey);
+                String encodedKey = url.getPath().substring(1); // "/reviews/..." → "reviews/..."
+                return java.net.URLDecoder.decode(encodedKey, java.nio.charset.StandardCharsets.UTF_8.name());
+            } catch (Exception e) {
+                System.err.println("URL 디코딩 오류: " + e.getMessage());
+                return urlOrKey;
+            }
+        }
+        return urlOrKey;
     }
 }

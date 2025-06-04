@@ -32,8 +32,12 @@ public class LoadProductDto {
         this.component = product.getComponent();
         this.socket = product.getSocket();
         this.quantity = product.getQuantity();
-        this.imagePaths = List.copyOf(product.getImagePaths()); // Lazy 초기화
+        this.imagePaths = List.copyOf(product.getImagePaths());
         this.stockStatus = product.getStockStatus();
-        this.reviewCount = product.getReviews() != null ? product.getReviews().size() : 0; // Lazy 초기화
+        this.reviewCount = product.getReviews() != null ? product.getReviews().size() : 0;
+    }
+
+    public void setImagePaths(List<String> imagePaths) {
+        this.imagePaths = imagePaths;
     }
 }

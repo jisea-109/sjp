@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.tinystop.sjp.S3Service;
 import com.tinystop.sjp.Exception.CustomException;
 import com.tinystop.sjp.Product.Category.ProductCategoryEntity;
 import com.tinystop.sjp.Product.Category.ProductCategoryRepository;
 
 import static com.tinystop.sjp.Type.ErrorCode.PRODUCT_NOT_FOUND;
+
+import java.util.List;
 
 @Transactional
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final S3Service s3Service;
     /**
      * 클라이언트에서 product를 검색할 때 제일 최우선으로 사용되는 함수, 대소문자 구분 없이 검색함.
      * @param name 검색할 product 이름
@@ -32,7 +36,12 @@ public class ProductService {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
         
-        return productList.map(LoadProductDto::new);
+        //return productList.map(LoadProductDto::new);
+        return productList.map(product -> { // AWS S3 전용, AWS S3에 맞게 이미지 URL 반환
+            LoadProductDto dto = new LoadProductDto(product);
+            dto.setImagePaths(s3Service.getFileUrls(product.getImagePaths())); // 이미지 URL 변환만 따로 처리
+            return dto;
+        });
     }
     /**
      * 특정 Component Product를 정렬하는 함수, Component에 속하는 Product만 정렬함. (CPU, Mainboard 등)
@@ -48,7 +57,13 @@ public class ProductService {
         if (productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
-        return productList.map(LoadProductDto::new);
+
+        //return productList.map(LoadProductDto::new);
+        return productList.map(product -> { // AWS S3 전용, AWS S3에 맞게 이미지 URL 반환
+            LoadProductDto dto = new LoadProductDto(product);
+            dto.setImagePaths(s3Service.getFileUrls(product.getImagePaths())); // 이미지 URL 변환만 따로 처리
+            return dto;
+        });
     }
 
     /**
@@ -64,7 +79,12 @@ public class ProductService {
             throw new CustomException(PRODUCT_NOT_FOUND, "main");
         }
 
-        return productList.map(LoadProductDto::new);
+        //return productList.map(LoadProductDto::new);
+        return productList.map(product -> { // AWS S3 전용, AWS S3에 맞게 이미지 URL 반환
+            LoadProductDto dto = new LoadProductDto(product);
+            dto.setImagePaths(s3Service.getFileUrls(product.getImagePaths())); // 이미지 URL 변환만 따로 처리
+            return dto;
+        });
     }
 
     /**
@@ -80,7 +100,13 @@ public class ProductService {
         if (productList.isEmpty()) {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
-        return productList.map(LoadProductDto::new);
+
+        //return productList.map(LoadProductDto::new);
+        return productList.map(product -> { // AWS S3 전용, AWS S3에 맞게 이미지 URL 반환
+            LoadProductDto dto = new LoadProductDto(product);
+            dto.setImagePaths(s3Service.getFileUrls(product.getImagePaths())); // 이미지 URL 변환만 따로 처리
+            return dto;
+        });
     }
 
     /**
@@ -96,7 +122,12 @@ public class ProductService {
             throw new CustomException(PRODUCT_NOT_FOUND, "main");
         }
 
-        return productList.map(LoadProductDto::new);
+        //return productList.map(LoadProductDto::new);
+        return productList.map(product -> { // AWS S3 전용, AWS S3에 맞게 이미지 URL 반환
+            LoadProductDto dto = new LoadProductDto(product);
+            dto.setImagePaths(s3Service.getFileUrls(product.getImagePaths())); // 이미지 URL 변환만 따로 처리
+            return dto;
+        });
     }
 
     /**
@@ -113,7 +144,12 @@ public class ProductService {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
 
-        return productList.map(LoadProductDto::new);
+        //return productList.map(LoadProductDto::new);
+        return productList.map(product -> { // AWS S3 전용, AWS S3에 맞게 이미지 URL 반환
+            LoadProductDto dto = new LoadProductDto(product);
+            dto.setImagePaths(s3Service.getFileUrls(product.getImagePaths())); // 이미지 URL 변환만 따로 처리
+            return dto;
+        });
     }
 
     /**
@@ -129,7 +165,12 @@ public class ProductService {
             throw new CustomException(PRODUCT_NOT_FOUND, "main");
         }
 
-        return productList.map(LoadProductDto::new);
+        //return productList.map(LoadProductDto::new);
+        return productList.map(product -> { // AWS S3 전용, AWS S3에 맞게 이미지 URL 반환
+            LoadProductDto dto = new LoadProductDto(product);
+            dto.setImagePaths(s3Service.getFileUrls(product.getImagePaths())); // 이미지 URL 변환만 따로 처리
+            return dto;
+        });
     }
 
     /**
@@ -146,7 +187,12 @@ public class ProductService {
             throw new CustomException(PRODUCT_NOT_FOUND,"main");
         }
 
-        return productList.map(LoadProductDto::new);
+        //return productList.map(LoadProductDto::new);
+        return productList.map(product -> { // AWS S3 전용, AWS S3에 맞게 이미지 URL 반환
+            LoadProductDto dto = new LoadProductDto(product);
+            dto.setImagePaths(s3Service.getFileUrls(product.getImagePaths())); // 이미지 URL 변환만 따로 처리
+            return dto;
+        });
     }
     /**
      * 특정 product 정보 가져오는 함수
@@ -156,6 +202,9 @@ public class ProductService {
      */
     public ProductEntity getProduct(Long productId) {
         ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"main"));
+
+        List<String> urlList = s3Service.getFileUrls(product.getImagePaths());
+        product.setImagePaths(urlList);
         return product;
     }
 }

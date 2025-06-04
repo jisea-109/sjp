@@ -88,13 +88,14 @@ public class ReviewService {
         }
 
         List<String> currentImages = review.getImagePaths(); // 현재 저장되있는 이미지
-        if (editReviewRequest.getDeleteImagePaths() != null) { // 삭제할 이미지 있는지 체크
+        if (editReviewRequest.getDeleteImagePaths() != null || !editReviewRequest.getDeleteImagePaths().isEmpty()) { // 삭제할 이미지 있는지 체크
             for (String pathToDelete : editReviewRequest.getDeleteImagePaths()) {
                 // currentImages.remove(pathToDelete); // DB에서 제거
                 // File file = new File("src/main/resources/static" + pathToDelete); // 실제 파일 삭제
                 // if (file.exists()) { // 파일 삭제
                 //     file.delete();
                 // }
+                System.out.println(pathToDelete);
                 s3Service.deleteFile(pathToDelete); // AWS S3 전용
                 review.getImagePaths().remove(pathToDelete); // AWS S3 전용
             }
@@ -187,7 +188,10 @@ public class ReviewService {
      * @return product ID를 기반으로 찾은 review
      */
     public ReviewEntity getReviewByProductId(Long productId) {
-        return reviewRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
+        ReviewEntity review = reviewRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND,"product-list"));
+        List<String> urlList = s3Service.getFileUrls(review.getImagePaths());
+        review.setImagePaths(urlList);
+        return review;
     }
 
     /** 리뷰값 평균값 내기 위한 함수
@@ -223,13 +227,15 @@ public class ReviewService {
 
         if (review.getImagePaths() != null) {  // 리뷰가 사진이 있으면 삭제
             for (String path : review.getImagePaths()) { // 하나하나 삭제하게끔 for loop 사용
-                File file = new File("src/main/resources/static" + path);
-                if (file.exists()) {
-                    boolean deleted = file.delete();
-                    if (!deleted) {
-                        throw new CustomException(NO_PERMISSION_TO_EDIT, "review-list");
-                    }
-                }
+                // File file = new File("src/main/resources/static" + path);
+                // if (file.exists()) {
+                //     boolean deleted = file.delete();
+                //     if (!deleted) {
+                //         throw new CustomException(NO_PERMISSION_TO_EDIT, "review-list");
+                //     }
+                // }
+                s3Service.deleteFile(path);
+                review.getImagePaths().remove(path);
             }
         }
         reviewRepository.delete(review);
@@ -243,6 +249,8 @@ public class ReviewService {
         AccountEntity account = accountRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND, "reivew-list"));
         List<ReviewEntity> reviews = reviewRepository.findByAccount(account);
 
+        reviews.forEach(review -> {review.setImagePaths(s3Service.getFileUrls(review.getImagePaths()));});
+
         return reviews;
     }
 
@@ -253,7 +261,7 @@ public class ReviewService {
     public List<ReviewEntity> productReviewList(Long productId) {
         ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND, "product-list"));
         List<ReviewEntity> reviews = reviewRepository.findByProduct(product);
-
+        reviews.forEach(review -> {review.setImagePaths(s3Service.getFileUrls(review.getImagePaths()));});
         return reviews;
     }
 }
