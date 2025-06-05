@@ -37,6 +37,7 @@ out/
 .vscode/
 
 src/main/resources/application.properties
+src/main/resources/application-docker.yml
 src/main/resources/application-s3.yml
 src/main/resources/static/ProductPhoto
 src/main/resources/static/reviews

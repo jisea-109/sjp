@@ -95,7 +95,6 @@ public class ReviewService {
                 // if (file.exists()) { // 파일 삭제
                 //     file.delete();
                 // }
-                System.out.println(pathToDelete);
                 s3Service.deleteFile(pathToDelete); // AWS S3 전용
                 review.getImagePaths().remove(pathToDelete); // AWS S3 전용
             }

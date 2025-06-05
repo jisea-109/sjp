@@ -207,6 +207,7 @@ public class AdminService {
                 //     file.delete();
                 // }
                 s3Service.deleteFile(path);
+                toRemoveProduct.getImagePaths().remove(path);
             }
         }
         adminRepository.delete(toRemoveProduct);

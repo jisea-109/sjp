@@ -40,7 +40,7 @@ Spring MVC을 사용하고 있기에 Session 기반 인증을 사용함.
 
 # 세부 구성도
 
-![Image](https://github.com/user-attachments/assets/b8861260-2365-4214-9b38-a5a6a873908a)
+![Image](https://github.com/user-attachments/assets/dd09b2cf-9772-4346-a1df-fc77ba8523b5)
 
 ### 사용한 기술 스택 및 버전
 
