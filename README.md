@@ -525,4 +525,21 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
 4. 배포 과정
  - 도메인
  - AWS
+  
+    이미지 저장을 위해 **S3**, Mysql은 **RDS**, 어플리케이션은 **EC2**로 배포를 함.
+
  - Docker
+    
+    Docker를 사용한 이유는 application.properties같은 파일들은 깃허브에 업로드 하기엔 민감한 정보들을 담고 있기 때문에 다른 환경에서 실행을 할 경우 그 환경에서 따로 설정을 일일히 다 해야하기 때문이다.
+
+    이 프로젝트에서는 Docker Hub에 Docker Image를 업로드해서 배포를 하였다.
+
+        1. ./gradlew build bootjar
+        2. docker build -t tinystop
+        3. docker tag tinystop jisea109/tinystop:000 (버전 원하는걸로)
+        4. docker push jisea109/tinystop:000
+
+    이후 EC2에 접속하고 다음과 같이 입력하여 docker image를 가져와서 실행하였다. 
+        
+        sudo docker pull jisea109/tinystop:000
+        sudo docker run -d -p 80:8080 jisea109/tinystop:000
