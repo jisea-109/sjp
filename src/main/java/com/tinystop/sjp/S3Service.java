@@ -55,7 +55,7 @@ public class S3Service {
                 try {
                     PutObjectRequest putRequest = PutObjectRequest.builder()
                             .bucket(bucketName)
-                            .key(s3Key)
+                            .key(s3Key) // 파일명
                             .contentType(image.getContentType())
                             .acl(ObjectCannedACL.PUBLIC_READ)
                             .build();

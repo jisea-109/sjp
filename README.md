@@ -523,10 +523,84 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
 <hr>
 
 4. 배포 과정
- - 도메인
+
  - AWS
-  
+    
     이미지 저장을 위해 **S3**, Mysql은 **RDS**, 어플리케이션은 **EC2**로 배포를 함.
+
+    S3 -> RDS -> EC2 순서로 AWS를 통해 배포를 하는데, 기존의 프로젝트는 로컬 환경에서 실행하기 때문에 거기에 맞는 설정을 하였지만 S3, RDS를 배포할 때는 거기에 맞춰서 몇가지 추가하고 변경을 하여 배포를 하였다.
+
+    **application-s3.yml**
+
+        cloud:
+            aws:
+                region:
+                    static: us-east-1
+                s3:
+                    bucket: tinystopbucket
+                stack:
+                    auto: false
+                credentials:
+                    secret-key: CDB...
+                    access-key: AK...
+
+    secret-key하고 access-key는 AWS 에서 IAM 추가해서 받았다. (~~region은 처음에 한국인 ap-northeast-2로 설정을 했었는데 새로고침을 했었어서 그런지 어느순간 us-east-1으로 설정 되있었다..~~)
+
+    **S3Config.java**
+
+        @Configuration
+        public class S3Config {
+
+            @Value("${cloud.aws.region.static}")
+            private String region;
+
+            @Value("${cloud.aws.credentials.access-key}")
+            private String accessKey;
+
+            @Value("${cloud.aws.credentials.secret-key}")
+            private String secretKey;
+
+            @Bean
+            public S3Client s3Client() {
+                return S3Client.builder()
+                        .region(Region.of(region))
+                        .credentialsProvider(
+                                StaticCredentialsProvider.create(
+                                        AwsBasicCredentials.create(accessKey, secretKey)
+                                )
+                        )
+                        .build();
+            }
+        }
+
+    S3와 연동하기 위해 S3Config.java을 만들어서 S3 리소스에 접근 가능하게끔 하였다.
+
+    **S3Service.java의 uploadImages 함수 일부** 
+            try {
+                PutObjectRequest putRequest = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(s3Key)
+                        .contentType(image.getContentType())
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                s3Client.putObject(putRequest, RequestBody.fromInputStream(image.getInputStream(), image.getSize()));
+                uploadedFileNames.add(s3Key);
+            } catch (IOException e) {
+                throw new CustomException(FAILED_TO_UPLOAD_IMAGE, page);
+            }
+        return uploadedFileNames;
+
+    업로드할 대상 파일들을 버켓 이름과 파일명이 담긴 경로를 지정해서 S3로 전송하고 저장한다.
+
+    **ReviewService.java의 addReview 함수 일부**
+
+        //imagePaths = uploadImages(uploadImages, "add-review"); // 이미지 업로드
+        imagePaths = s3Service.uploadImages(uploadImages, "reviews", "add-review"); // AWS S3 전용
+
+    각 service 파일에 있는 로컬 전용 함수인 uploadImages는
+
+    1. EC2 배포를 하기 전에 먼저 S3부터 셋업을 하였다.
 
  - Docker
     
