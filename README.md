@@ -520,15 +520,21 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
 
 어떤 상품들은 소켓을 보유한 상품도 있기에 키워드에 소켓도 포함이 될 시 적용해 보는 것도 검토를 해봐야겠다.
 
-<hr>
+# 4. 배포 과정
 
-4. 배포 과정
-
- - AWS
+## - AWS
     
-    이미지 저장을 위해 **S3**, Mysql은 **RDS**, 어플리케이션은 **EC2**로 배포를 함.
+이미지 저장을 위해 **S3**, Mysql은 **RDS**, 어플리케이션은 **EC2**로 배포를 함.
 
-    S3 -> RDS -> EC2 순서로 AWS를 통해 배포를 하는데, 기존의 프로젝트는 로컬 환경에서 실행하기 때문에 거기에 맞는 설정을 하였지만 S3, RDS를 배포할 때는 거기에 맞춰서 몇가지 추가하고 변경을 하여 배포를 하였다.
+S3 -> RDS -> EC2 순서로 AWS를 통해 배포를 하는데, 기존의 프로젝트는 로컬 환경에서 실행하기 때문에 거기에 맞는 설정을 하였지만 S3, RDS를 배포할 때는 거기에 맞춰서 몇가지 추가하고 변경을 하여 배포를 하였다.
+
+이 프로젝트는 free tier 기준에 맞춰서 설정을 하였기에 AWS에서 설정하는 기본 틀은 생략하여 설명함.
+
+0. Security Group (보안 그룹)
+
+    AWS에서 사용하는 네트워크 보안 기술인 Security Group을 사용해서 들어오거나 나가는 트래픽들을 직접 설정하게 제어할 수 있다. 
+
+1. S3
 
     **application-s3.yml**
 
@@ -558,20 +564,20 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
             private String accessKey;
 
             @Value("${cloud.aws.credentials.secret-key}")
-            private String secretKey;
+        private String secretKey;
 
-            @Bean
-            public S3Client s3Client() {
-                return S3Client.builder()
-                        .region(Region.of(region))
-                        .credentialsProvider(
-                                StaticCredentialsProvider.create(
-                                        AwsBasicCredentials.create(accessKey, secretKey)
-                                )
-                        )
-                        .build();
-            }
+        @Bean
+        public S3Client s3Client() {
+            return S3Client.builder()
+                    .region(Region.of(region))
+                    .credentialsProvider(
+                            StaticCredentialsProvider.create(
+                                    AwsBasicCredentials.create(accessKey, secretKey)
+                            )
+                    )
+                    .build();
         }
+    }
 
     S3와 연동하기 위해 S3Config.java을 만들어서 S3 리소스에 접근 가능하게끔 하였다.
 
@@ -598,22 +604,82 @@ Repository를 통해서 Lazy 필드를 미리 로딩한 상태의 ProductEntity�
         //imagePaths = uploadImages(uploadImages, "add-review"); // 이미지 업로드
         imagePaths = s3Service.uploadImages(uploadImages, "reviews", "add-review"); // AWS S3 전용
 
-    각 service 파일에 있는 로컬 전용 함수인 uploadImages는
+    각 service 파일에 있는 로컬 전용 함수인 uploadImages는 S3Service.java에 있는 uploadImages 함수로 대체하였다.
 
-    1. EC2 배포를 하기 전에 먼저 S3부터 셋업을 하였다.
+    **S3 연결 결과**
 
+    ![Image](https://github.com/user-attachments/assets/505fc8dc-416f-4313-a506-0495ee190d8a)
+
+    ![Image](https://github.com/user-attachments/assets/b7b100d5-0e7f-4cb6-afdb-e4804c2071ae)
+
+    유저가 상품의 리뷰를 작성할 때 사진을 업로드 하면 S3에서 생성 경로를 읽어서 review 폴더가 생성이 되고 안에 사진이 들어가게 된다.
+
+2. RDS
+
+    **application.properties**
+
+        spring.datasource.url=jdbc:mysql://<RDS-ENDPOINT>:3306/<DB_NAME>?useSSL=true&verifyServerCertificate=true
+        spring.datasource.username=DB_USERNAME      #DB에 접근할 username
+        spring.datasource.password=DB_PASSWORD        #DB에 접근할 유저의 password
+    
+    application.properties에서 원래 설정했던 username과 password 대신 AWS RDS 설정할 때 기록했던 master username, master password로 바꿔주고 경로는 설정한 DB 이름과 RDS를 만들고 나온 Endpoint를 넣어준다. useSSL=true&verifyServerCertificate=true는 TLS 암호화를 통해서 데이터 유출을 방지하기 위해 설정한다.
+
+    ![Image](https://github.com/user-attachments/assets/7ee31e65-cc9e-453b-aaf3-b18c547a2bb0)
+
+    보안그룹에서 설정한 port가 3306이기에 endpoint 뒤에 3306을 추가하였다.
+
+    **mysql workbench**
+
+    ![Image](https://github.com/user-attachments/assets/f639f69c-3579-48a1-bf09-fecbffdeaf54)
+
+    설정한 RDS를 연결 후 테스트하기 위해서 mysql workbench에서 위와 같이 설정을 하였다.
+
+    hostname에는 RDS Endpoint를 넣고 username과 password는 rds에서 설정한 값 그대로 넣어준다.
+
+    연결이 성공적으로 됐고 프로젝트를 실행한 다음 회원가입을 테스트를 성공적으로 마쳤다.
+
+    ![Image](https://github.com/user-attachments/assets/f4c65bc7-610f-4533-8eeb-5cc546eab5c4)
+
+3. EC2
+
+    EC2 instance 설정 후 발급받은 ssh키를 통해 ubuntu console에서 다음과 같이 입력을 하여 ec2 인스턴스에 접속을 하였다.
+
+        chmod 400 sshKey.pem
+
+        ssh -i "sshKey.pem" ubuntu@ec2-public-ip
+
+    그리고 docker image를 가져오기 위해 docker 셋업을 다음과 같이 하였다.
+
+        sudo apt update
+        sudo apt upgrade -y
+        sudo apt install -y ca-certificates curl gnupg lsb-release (필수 패키지 설치)
+        sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin (docker 엔진 설치)
+
+        docker login -u 아이디 (docker 로그인)
+            
  - Docker
     
     Docker를 사용한 이유는 application.properties같은 파일들은 깃허브에 업로드 하기엔 민감한 정보들을 담고 있기 때문에 다른 환경에서 실행을 할 경우 그 환경에서 따로 설정을 일일히 다 해야하기 때문이다.
 
-    이 프로젝트에서는 Docker Hub에 Docker Image를 업로드해서 배포를 하였다.
+    Java 버전과 db 이름 등 여러가지들을 주입해야 하기에 docker를 통해서 편하기도 하지만 더 정확하게 배포를 하고 싶었기에 선택을 하였다.
+
+    Docker image로 만들기 전 미리 Dockerfile을 만들어서 다음과 같이 설정을 하였다.
+
+    **Dockerfile** 
+
+        FROM openjdk:17-jdk-alpine (자바 17 설치)
+        COPY build/libs/sjp-0.0.1-SNAPSHOT.jar app.jar (로컬에서 만든 jar파일을 이미지에 복사)
+        EXPOSE 8080 (기본 포트 8080)
+        ENTRYPOINT ["java", "-jar", "/app.jar"] (앱 자동 실행)
+
+    gradlew build를 하고 이미지로 만든 다음 Docker Hub에 이미지를 업로드해서 배포를 하였다.
 
         1. ./gradlew build bootjar
         2. docker build -t tinystop
         3. docker tag tinystop jisea109/tinystop:000 (버전 원하는걸로)
         4. docker push jisea109/tinystop:000
 
-    이후 EC2에 접속하고 다음과 같이 입력하여 docker image를 가져와서 실행하였다. 
+    이후 EC2 인스턴스에 접속하고 다음과 같이 입력하여 docker image를 가져와서 실행하였다. 
         
         sudo docker pull jisea109/tinystop:000
         sudo docker run -d -p 80:8080 jisea109/tinystop:000
